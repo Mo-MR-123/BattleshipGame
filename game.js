@@ -68,7 +68,6 @@ game.prototype.isValidState = function (s) {
 //setting a new game state by transitioning
 game.prototype.setStatus = function (w) {
 
-
     if (game.prototype.isValidState(w) && game.prototype.isValidTransition(this.gameState, w)) {
         this.gameState = w;
         console.log("[STATUS] %s", this.gameState);
@@ -84,7 +83,10 @@ game.prototype.hasTwoConnectedPlayers = function () {
 
 game.prototype.addPlayer = function (player) {
 
-
+    // when a player connects to the game scoket, the game needs to be either in 1 JOINED state 
+    //(which means this new player is 2nd player to join the game)
+    // OR the game needs to be in ) 0 JOINED state which means that this player is the 1st player to join this game.
+    // This means if game state is 2 JOINED then no player can join this game instance.
     if (this.gameState != "0 JOINED" && this.gameState != "1 JOINED") {
         return new Error("Invalid call to addPlayer, current state is %s", this.gameState);
     }

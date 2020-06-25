@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 });
 app.get("/", (req,res)=>{
     //creating cookie for the home page
-    res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", {signed:true});
+    res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", { signed:true });
     res.send();
 })
 
@@ -32,7 +32,7 @@ app.get("/", (req,res)=>{
 app.get("/play", indexRouter);
 app.get("/play", (req,res)=>{
 	//creating a cookie that expires over 10 minutes when game page is accessed
-    res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", {signed:true, httpOnly:true,expires:new Date(Date.now()+600000)});
+    res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { signed:true, httpOnly:true, expires:new Date(Date.now()+600000)});
     res.send();
 });
 
@@ -42,7 +42,8 @@ var server = http.createServer(app);
 //creating webSocket Server
 const wss = new websocket.Server({ server });
 
-var websockets = {};            //websockets object -> property: websocket, value: game
+//websockets object -> property: websocket, value: game
+var websockets = {};
 
 // cleaning up the websockets object every 50 seconds
 setInterval(function() {
@@ -50,19 +51,19 @@ setInterval(function() {
         if(websockets.hasOwnProperty(i)){
             let gameObj = websockets[i];
             //if the gameObj has a final status, the game is complete/aborted
-            if(gameObj.finalStatus!=null){
-                console.log("\tDeleting element "+i);
+            if(gameObj.finalStatus != null){
+                console.log("\tDeleting element "+ i);
                 delete websockets[i];
             }
         }
-    } 
+    }
 }, 50000);
 
 var currentGame = new Game(gameStatus.gamesInitialized++); //making a game object and indicating a game has been initialized/ongoing (when player is assigned to a game object)
 var connectionID = 0;                                       //givig each websocket a unique connection ID
 
 wss.on("connection", function connection(ws) {
-    console.log("I am in wss.on");
+    console.log(`I am in wss.on with following ws: ${ws}`);
     let con = ws;                                //binding the connected client/user (which is the param of the callback function) to a constant called con
     con.id = connectionID++;                     //assigning the current connected player an ID and increment the ID afterwards 
     let playerType = currentGame.addPlayer(con); // adding the current websocket of this specific client/player to its game object (see game.js for the function instructions)
@@ -176,9 +177,5 @@ wss.on("connection", function connection(ws) {
         }
     });
 });
-
-
-
-
 
 server.listen(port);

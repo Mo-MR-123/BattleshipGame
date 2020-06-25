@@ -14,7 +14,8 @@ function GameState(socket){
         [0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0]
-        ];
+    ];
+    
     console.log(this.array); //test the array
     this.playerType = null; //Instantiate new player
     this.MAX_HITS = 17;     //Max hits is 17 (5x1 + 4x1 + 3x2 + 2x1)

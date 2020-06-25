@@ -1,0 +1,71 @@
+@import 'Style.css';
+
+#content {
+	background-color: rgba(248, 218, 218, 0.5);
+	height:80%;
+}
+
+#left{
+	width: 15%;
+	float: left;
+}
+
+#top{
+	margin-top: 40%;
+	margin-left: 5%;
+}
+
+#bottom{
+	margin-top: 100%;
+	margin-left: 5%;
+}
+
+#middle{
+	width:80%;
+	margin: auto;
+	text-align: center;
+	height: 100%;
+	background: url("../images/world.png");
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#right{
+	width: 5%;
+	float: right;
+}
+
+#nav{
+	height: 8%;
+	width:100%;
+	background: rgba(122, 102, 179, 0.9);
+	font-weight:600;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 100%;
+	color: rgb(151, 2, 2);
+}
+
+button:hover{
+	background-color: rgba(150, 0, 0, 0.7);
+	cursor: pointer;
+}
+
+button {
+	background-color: rgb(49, 31, 207);
+	padding: 14px 25px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	color: white;
+}
+
+/* removed ::before on peopleplaying and peopleonline they are not needed */
+
+#splash_logo{ 
+	
+	height: 70px; 
+	width: auto;
+	vertical-align: middle;
+
+}

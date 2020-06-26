@@ -15,11 +15,18 @@ var game = function (gameID) {
 
 // function to create board
 game.prototype.createGrid = function (width=this.gridWidthTiles, height=this.gridHeightTiles) {
+    // create row
     let column = new Array(width);
+    for (let k = 0; k < width; k++) {
+        column[k] = 0;
+    }
+
+    // add rows to grid
     let grid = [];
     for (let c = 0; c < height; c++) {
         grid.push(column);
     }
+
     return grid;
 }
 //different states of the game

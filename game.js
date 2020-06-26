@@ -1,12 +1,27 @@
 /* every game has two players, identified by their WebSocket */
+
+// constructor for the game object
 var game = function (gameID) {
     this.playerA = null;
     this.playerB = null;
+    this.gridWidthTiles = 10;
+    this.gridHeightTiles = 10;
+    this.playerAGrid = null;
+    this.playerBGrid = null;
     this.id = gameID;
     this.gameJoinedFirst = false; //first player to join the game, is able to start first so the timer can begin
     this.gameState = "0 JOINED"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
 };
 
+// function to create board
+game.prototype.createGrid = function (width=this.gridWidthTiles, height=this.gridHeightTiles) {
+    let column = new Array(width);
+    let grid = [];
+    for (let c = 0; c < height; c++) {
+        grid.push(column);
+    }
+    return grid;
+}
 //different states of the game
 game.prototype.transitionStates = {};
 game.prototype.transitionStates["0 JOINED"] = 0;
@@ -84,7 +99,7 @@ game.prototype.hasTwoConnectedPlayers = function () {
 game.prototype.addPlayer = function (player) {
 
     // when a player connects to the game scoket, the game needs to be either in 1 JOINED state 
-    //(which means this new player is 2nd player to join the game)
+    // (which means this new player is 2nd player to join the game)
     // OR the game needs to be in ) 0 JOINED state which means that this player is the 1st player to join this game.
     // This means if game state is 2 JOINED then no player can join this game instance.
     if (this.gameState != "0 JOINED" && this.gameState != "1 JOINED") {

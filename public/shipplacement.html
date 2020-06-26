@@ -1,3 +1,8 @@
+<!-- TODO: This page needs to be shown before "game.html" -->
+<!-- This page is for the player to place all the ships on the board -->
+<!-- before going into the game with another player -->
+<!-- NOTE: when the player place all ships and is the first one to join a game -->
+<!-- then a waiting screen needs to be shown until another player joins the game -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,13 +20,6 @@
    <main class="main">
 	<div class="body"> 
 		<header class="header">
-						
-			<!-- <h4 id="timertext2">TIMER:</h4>
-			<div id="timertext">30</div> -->
-			
-			<!-- the text "seconds left" must be visible only when the game starts (so when opponents are found)  -->
-			<!-- <h4 id="timer">seconds</h4>
-			<h4 id="timer">left</h4> -->
 
 			<input id="fullscreen" src="images/expand.png" action="openFullscreen();" type="image">
 			<h2><image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">BATTLESHIP V</h2>
@@ -33,316 +31,18 @@
 		</div>
 		
 		<div class="battlefield">
-			<div class="Scoreboard">
-				<div id="ScoreSelf">
-					<h4>Player A Hits:</h4>
-					<h4 id="hitsself">0</h4>
-				</div>
-				<div id="ScoreRival">
-					<h4>Player B Hits:</h4>
-					<h4 id="hitsrival">0</h4>
-				</div>
+			<div id="roster-sidebar">
+						<h4>Place all the ships on the grid</h4>
+						
+						<button id="patrolboat">Patrol Boat = 2 Tiles</button></br>
+						<button id="submarine">Submarine = 3 Tiles</button></br>
+						<button id="destroyer">Destroyer = 3 Tiles</button></br>
+						<button id="battleship">Battleship = 4 Tiles</button></br>
+						<button id="carrier">Aircraft Carrier = 5 Tiles</button></br>
+						<!-- <button id="rotate-button" data-direction="0">Rotate Ship</button> -->
+						<button id="startgamebutton" value="START" disabled>Start Game</button>
 			</div>
 			
-			<h4 id="playerb_tag">Player B</h4>
-			<div class="battlefield_rival">
-
-				<table class="battlefield_rival_table">
-					<tbody>
-					 
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">
-							</td>
-							<td class="battlefield_cell0">A
-							</td>
-							<td class="battlefield_cell0">B
-							</td>
-							<td class="battlefield_cell0">C
-							</td>			
-							<td class="battlefield_cell0">D
-							</td>
-							<td class="battlefield_cell0">E
-							</td>
-							<td class="battlefield_cell0">F
-							</td>
-							<td class="battlefield_cell0">G
-							</td>
-							<td class="battlefield_cell0">H
-							</td>
-							<td class="battlefield_cell0">I
-							</td>
-							<td class="battlefield_cell0">J
-							</td>
-
-					 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">1
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="0">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="0">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="0">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="0">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="0">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="0">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="0">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="0">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="0">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="0">
-							</td>
-	
-						 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">2
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="1">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="1">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="1">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="1">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="1">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="1">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="1">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="1">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="1">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="1">
-							</td>
-
-
-						 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">3
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="2">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="2">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="2">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="2">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="2">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="2">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="2">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="2">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="2">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="2">
-							</td>
-
-					 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">4
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="3">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="3">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="3">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="3">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="3">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="3">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="3">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="3">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="3">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="3">
-							</td>
-
-						 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">5
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="4">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="4">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="4">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="4">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="4">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="4">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="4">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="4">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="4">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="4">
-							</td>
-
-					 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">6
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="5">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="5">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="5">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="5">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="5">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="5">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="5">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="5">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="5">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="5">
-							</td>
-
-						 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">7
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="6">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="6">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="6">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="6">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="6">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="6">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="6">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="6">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="6">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="6">
-							</td>
-
-					 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">8
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="7">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="7">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="7">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="7">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="7">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="7">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="7">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="7">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="7">
-							</td>
-
-						 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">9
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="8">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="8">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="8">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="8">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="8">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="8">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="8">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="8">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="8">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="8">
-							</td>
-		
-					 
-						</tr>
-						<tr class="battlefield_row">
-							<td class="battlefield_cell0">10
-							</td>
-							<td class="battlefield_cell" data-x="0" data-y="9">
-							</td>
-							<td class="battlefield_cell" data-x="1" data-y="9">
-							</td>
-							<td class="battlefield_cell" data-x="2" data-y="9">
-							</td>		
-							<td class="battlefield_cell" data-x="3" data-y="9">
-							</td>
-							<td class="battlefield_cell" data-x="4" data-y="9">
-							</td>
-							<td class="battlefield_cell" data-x="5" data-y="9">
-							</td>
-							<td class="battlefield_cell" data-x="6" data-y="9">
-							</td>
-							<td class="battlefield_cell" data-x="7" data-y="9">
-							</td>
-							<td class="battlefield_cell" data-x="8" data-y="9">
-							</td>
-							<td class="battlefield_cell" data-x="9" data-y="9">
-							</td>
-				
-						 
-						</tr>		
-					</tbody>
-					
-				</table>
-			</div>
-			
-			<h4 id="playera_tag"> Player A </h4>
 			<div class="battlefield_self">
 			
 				<table class="battlefield_self_table">
@@ -663,7 +363,9 @@
 </footer>
 <!-- below we place the needed scripts to establish Webscoket, max hits etc...  -->
 <script src="javascripts/FullScreen.js" type="text/javascript"></script>
+<script type="text/javascript" src="javascripts/startbutton.js" id="startbuttonscript"></script>
 <!-- <script type="text/javascript" src="javascripts/timer.js" ></script> -->
+<script type="text/javascript" src="javascripts/ShipPlacement.js" id="shipplacement"></script>
 
 </body>
 

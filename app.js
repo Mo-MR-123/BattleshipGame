@@ -8,7 +8,7 @@ var indexRouter = require("./routes/index")
 var Game = require("./game");
 var messages = require("./public/javascripts/messages");
 
-var port = process.argv[2];
+var port = process.argv[2] || 3000;
 var app = express();
 
 //use the secret cookie
@@ -22,15 +22,18 @@ app.use(express.static(__dirname + "/public"));
 app.get("/", (req, res) => {
     res.render("splash.ejs", { exitedGames: gameStatus.gamesExited, gamesInitialized: gameStatus.gamesInit, gamesCompleted: gameStatus.gamesComplete});
 });
-app.get("/", (req,res)=>{
+app.get("/", (req, res)=>{
     //creating cookie for the home page
     res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", { signed:true });
     res.send();
 })
 
-//transporting the user to the game page when the "play" button has been clicked
+// html file for placing the ships before starting the game
+app.get("/place-ships", indexRouter);
+
+// transporting the user to the game page when the "play" button has been clicked
 app.get("/play", indexRouter);
-app.get("/play", (req,res)=>{
+app.get("/play", (req, res)=>{
 	//creating a cookie that expires over 10 minutes when game page is accessed
     res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { signed:true, httpOnly:true, expires:new Date(Date.now()+600000)});
     res.send();
@@ -63,7 +66,7 @@ var currentGame = new Game(gameStatus.gamesInitialized++); //making a game objec
 var connectionID = 0;                                       //givig each websocket a unique connection ID
 
 wss.on("connection", function connection(ws) {
-    console.log(`I am in wss.on with following ws: ${ws}`);
+    console.log(`I am in wss.on with following ws: `, ws);
     let con = ws;                                //binding the connected client/user (which is the param of the callback function) to a constant called con
     con.id = connectionID++;                     //assigning the current connected player an ID and increment the ID afterwards 
     let playerType = currentGame.addPlayer(con); // adding the current websocket of this specific client/player to its game object (see game.js for the function instructions)

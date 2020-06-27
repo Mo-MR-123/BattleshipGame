@@ -27,7 +27,7 @@
 		</header>
 		
 		<div class="notifications">
-				<span class="marquee" id="notification">No Notifications</span>
+				<span class="marquee" id="notification">Place the ships on the grid</span>
 		</div>
 		
 		<div class="battlefield">
@@ -40,7 +40,9 @@
 						<button id="battleship">Battleship = 4 Tiles</button></br>
 						<button id="carrier">Aircraft Carrier = 5 Tiles</button></br>
 						<!-- <button id="rotate-button" data-direction="0">Rotate Ship</button> -->
-						<button id="startgamebutton" value="START" disabled>Start Game</button>
+						<form action="/play" method="get">
+							<button id="startgamebutton" type="submit">Start Game</button>
+						</form>
 			</div>
 			
 			<div class="battlefield_self">
@@ -363,7 +365,6 @@
 </footer>
 <!-- below we place the needed scripts to establish Webscoket, max hits etc...  -->
 <script src="javascripts/FullScreen.js" type="text/javascript"></script>
-<script type="text/javascript" src="javascripts/startbutton.js" id="startbuttonscript"></script>
 <!-- <script type="text/javascript" src="javascripts/timer.js" ></script> -->
 <script type="text/javascript" src="javascripts/ShipPlacement.js" id="shipplacement"></script>
 

@@ -94,7 +94,7 @@ function GameState(socket){
     };
 
     //here the shots are registered of the players and sent to the server and winner check is executed
-    this.updateGame = function(clickedTile){
+    this.updateGame = function(clickedTile) {
 
         //check if the clicked tile coordinates is in the array of player b; if yes, then increment hitcounter player a 
         if(this.playerType == "A"){
@@ -190,28 +190,25 @@ function disableTilesForB() {
             //setting player type
             gamestate.setPlayerType( incomingMsg.data );//should be "A" or "B"
 
-            //if player type is A, (1) pick a word, and (2) sent it to the server
+            // TODO: if player type is A 
+            // (1) show that it is player A turn in the notification
+            // (2) when tile is clicked -> sent it to server -> block tile selection for player A
             if (gamestate.getPlayerType() == "A") {
                 
-
                 alert("Player A. Please place your ships on the fleet.");
-                let maxShipsPlacement = 17;
-                let res = null;
-                ShipPlacement();
-
-              
+                // TODO: why is this method here? it does not exist!
+                // ShipPlacement();
             }
 
             else { //otherwise it is player b
-                ShipPlacement();
+                // TODO: why is this method here? it does not exist!
+                // ShipPlacement();
             }
         }
 
         //Player B: when player b makes a shot
         if( incomingMsg.type == Messages.T_MAKE_A_SHOT && gamestate.getPlayerType() == "B"){
             gamestate.checkTile(incomingMsg.data);
-
-            
         }
 
         //Player A: when player a makes a shot

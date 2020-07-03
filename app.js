@@ -62,7 +62,7 @@ setInterval(function() {
     }
 }, 50000);
 
-var currentGame = new Game(gameStatus.gamesInitialized++); //making a game object and indicating a game has been initialized/ongoing (when player is assigned to a game object)
+var currentGame = new Game(gameStatus.gamesInit++); //making a game object and indicating a game has been initialized/ongoing (when player is assigned to a game object)
 var connectionID = 0;                                       //givig each websocket a unique connection ID
 
 wss.on("connection", function connection(ws) {
@@ -71,7 +71,7 @@ wss.on("connection", function connection(ws) {
     con.id = connectionID++;                     //assigning the current connected player an ID and increment the ID afterwards 
     let playerType = currentGame.addPlayer(con); // adding the current websocket of this specific client/player to its game object (see game.js for the function instructions)
     websockets[con.id] = currentGame;            //assigning the connectionID of every player to its game object to track the states of specific player
-
+   
     //confirmation of beginning of a new game
     console.log("Player %s placed in game %s as %s", con.id, currentGame.id, playerType);
 
@@ -86,8 +86,8 @@ wss.on("connection", function connection(ws) {
      * client B receives the target word (if already available)
      */ 
     if(playerType == "B"){
-        let msg = messages.O_TARGET_WORD;
-        msg.data = currentGame; //todo: implement what player b receives
+        let msg = messages.S_PLAYER_B;
+        //TODO: implement what player b receives
         con.send(JSON.stringify(msg));
     }
 

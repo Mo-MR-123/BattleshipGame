@@ -29,6 +29,19 @@ game.prototype.createGrid = function (width=this.gridWidthTiles, height=this.gri
 
     return grid;
 }
+
+// check if the given grid has 17 1's values (which means all ships are on the grid)
+game.prototype.isValidGrid = function (grid) {
+    let counter = 0
+    for(let i = 0; i < grid.length; i++){
+        for(let j = 0 ; j < grid[i].length; j++){
+          counter += grid[i][j];
+        }
+    }
+    
+    return (counter == 17 ? true : false);
+}
+
 //different states of the game
 game.prototype.transitionStates = {};
 game.prototype.transitionStates["0 JOINED"] = 0;

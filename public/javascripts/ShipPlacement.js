@@ -1,4 +1,96 @@
+"use strict";
+// TODO: generalize generateGrid method to be able to add grids for multiple players
+// NOTE: generateGrid generates only grid of player A in following format ->
 
+
+{
+/*  <tbody>
+
+    <tr class="battlefield_row">
+        <td class="battlefield_cell2">
+        </td>
+        <td class="battlefield_cell2">A
+        </td>
+        <td class="battlefield_cell2">B
+        </td>
+        <td class="battlefield_cell2">C
+        </td>			
+        <td class="battlefield_cell2">D
+        </td>
+        <td class="battlefield_cell2">E
+        </td>
+        <td class="battlefield_cell2">F
+        </td>
+        <td class="battlefield_cell2">G
+        </td>
+        <td class="battlefield_cell2">H
+        </td>
+        <td class="battlefield_cell2">I
+        </td>
+        <td class="battlefield_cell2">J
+        </td>
+    </tr>
+
+    <tr class="battlefield_row">
+        <td class="battlefield_cell2">1
+        </td>
+        <td class="battlefield_cell1" data-x="0" data-y="0">
+        </td>
+        <td class="battlefield_cell1" data-x="1" data-y="0">
+        </td>
+        <td class="battlefield_cell1" data-x="2" data-y="0">
+        </td>			
+        <td class="battlefield_cell1" data-x="3" data-y="0">
+        </td>
+        <td class="battlefield_cell1" data-x="4" data-y="0">
+        </td>
+        <td class="battlefield_cell1" data-x="5" data-y="0">
+        </td>
+        <td class="battlefield_cell1" data-x="6" data-y="0">
+        </td>
+        <td class="battlefield_cell1" data-x="7" data-y="0">
+        </td>
+        <td class="battlefield_cell1" data-x="8" data-y="0">
+        </td>
+        <td class="battlefield_cell1" data-x="9" data-y="0">
+        </td>
+    </tr> 
+
+    .
+    .
+    .
+    
+    <tr class="battlefield_row">
+        <td class="battlefield_cell2">10
+        </td>
+        <td class="battlefield_cell1" data-x="0" data-y="9">
+        </td>
+        <td class="battlefield_cell1" data-x="1" data-y="9">
+        </td>
+        <td class="battlefield_cell1" data-x="2" data-y="9">
+        </td>			
+        <td class="battlefield_cell1" data-x="3" data-y="9">
+        </td>
+        <td class="battlefield_cell1" data-x="4" data-y="9">
+        </td>
+        <td class="battlefield_cell1" data-x="5" data-y="9">
+        </td>
+        <td class="battlefield_cell1" data-x="6" data-y="9">
+        </td>
+        <td class="battlefield_cell1" data-x="7" data-y="9">
+        </td>
+        <td class="battlefield_cell1" data-x="8" data-y="9">
+        </td>
+        <td class="battlefield_cell1" data-x="9" data-y="9">
+        </td>
+    </tr>
+
+    </tbody>
+    
+    */
+}
+
+// the array to be filled by current player
 var arr = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
@@ -12,15 +104,101 @@ var arr = [
     [0,0,0,0,0,0,0,0,0,0]
 ];
 
- //Checks which tile the player has clicked and returns the coordinate of it
+// tile clicked counter
+var placeCounter = 0;
+
+/* return the next character of the current char "c" in the ASCII ordering/ecnoding */
+function nextChar(c) {
+    return String.fromCharCode(c.charCodeAt(0) + 1);
+}
+
+function generateGrid(cols=10, rows=10) {
+    // create tbody element to be added to table element
+    let tbody = document.createElement('tbody');
+
+    // append initial row with alphabetical letters
+    let firstBattlefieldRow = document.createElement("tr");
+    firstBattlefieldRow.setAttribute("class", "battlefield_row");
+    let blankTile = document.createElement("td");
+    blankTile.setAttribute("class", "battlefield_cell2");
+    firstBattlefieldRow.appendChild(blankTile);
+    
+    let firstLetter = 'A';
+
+    for (let alpha = 0; alpha < cols; alpha++) {
+        let currCol = document.createElement("td");
+        currCol.setAttribute("class", "battlefield_cell2");
+        
+        // add letter A in the beginning and after add next letter in ASCII encoding
+        if (alpha == 0) {
+            const textOfCol = document.createTextNode(firstLetter);
+            currCol.appendChild(textOfCol);
+        } else {
+            firstLetter = nextChar(firstLetter);
+            const textOfColAlternative = document.createTextNode(firstLetter);
+            currCol.appendChild(textOfColAlternative);
+        }
+        
+        firstBattlefieldRow.appendChild(currCol);
+    }
+
+    // add first row of grid to tbody
+    tbody.appendChild(firstBattlefieldRow);
+
+    // create clickable rows and column tiles
+    for (let row = 0; row < rows; row++) {
+        const rowNumber = row + 1;
+
+        let currRow = document.createElement("tr");
+        currRow.setAttribute("class", "battlefield_row");
+
+        // create row number tile
+        let rowNumberTile = document.createElement("td");
+        const rowNumAsText = document.createTextNode(rowNumber.toString());
+        rowNumberTile.setAttribute("class", "battlefield_cell2");
+        rowNumberTile.appendChild(rowNumAsText);
+
+        // add row number tile to the current row
+        currRow.appendChild(rowNumberTile);
+
+        // create the clickable tiles
+        const rowNumString = row.toString()
+        for (let col = 0; col < cols; col++) {
+            let rowTile = document.createElement("td");
+            rowTile.setAttribute("class", "battlefield_cell1");
+            rowTile.setAttribute("data-x", col.toString());
+            rowTile.setAttribute("data-y", rowNumString);
+
+            currRow.appendChild(rowTile);
+        }
+
+        // add current row to tbody
+        tbody.appendChild(currRow);
+    }
+
+    // lastely, add the tbody in the existing table of the player
+    document.getElementById("tableA").appendChild(tbody);
+}
+
+
+ // when the DOM creation is finished, do the following: 
  $(document).ready(() => {
+
+    // generate the grid once
+    generateGrid();
+
     var cell = ".battlefield_cell1"; 
     var x;  
     var y;     
-    var placeCounter = 0;
                 
     $(cell).click((e)=>{
-                    
+        console.log(e.target.getAttribute("style"))
+        // check if max. possible tiles has been reached and current clicked tile is not green (not clicked before)
+        if (placeCounter == 17 && !e.target.getAttribute("style")) {
+            alert("Maximum tile selection of 17 has been reached. No more tiles can be added.")
+            return;
+        }
+
         x = $(e.target).data('x');
         y = $(e.target).data('y');
 

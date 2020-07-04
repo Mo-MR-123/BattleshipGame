@@ -65,7 +65,7 @@ setInterval(function() {
     }
 }, 50000);
 
-var currentGame = new Game(gameStatus.gamesInit++); //making a game object and indicating a game has been initialized/ongoing (when player is assigned to a game object)
+var currentGame = new Game(0); //making a game object and indicating a game has been initialized/ongoing (when player is assigned to a game object)
 var connectionID = 0;                                       //givig each websocket a unique connection ID
 
 wss.on("connection", function connection(ws) {
@@ -86,9 +86,10 @@ wss.on("connection", function connection(ws) {
     con.send((playerType == "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
 
     /*
+     * TODO: check if we even need the below if statement
      * client B receives the target word (if already available)
      */ 
-    if(playerType == "B"){
+    if (playerType == "B") {
         let msg = messages.S_PLAYER_B;
         //TODO: implement what player b receives
         con.send(JSON.stringify(msg));
@@ -96,11 +97,11 @@ wss.on("connection", function connection(ws) {
 
     /*
      * once we have two players, there is no way back; 
-     * a new game object is created;
+     * a new game object is created, to start a new game for another 2 players;
      * if a player now leaves, the game is aborted (player is not preplaced)
      */ 
     if (currentGame.hasTwoConnectedPlayers()) {
-        currentGame = new Game(gameStatus.gamesInitialized++);
+        currentGame = new Game(gameStatus.gamesInit++);
     }
 
     /*

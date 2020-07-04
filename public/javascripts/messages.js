@@ -1,5 +1,5 @@
 //messages to let the server and the client communicate with each other 
-(function(exports){
+(function(exports) {
 
     /* 
      * Client to server: game is complete, the winner is ... 
@@ -7,7 +7,8 @@
     exports.T_GAME_WON_BY = "GAME-WON-BY";             
     exports.O_GAME_WON_BY = {
         type: exports.T_GAME_WON_BY,
-        data: null
+        //this needs to be replaced with which player won
+        data: null 
     };
 
     /*
@@ -45,7 +46,8 @@
     exports.T_MAKE_A_SHOT = "CLICK-ON-TILE";         
     exports.O_MAKE_A_SHOT = {
         type: exports.T_MAKE_A_SHOT,
-        data: null
+        // this needs to be replace with which player shot (not here but when a tile is actually clicked)
+        data: null 
     };
 
     /* 

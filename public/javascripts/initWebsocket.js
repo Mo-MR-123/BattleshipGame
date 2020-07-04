@@ -42,68 +42,19 @@ function GameState(socket) {
         }                        
 
         return null; //nobody won yet
-    };   
-
-    //function for ship placement
-    this.ShipPlacement = ()=>{
-        var cell; 
-        var x;  
-        var y;     
-        var placeCounter = 0;
-        if(this.playerType == "A"){ cell = "#battlefield_cell1";    disableTilesForB();}
-        else { cell =  "#battlefield_cell";    disableTilesForA();}
-                    
-        $(cell).click((e)=>{
-                        
-            x = $(e.target).data('x');
-            y = $(e.target).data('y');
-            if(this.array[x][y] == 1){
-                alert("You already placed a ship here! Try another tile.");
-                return;
-            }
-            else{
-                    this.array[x][y] = 1;
-                    e.target.style.background = 'green';
-                    console.log("Player:  has clicked on coordinates (" + x + "," + y + ").");
-                    placeCounter++;
-                    switch(placeCounter){
-                                case 17:
-                                    $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Click start!</span>");
-                                    $('#startgamebutton').replaceWith("<button id=\"startgamebutton\" value=\"START\">Start Game</button>");
-                                    break;
-                                case 15:
-                                    $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place now a ship of 2 Tiles</span>");
-                                    break;
-                                case 12:
-                                    $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place now another ship of 3 Tiles</span>");
-                                    break;
-                                case 9:
-                                    $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place now a ship of 3 Tiles</span>");
-                                    break;
-                                case 5:
-                                    $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place now aship of 3 Tiles</span>");
-                                    break;
-                                case 0: 
-                                    $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place now a ship of 5 Tiles</span>");
-                                    break;
-                                }; 
-                    }
-                });
-            
-    
     };
 
     //here the shots are registered of the players and sent to the server and winner check is executed
-    this.updateGame = function(clickedTile) {
+    this.updateGame = function (clickedTile) {
 
         //check if the clicked tile coordinates is in the array of player b; if yes, then increment hitcounter player a 
-        if(this.playerType == "A"){
+        if (this.playerType == "A") {
             var clickedtiledata = Messages.O_MAKE_A_SHOT.data;
             socket.send(clickedtiledata);
         }
         
         //vice vera
-        if(this.playerType == "B"){
+        if (this.playerType == "B") {
             socket.send(clickedTile);
         }
 
@@ -117,7 +68,8 @@ function GameState(socket) {
             disableTilesForB();
             
             let alertString;
-            if( winner == "A"){
+
+            if (winner == "A") {
                 alertString = "Player A won the game!";
             }
             else {
@@ -171,15 +123,12 @@ function disableTilesForB() {
 
 
 //set everything up, including the WebSocket
-(function setup(){
+(function setup() {
     //this makes connection with the websocket in app.js and executes the code there first
     //after the connection execution it continues here
     var socket = new WebSocket("ws://localhost:3000");
     
-// the GameState object coordinates everything
-    
-
-
+    // the GameState object coordinates everything
     var gamestate = new GameState(socket);
 
     socket.onmessage = function (event) {
@@ -188,14 +137,15 @@ function disableTilesForB() {
  
         if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
             //setting player type
-            gamestate.setPlayerType( incomingMsg.data );//should be "A" or "B"
+            //should be "A" or "B"
+            gamestate.setPlayerType( incomingMsg.data );
 
             // TODO: if player type is A 
             // (1) show that it is player A turn in the notification
             // (2) when tile is clicked -> sent it to server -> block tile selection for player A
             if (gamestate.getPlayerType() == "A") {
                 
-                alert("Player A. Please place your ships on the fleet.");
+                alert("You are assigned as Player A. Please wait for a player to join before the game can start.");
                 // TODO: why is this method here? it does not exist!
                 // ShipPlacement();
             }
@@ -203,6 +153,11 @@ function disableTilesForB() {
             else { //otherwise it is player b
                 // TODO: why is this method here? it does not exist!
                 // ShipPlacement();
+
+                // redirecting players to the page where the game starts
+                const currentURL = window.location.href.split('/');
+                const baseURL = currentURL[0]; 
+                window.location.replace(baseURL + '/play');
             }
         }
 
@@ -224,7 +179,7 @@ function disableTilesForB() {
     
     //server sends a close event only if the game was aborted from some side
     socket.onclose = function(){
-        if(gamestate.whoWon()==null){
+        if(gamestate.whoWon() == null){
            alert("ABORTED! Nobody won!");
         }
     };

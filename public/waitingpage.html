@@ -7,6 +7,7 @@
 
         <title>Battleship V: Battle Royale Edition</title>
         <link rel="stylesheet" type="text/css" href = "stylesheets/game.css">   
+        <link rel="stylesheet" type="text/css" href = "stylesheets/waitingpage.css">   
         <link rel="shortcut icon" type="image/png" href="images/favi.png">
         <script type="text/javascript" src="javascripts/jquery.js"></script>
         
@@ -24,22 +25,15 @@
                 <h2><image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">BATTLESHIP V</h2>
             </header>
 
-            <div class="battlefield">
-                <div class="container-fluid">
-                    <div class="row text-center">
-                      <div class="col">
-                        <img src="images/loading-gif.gif" class="loading-gif" />
-                      </div>
-                      <div class="w-100"></div>
-                      <div class="col">
-                        <span> Waiting for another player to join the game ... </span>
-                      </div>
+            <div class="battlefield d-flex align-items-center justify-content-center">
+                <div class="d-flex flex-column">  
+                    <div class="d-flex justify-content-center">
+                        <img src="images/loading-gif.gif" />
+                    </div>
+                    <div class="p-2">
+                        <p>Waiting for another player to join the game ...</p>
                     </div>
                 </div>
-                <!-- <div class="d-flex justify-content-center text-center">
-                    <img src="images/loading-gif.gif" class="loading-gif" />
-                    <span> Waiting for another player to join the game ... </span>
-                </div> -->
             </div>
         </div>
     </main>     

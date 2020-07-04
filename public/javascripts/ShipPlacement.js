@@ -90,6 +90,15 @@
     */
 }
 
+// html tags, ids and classes that are used to generate the grid
+var tbodyTag = 'tbody';
+var battlefieldRowClass = 'battlefield_row';
+var TileClassSecondPlayer = 'battlefield_cell2';
+var TileClassFirstPlayer = 'battlefield_cell1';
+
+// cell used to select tiles of player A grid
+var cell = ".battlefield_cell1";
+
 // the array to be filled by current player
 var arr = [
     [0,0,0,0,0,0,0,0,0,0],
@@ -114,20 +123,20 @@ function nextChar(c) {
 
 function generateGrid(cols=10, rows=10) {
     // create tbody element to be added to table element
-    let tbody = document.createElement('tbody');
+    let tbody = document.createElement(tbodyTag);
 
     // append initial row with alphabetical letters
     let firstBattlefieldRow = document.createElement("tr");
-    firstBattlefieldRow.setAttribute("class", "battlefield_row");
+    firstBattlefieldRow.setAttribute("class", battlefieldRowClass);
     let blankTile = document.createElement("td");
-    blankTile.setAttribute("class", "battlefield_cell2");
+    blankTile.setAttribute("class", TileClassSecondPlayer);
     firstBattlefieldRow.appendChild(blankTile);
     
     let firstLetter = 'A';
 
     for (let alpha = 0; alpha < cols; alpha++) {
         let currCol = document.createElement("td");
-        currCol.setAttribute("class", "battlefield_cell2");
+        currCol.setAttribute("class", TileClassSecondPlayer);
         
         // add letter A in the beginning and after add next letter in ASCII encoding
         if (alpha == 0) {
@@ -150,12 +159,12 @@ function generateGrid(cols=10, rows=10) {
         const rowNumber = row + 1;
 
         let currRow = document.createElement("tr");
-        currRow.setAttribute("class", "battlefield_row");
+        currRow.setAttribute("class", battlefieldRowClass);
 
         // create row number tile
         let rowNumberTile = document.createElement("td");
         const rowNumAsText = document.createTextNode(rowNumber.toString());
-        rowNumberTile.setAttribute("class", "battlefield_cell2");
+        rowNumberTile.setAttribute("class", TileClassSecondPlayer);
         rowNumberTile.appendChild(rowNumAsText);
 
         // add row number tile to the current row
@@ -165,7 +174,7 @@ function generateGrid(cols=10, rows=10) {
         const rowNumString = row.toString()
         for (let col = 0; col < cols; col++) {
             let rowTile = document.createElement("td");
-            rowTile.setAttribute("class", "battlefield_cell1");
+            rowTile.setAttribute("class", TileClassFirstPlayer);
             rowTile.setAttribute("data-x", col.toString());
             rowTile.setAttribute("data-y", rowNumString);
 
@@ -185,22 +194,18 @@ function generateGrid(cols=10, rows=10) {
  $(document).ready(() => {
 
     // generate the grid once
-    generateGrid();
-
-    var cell = ".battlefield_cell1"; 
-    var x;  
-    var y;     
-                
-    $(cell).click((e)=>{
-        console.log(e.target.getAttribute("style"))
+    generateGrid();   
+          
+    // if a tile is clicked the following happens everytime:
+    $(cell).click((e)=>{  
         // check if max. possible tiles has been reached and current clicked tile is not green (not clicked before)
         if (placeCounter == 17 && !e.target.getAttribute("style")) {
             alert("Maximum tile selection of 17 has been reached. No more tiles can be added.")
             return;
         }
 
-        x = $(e.target).data('x');
-        y = $(e.target).data('y');
+        let x = $(e.target).data('x');
+        let y = $(e.target).data('y');
 
         if (arr[y][x] == 1) {
             e.target.removeAttribute("style");
@@ -210,7 +215,7 @@ function generateGrid(cols=10, rows=10) {
         else {
             arr[y][x] = 1;
             e.target.style.background = 'green';
-            console.log("Player:  has clicked on coordinates (" + y + "," + x + ").");
+            // console.log("Player:  has clicked on coordinates (" + y + "," + x + ").");
             placeCounter++;
         }
 
@@ -234,10 +239,13 @@ function generateGrid(cols=10, rows=10) {
             case 0: 
                 $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Aircraft Carrier</b> on the grid</span>");
                 break;
+            default:
+                $('#startgamebutton').replaceWith("<button id=\"startgamebutton\" type=\"submit\" disabled>Start Game</button>");
+                break;
         }; 
 
-        console.log("PLACECOUNTER: " + placeCounter);
-        console.log(arr)
+        // console.log("PLACECOUNTER: " + placeCounter);
+        // console.log(arr)
 
     });
 

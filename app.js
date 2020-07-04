@@ -31,6 +31,9 @@ app.get("/", (req, res)=>{
 // html file for placing the ships before starting the game
 app.get("/place-ships", indexRouter);
 
+// waiting for other players
+app.get("/waiting-page", indexRouter);
+
 // transporting the user to the game page when the "play" button has been clicked
 app.get("/play", indexRouter);
 app.get("/play", (req, res)=>{

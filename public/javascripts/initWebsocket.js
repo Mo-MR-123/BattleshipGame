@@ -1,6 +1,6 @@
 /* constructor of game state */
 //gamestate of a player (which player of the two it is depends on the socket of theirs)
-function GameState(socket){
+function GameState(socket) {
 
     //initiate a new array for every player with a websocket
     this.array = [

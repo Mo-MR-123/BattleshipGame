@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-
-/* GET home page. */
 router.get('/place-ships', function(req, res) {
   res.sendFile('shipplacement.html', { root: './public' });
 });
 
+router.get('/waiting-page', function(req, res) {
+  res.sendFile('waitingpage.html', { root: './public' });
+});
 
 /* Pressing the 'START GAME' button, returns game page */
 router.get('/play', function(req, res) {

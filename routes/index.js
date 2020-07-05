@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/place-ships', function(req, res) {
-  res.sendFile('shipplacement.html', { root: './public' });
+  res.render('shipplacement', {gridDim: {rows:10, cols:10}});
+  // res.sendFile('shipplacement.html', { root: './public' });
 });
 
 router.get('/waiting-page', function(req, res) {

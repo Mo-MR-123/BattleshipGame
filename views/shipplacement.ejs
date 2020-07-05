@@ -1,0 +1,118 @@
+<!-- TODO: This page needs to be shown before "game.html" -->
+<!-- This page is for the player to place all the ships on the board -->
+<!-- before going into the game with another player -->
+<!-- NOTE: when the player place all ships and is the first one to join a game -->
+<!-- then a waiting screen needs to be shown until another player joins the game -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<title>Battleship V: Battle Royale Edition</title>   
+	<link rel = "stylesheet"type = "text/css" href = "stylesheets/game.css" />   
+	<script type="text/javascript" src="javascripts/jquery.js"> </script>
+	<link rel="shortcut icon" type="image/png" href="images/favi.png"/>
+	<!-- <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script> -->
+
+</head>
+    
+<body> 
+ <!-- =================================================================-->  
+   <main class="main">
+	<div class="body"> 
+		<header class="header">
+
+			<input id="fullscreen" src="images/expand.png" action="openFullscreen();" type="image">
+			<h2><image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">BATTLESHIP V</h2>
+				
+		</header>
+		
+		<div class="notifications">
+				<span class="marquee" id="notification">Place the <b>Aircraft Carrier</b> on the grid</span>
+		</div>
+		
+		<div class="battlefield">
+			<div id="roster-sidebar">
+						<h4>Place all the ships on the grid</h4>
+						
+						<button id="patrolboat">Patrol Boat = 2 Tiles</button></br>
+						<button id="submarine">Submarine = 3 Tiles</button></br>
+						<button id="destroyer">Destroyer = 3 Tiles</button></br>
+						<button id="battleship">Battleship = 4 Tiles</button></br>
+						<button id="carrier">Aircraft Carrier = 5 Tiles</button></br>
+						<!-- <button id="rotate-button" data-direction="0">Rotate Ship</button> -->
+						<form action="/waiting-page" method="get">
+							<button id="startgamebutton" type="submit" disabled>Start Game</button>
+						</form>
+			</div>
+			
+			<div class="battlefield_self">
+			
+				<table class="battlefield_self_table">
+                        <!-- here the grid is auto generated -->
+                        <%# return the next character of the current char "c" in the ASCII ordering/ecnoding %>
+                        <% 
+                            function nextChar(c) {
+                                return String.fromCharCode(c.charCodeAt(0) + 1);
+                            } 
+                        %>
+
+                        <% var currLetter = 'A' %>
+
+                        <tbody>
+                            <!-- Create the first row of letters for coordinates -->
+                            <tr class="battlefield_row">
+                                <td class="battlefield_cell2">
+                                </td>
+                                <td class="battlefield_cell2">
+                                    <%= currLetter %>
+                                </td>
+                                <% for(var i = 0; i < gridDim.cols - 1; i++) { %>
+                                    <td class="battlefield_cell2">
+                                      <% currLetter = nextChar(currLetter) %>
+                                      <%= currLetter %>
+                                    </td>
+                                 <% } %>
+                            </tr>
+
+                            <!-- Create the clickable tiles and the numbered rows for coordinates -->
+                            <% for (let row = 0; row < gridDim.rows; row++) { %>
+                                <tr class="battlefield_row">
+                                    <td class="battlefield_cell2">
+                                        <%= row + 1 %> 
+                                    </td>
+                                    <% for( let col = 0; col < gridDim.cols; col++ ) { %>
+                                        <td class="battlefield_cell1" data-x="<%= col %>"  data-y="<%= row %>">
+                                        </td>
+                                    <% } %>
+                                </tr>
+                            <% } %>
+                        
+                        </tbody>
+				</table>
+							
+			</div>
+		
+		</div>
+		
+    </div>	
+   </main>     
+ <!-- =================================================================-->
+ 
+ <footer id="footer">
+		<div id="l">&copy&nbspCopyright 2018  | All rights reserved. </div>
+		<div id="m">Support us on patreon!</div>
+		<div id="r">... we need the money...</div>
+</footer>
+<!-- below we place the needed scripts to establish Webscoket, max hits etc...  -->
+<script src="javascripts/FullScreen.js" type="text/javascript"></script>
+<!-- <script type="text/javascript" src="javascripts/timer.js" ></script> -->
+<script type="text/javascript" src="javascripts/ShipPlacement.js" id="shipplacement"></script>
+
+</body>
+
+
+</html>

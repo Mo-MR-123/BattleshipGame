@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 });
 app.get("/", (req, res)=>{
     //creating cookie for the home page
-    res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", { signed:true });
+    res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", { signed:false });
     res.send();
 })
 
@@ -38,7 +38,7 @@ app.get("/waiting-page", indexRouter);
 app.get("/play", indexRouter);
 app.get("/play", (req, res)=>{
 	//creating a cookie that expires over 10 minutes when game page is accessed
-    res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { signed:true, httpOnly:true, expires:new Date(Date.now()+600000)});
+    res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { signed:false, httpOnly:false, expires:new Date(Date.now()+600000)});
     res.send();
 });
 

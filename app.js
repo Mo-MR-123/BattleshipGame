@@ -65,11 +65,13 @@ setInterval(function() {
     }
 }, 50000);
 
-var currentGame = new Game(0); //making a game object and indicating a game has been initialized/ongoing (when player is assigned to a game object)
-var connectionID = 0;                                       //givig each websocket a unique connection ID
+// init a game object used to handle connection and logic of the game
+var currentGame = new Game(0);
+
+//givig each websocket a unique connection ID
+var connectionID = 0;                                       
 
 wss.on("connection", function connection(ws) {
-    console.log(`I am in wss.on with following ws: `, ws);
     let con = ws;                                //binding the connected client/user (which is the param of the callback function) to a constant called con
     con.id = connectionID++;                     //assigning the current connected player an ID and increment the ID afterwards 
     let playerType = currentGame.addPlayer(con); // adding the current websocket of this specific client/player to its game object (see game.js for the function instructions)
@@ -111,27 +113,21 @@ wss.on("connection", function connection(ws) {
      *  3. send the message to OP 
      */ 
     con.on("message", function incoming(message) {
-
         let oMsg = JSON.parse(message);
- 
         let gameObj = websockets[con.id];
         let isPlayerA = (gameObj.playerA == con) ? true : false;
 
         if (isPlayerA) {
-            
-            
-
-                if(gameObj.hasTwoConnectedPlayers()){
-                    gameObj.playerB.send(message); 
-                }                
-            
+            if (gameObj.hasTwoConnectedPlayers()) {
+                gameObj.playerB.send(message); 
+            }
         }
         else {
             /*
              * player B can shoot; 
              * this shot is forwarded to A
              */ 
-            if(oMsg.type == messages.T_MAKE_A_SHOT){
+            if (oMsg.type == messages.T_MAKE_A_SHOT) {
                 gameObj.playerA.send(message);
                 gameObj.setStatus("TILE SHOT");
             }
@@ -139,7 +135,7 @@ wss.on("connection", function connection(ws) {
             /*
              * player B can state who won/lost
              */ 
-            if( oMsg.type == messages.T_GAME_WON_BY){
+            if (oMsg.type == messages.T_GAME_WON_BY) {
                 gameObj.setStatus(oMsg.data);
                 //game was won by somebody, update statistics
                 gameStatus.gamesCompleted++;
@@ -150,12 +146,10 @@ wss.on("connection", function connection(ws) {
     con.on("close", function (code) {
         
         // code 1001 means almost always closing initiated by the client;
-
         console.log(con.id + " disconnected ...");
 
         if (code == "1001") {
             //if possible, abort the game; if not, the game is already completed
-            
             let gameObj = websockets[con.id];
 
             if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
@@ -163,7 +157,6 @@ wss.on("connection", function connection(ws) {
                 gameStatus.gamesExited++;
 
                 //determine whose connection remains open and close it
-                 
                 try {
                     gameObj.playerA.close();
                     gameObj.playerA = null;

@@ -1,32 +1,37 @@
-var express = require("express");
-var http = require("http");
-var websocket = require("ws");
-var cookies = require("cookie-parser");
-var credentials = require("./cookiecredential");
-var gameStatus = require("./games_tracker")
-var indexRouter = require("./routes/index")
-var Game = require("./game");
-var messages = require("./public/javascripts/messages");
+const express = require("express");
+const http = require("http");
+const sessionConfig = require('./sessionConfig');
+const session = require('express-session');
+const credentials = require("./cookiecredential");
+const gameStatus = require("./games_tracker")
+const indexRouter = require("./routes/index")
+const messages = require("./public/javascripts/messages");
+const Game = require("./game");
+const websocket = require("ws");
 
-var port = process.argv[2] || 3000;
-var app = express();
+const port = process.argv[2] || 3000;
+const app = express();
 
-//use the secret cookie
-app.use(cookies(credentials.cookieSecret));
+// init session middleware and the secret cookie
+app.use(session(sessionConfig));
+
+// with code below, the default folder to search for .ejs file can be changed
+// NOTE: default folder foe searching for .ejs files is "views" 
+// app.set('views', __dirname + '/views');
 
 //initializing the ejs engine
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
-//getting root file via routing
-app.get("/", (req, res) => {
-    res.render("splash.ejs", { exitedGames: gameStatus.gamesExited, gamesInitialized: gameStatus.gamesInit, gamesCompleted: gameStatus.gamesComplete});
-});
-app.get("/", (req, res)=>{
+// route to homepage and add homepage cookie
+app.get("/", (req, res, next) => {
     //creating cookie for the home page
-    res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", { signed:false });
-    res.send();
-})
+    res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", {
+         signed: false
+    });
+    next();
+});
+app.get("/", indexRouter);
 
 // html file for placing the ships before starting the game
 app.get("/place-ships", indexRouter);
@@ -35,20 +40,24 @@ app.get("/place-ships", indexRouter);
 app.get("/waiting-page", indexRouter);
 
 // transporting the user to the game page when the "play" button has been clicked
-app.get("/play", indexRouter);
-app.get("/play", (req, res)=>{
+app.get("/play", (req, res, next)=>{
 	//creating a cookie that expires over 10 minutes when game page is accessed
-    res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { signed:false, httpOnly:false, expires:new Date(Date.now()+600000)});
-    res.send();
+    res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { 
+        signed: false,
+        httpOnly: false,
+        expires: new Date(Date.now() + 600000)
+    });
+    next();
 });
+app.get("/play", indexRouter);
 
-
-var server = http.createServer(app);
+// creating the server to be able to run/use express
+const server = http.createServer(app);
 
 //creating webSocket Server
 const wss = new websocket.Server({ server });
 
-//websockets object -> property: websocket, value: game
+//websockets object -> property (= key): websocket, value: game
 var websockets = {};
 
 // cleaning up the websockets object every 50 seconds
@@ -77,8 +86,12 @@ wss.on("connection", function connection(ws) {
     let playerType = currentGame.addPlayer(con); // adding the current websocket of this specific client/player to its game object (see game.js for the function instructions)
     websockets[con.id] = currentGame;            //assigning the connectionID of every player to its game object to track the states of specific player
    
-    //confirmation of beginning of a new game
-    console.log("Player %s placed in game %s as %s", con.id, currentGame.id, playerType);
+    console.log(
+        "Player %s placed in game %s as %s",
+        con.id,
+        currentGame.id,
+        playerType
+    );
 
     //TODO: when the start button in the game page is clicked remove the script element of the ship placement and insert script for ship selection (gamelogic)
 

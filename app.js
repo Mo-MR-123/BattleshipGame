@@ -88,19 +88,11 @@ var currentGame = new Game(0);
 var connectionID = 0;                                       
 
 wss.on("connection", function connection(ws) {
-    /*
-     * if current game already has 2 players connected,
-     * then just make a new game and connect the new 2 players to it
-     */ 
-    if (currentGame.hasTwoConnectedPlayers()) {
-        currentGame = new Game(gameStatus.gamesInit++);
-    }
-
     let con = ws;                                //binding the connected client/user (which is the param of the callback function) to a constant called con
     con.id = connectionID++;                     //assigning the current connected player an ID and increment the ID afterwards 
     let playerType = currentGame.addPlayer(con); // adding the current websocket of this specific client/player to its game object (see game.js for the function instructions)
     websockets[con.id] = currentGame;            //assigning the connectionID of every player to its game object to track the states of specific player
-   
+                                                 // in other words: this maps the connectionID to the game it is connected to
     console.log(
         "Player %s placed in game %s as %s",
         con.id,
@@ -126,6 +118,14 @@ wss.on("connection", function connection(ws) {
     }
 
     /*
+     * if current game already has 2 players connected,
+     * then just make a new game and connect the new 2 players to it
+     */ 
+    if (currentGame.hasTwoConnectedPlayers()) {
+        currentGame = new Game(gameStatus.gamesInit++);
+    }
+
+    /*
      * message coming in from a player:
      *  1. determine the game object
      *  2. determine the opposing player OP
@@ -133,6 +133,7 @@ wss.on("connection", function connection(ws) {
      */ 
     con.on("message", function incoming(message) {
         let oMsg = JSON.parse(message);
+        // get the id of the connection that sent a message, to get game object linked to player this con.id
         let gameObj = websockets[con.id];
         let isPlayerA = (gameObj.playerA == con) ? true : false;
 

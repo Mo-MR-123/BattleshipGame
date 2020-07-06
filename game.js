@@ -1,11 +1,12 @@
-/* every game has two players, identified by their WebSocket */
+const gridDims = require('./gridDimension');
 
+/* every game has two players, identified by their WebSocket */
 // constructor for the game object
 var game = function (gameID) {
     this.playerA = null;
     this.playerB = null;
-    this.gridWidthTiles = 10;
-    this.gridHeightTiles = 10;
+    this.gridWidthTiles = gridDims.rows;
+    this.gridHeightTiles = gridDims.cols;
     this.playerAGrid = null;
     this.playerBGrid = null;
     this.id = gameID;

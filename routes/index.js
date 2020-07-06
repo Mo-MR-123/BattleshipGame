@@ -21,9 +21,13 @@ router.get('/waiting-page', function(req, res) {
 });
 
 /* Pressing the 'START GAME' button, returns game page */
-// TODO: make this with ejs to dynamically generate grid of both players
 router.get('/play', function(req, res) {
-  res.sendFile('game.html', { root: './public' }); 
+  res.render('game', {
+    gridDim: gridDim,
+    /* TODO: send to client the grid of each players but not the grid of the rival*/
+    /* as all checks of the rival grid is checked in the server side. Also make sure the grid is*/
+    /* assigned and set already in the game object.*/
+  });
 });
 
 // TODO:Pressing 'START' in the game page must start the game and lets the user click on the cells of the grid

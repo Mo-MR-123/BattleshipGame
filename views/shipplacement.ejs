@@ -52,7 +52,7 @@
 			<div class="battlefield_self">
 			
 				<table class="battlefield_self_table">
-                        <!-- here the grid is auto generated -->
+                        <%# here the grid is auto generated %>
                         <%# return the next character of the current char "c" in the ASCII ordering/ecnoding %>
                         <% 
                             function nextChar(c) {
@@ -63,7 +63,7 @@
                         <% var currLetter = 'A' %>
 
                         <tbody>
-                            <!-- Create the first row of letters for coordinates -->
+                            <%# Create the first row of letters for coordinates %>
                             <tr class="battlefield_row">
                                 <td class="battlefield_cell2">
                                 </td>
@@ -78,7 +78,7 @@
                                  <% } %>
                             </tr>
 
-                            <!-- Create the clickable tiles and the numbered rows for coordinates -->
+                            <%# Create the clickable tiles and the numbered rows for coordinates %>
                             <% for (let row = 0; row < gridDim.rows; row++) { %>
                                 <tr class="battlefield_row">
                                     <td class="battlefield_cell2">

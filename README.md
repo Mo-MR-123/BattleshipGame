@@ -7,7 +7,9 @@
 2. **BUG**: When "start game" is clicked after ship placement, and it is the second player that join (player B), then the socket is left and new socket connection is made which is not supposed to happen. When player B (2nd player) joins the game, the player should stay connected to the same socket and not create a new one. This Bug is caused because player B goes to a new page that has "initWebsocket.js" which makes a new connection. Player B should stay on the same page in which the "initWebsocket.js" is in and not go to anther page that also has that script. Solve this with EJS to auto-generate the grids depending on which player has connected to the websocket!
 
 **INFO ABOUT HOW BATTLESHIP IS PLAYED:**
+
 Rules for BattleShip (a Milton Bradley Game)
+
 _Game Objective_
 
 The objective of Battleship is to try and sink all of the other player's before they sink all of your ships. All of the other player's ships are somewhere on his/her board.  You try and hit them by calling out the coordinates of one of the squares on the board.  The other player also tries to hit your ships by calling out coordinates.  Neither you nor the other player can see the other's board so you must try to guess where they are.  Each board in the physical game has two grids:  the lower (horizontal) section for the player's ships and the upper part (vertical during play) for recording the player's guesses.

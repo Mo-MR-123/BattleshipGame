@@ -16,11 +16,11 @@
  */
 (function(exports) {
     exports.AMOUNT_HITS_WIN = 17; /* Amount of hits needed to win the game. NOTE: this is equivalent to  */
-    exports.DESTROYER = { id: 1, length: 2 }; /* Destoryer ship properties (ID is used when placed on the board) */
-    exports.SUBMARINE = { id: 2, length: 3 }; /* Submarine ship properties (ID is used when placed on the board) */
-    exports.CRUISER = { id: 3, length: 3 }; /* Cruiser ship properties (ID is used when placed on the board) */
-    exports.BATTLESHIP = { id: 4, length: 4 }; /* Battleship ship properties (ID is used when placed on the board) */
-    exports.CARRIER = { id: 5, length: 5 }; /* Carrier ship properties (ID is used when placed on the board) */
+    exports.DESTROYER = { id: 1, size: 2 }; /* Destoryer ship properties (ID is used when placed on the board) */
+    exports.SUBMARINE = { id: 2, size: 3 }; /* Submarine ship properties (ID is used when placed on the board) */
+    exports.CRUISER = { id: 3, size: 3 }; /* Cruiser ship properties (ID is used when placed on the board) */
+    exports.BATTLESHIP = { id: 4, size: 4 }; /* Battleship ship properties (ID is used when placed on the board) */
+    exports.CARRIER = { id: 5, size: 5 }; /* Carrier ship properties (ID is used when placed on the board) */
     exports.WEB_SOCKET_URL = "ws://localhost:3000"; /* WebSocket URL */
     exports.COLOR_HIT = "#FF0000"; /* Hexadecimial color shown when ship is hit on clicked tile */
     exports.COLOR_MISS = "#FFFFFF"; /* Hexadecimial color shown when no ship is hit on clicked tile */

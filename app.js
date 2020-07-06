@@ -12,8 +12,13 @@ const websocket = require("ws");
 const port = process.argv[2] || 3000;
 const app = express();
 
-// init session middleware and the secret cookie
+// init session middleware using specified config
 app.use(session(sessionConfig));
+
+// set extended to true, to be able to send JSON formatted data in any way we want it to be send
+// if extended is set to false, we can not post nested objects
+// e.g. person[name] = 'cw' is equivalent to nested object { person: { name: cw } }
+app.use(express.urlencoded({ extended: true }))
 
 // with code below, the default folder to search for .ejs file can be changed
 // NOTE: default folder foe searching for .ejs files is "views" 
@@ -27,7 +32,8 @@ app.use(express.static(__dirname + "/public"));
 app.get("/", (req, res, next) => {
     //creating cookie for the home page
     res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", {
-         signed: false
+        signed: false,
+        sameSite: true
     });
     next();
 });
@@ -45,6 +51,7 @@ app.get("/play", (req, res, next)=>{
     res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { 
         signed: false,
         httpOnly: false,
+        sameSite: true,
         expires: new Date(Date.now() + 600000)
     });
     next();
@@ -74,13 +81,21 @@ setInterval(function() {
     }
 }, 50000);
 
-// init a game object used to handle connection and logic of the game
+// init a game object used to handle connection and logic of the first game
 var currentGame = new Game(0);
 
 //givig each websocket a unique connection ID
 var connectionID = 0;                                       
 
 wss.on("connection", function connection(ws) {
+    /*
+     * if current game already has 2 players connected,
+     * then just make a new game and connect the new 2 players to it
+     */ 
+    if (currentGame.hasTwoConnectedPlayers()) {
+        currentGame = new Game(gameStatus.gamesInit++);
+    }
+
     let con = ws;                                //binding the connected client/user (which is the param of the callback function) to a constant called con
     con.id = connectionID++;                     //assigning the current connected player an ID and increment the ID afterwards 
     let playerType = currentGame.addPlayer(con); // adding the current websocket of this specific client/player to its game object (see game.js for the function instructions)
@@ -108,15 +123,6 @@ wss.on("connection", function connection(ws) {
         let msg = messages.S_PLAYER_B;
         //TODO: implement what player b receives
         con.send(JSON.stringify(msg));
-    }
-
-    /*
-     * once we have two players, there is no way back; 
-     * a new game object is created, to start a new game for another 2 players;
-     * if a player now leaves, the game is aborted (player is not preplaced)
-     */ 
-    if (currentGame.hasTwoConnectedPlayers()) {
-        currentGame = new Game(gameStatus.gamesInit++);
     }
 
     /*
@@ -204,4 +210,7 @@ app.use((error, req, res, next) => {
     res.render('error', { error: error.message })
 })
 
-server.listen(port);
+server.listen(port, function(err) {
+    if (err) throw err;
+    console.log(`Listening on port ${server.address().port}`)
+});

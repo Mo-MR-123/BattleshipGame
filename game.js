@@ -1,12 +1,12 @@
-const gridDims = require('./gridDimension');
+const shared = require('./public/javascripts/shared');
 
 /* every game has two players, identified by their WebSocket */
 // constructor for the game object
 var game = function (gameID) {
     this.playerA = null;
     this.playerB = null;
-    this.gridWidthTiles = gridDims.rows;
-    this.gridHeightTiles = gridDims.cols;
+    this.gridRows = shared.GRID_DIM.rows;
+    this.gridCols = shared.GRID_DIM.cols;
     this.playerAGrid = null;
     this.playerBGrid = null;
     this.id = gameID;
@@ -15,7 +15,7 @@ var game = function (gameID) {
 };
 
 // function to create board
-game.prototype.createGrid = function (width=this.gridWidthTiles, height=this.gridHeightTiles) {
+game.prototype.createGrid = function (width=this.gridRows, height=this.gridCols) {
     // create row
     let column = new Array(width);
     for (let k = 0; k < width; k++) {
@@ -31,16 +31,48 @@ game.prototype.createGrid = function (width=this.gridWidthTiles, height=this.gri
     return grid;
 }
 
-// check if the given grid has 17 1's values (which means all ships are on the grid)
-game.prototype.isValidGrid = function (grid) {
-    let counter = 0
+// randomize ship placement on the grid
+
+
+// check if ships don't overlap and whether all ships have been placed on the grid
+// also check whether ships are out of bounds
+game.prototype.isValidGrid = function (grid, ships) {
+    // check if ships is an array of ships
+    console.assert(
+        Array.isArray(ships),
+        "%s: Expecting an Array of ships, got a %s", arguments.callee.name, typeof ships
+    );
+
+    // check if grid is an array object
+    console.assert(
+        Array.isArray(grid),
+        "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
+    );
+
+    // check if grid is a 2d grid with correct column dimensions
+    console.assert(
+        grid.every(function (row) {
+            return Array.isArray(row) && row.length === this.gridCols;
+        }),
+        "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
+    );
+
+    let counterShips = 0;
+    let shipOutOfBound = false;
+
+    ships.forEach(ship => {
+        // TODO: 
+    })
+
     for(let i = 0; i < grid.length; i++){
         for(let j = 0 ; j < grid[i].length; j++){
-          counter += grid[i][j];
+            if (grid[i][j] > 0) {
+                counterShips += 1
+            }
         }
     }
     
-    return (counter == 17 ? true : false);
+    return (counterShips === shared.AMOUNT_HITS_WIN ? true : false);
 }
 
 //different states of the game

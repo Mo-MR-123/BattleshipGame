@@ -15,6 +15,10 @@
  * This is a common JavaScript construct to share code between the Node.js and web browser environments. 
  */
 (function(exports) {
+    exports.GRID_DIM = { /* Dimensions of each grid */
+      rows: 10,
+      cols: 10
+    }; 
     exports.AMOUNT_HITS_WIN = 17; /* Amount of hits needed to win the game. NOTE: this is equivalent to  */
     exports.DESTROYER = { id: 1, size: 2 /* TODO: add color and img path for this ship */ }; /* Destoryer ship properties (ID is used when placed on the board) */
     exports.SUBMARINE = { id: 2, size: 3 /* TODO: add color and img path for this ship */}; /* Submarine ship properties (ID is used when placed on the board) */

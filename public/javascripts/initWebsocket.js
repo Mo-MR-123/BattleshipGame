@@ -1,3 +1,5 @@
+// IMPORTANT NOTE: shared.js and messages.js MUST BE INCLUDED BEFORE THIS SCRIPT FILE!!! 
+
 /* constructor of game state */
 //gamestate of a player (which player of the two it is depends on the socket of theirs)
 function GameState(socket) {
@@ -16,9 +18,7 @@ function GameState(socket) {
         [0,0,0,0,0,0,0,0,0,0]
     ];
     
-    console.log(this.array); //test the array
     this.playerType = null; //Instantiate new player
-    this.MAX_HITS = 17;     //Max hits is 17 (5x1 + 4x1 + 3x2 + 2x1)
     this.amountHits = 0;    //Initiate new amountHits for every player who starts a new game
                                 
     this.getPlayerType = function () {
@@ -30,6 +30,7 @@ function GameState(socket) {
         this.playerType = player;
     };
 
+    // TODO: this MUST BE IMPLEMENTED IN THE SERVER!!
     //this functions determines who of the players won the game
     this.whoWon = function(){
         //Player A wins if HE can get 17 hits which is equal to all the ship tiles
@@ -126,7 +127,7 @@ function disableTilesForB() {
 (function setup() {
     //this makes connection with the websocket in app.js and executes the code there first
     //after the connection execution it continues here
-    var socket = new WebSocket("ws://localhost:3000");
+    var socket = new WebSocket(Setup.WEB_SOCKET_URL);
     
     // the GameState object coordinates everything
     var gamestate = new GameState(socket);
@@ -155,6 +156,7 @@ function disableTilesForB() {
                 // ShipPlacement();
 
                 // redirecting players to the page where the game starts
+                // TODO: DO NOT REDIRECT USER LIKE THIS!!!! THIS BREAKS WEBSOCKET CONNECTION!!!!
                 const currentURL = window.location.href.split('/');
                 const baseURL = currentURL[0]; 
                 window.location.replace(baseURL + '/play');

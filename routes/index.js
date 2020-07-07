@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const gridDim = require('../gridDimension');
+const shared = require('../public/javascripts/shared');
 const gameStatus = require("../games_tracker");
 
 // home page
@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 });
 
 router.get('/place-ships', function(req, res) {
-  res.render('shipplacement', { gridDim: gridDim });
+  res.render('shipplacement', { gridDim: shared.GRID_DIM });
 });
 
 router.get('/waiting-page', function(req, res) {
@@ -23,7 +23,7 @@ router.get('/waiting-page', function(req, res) {
 /* Pressing the 'START GAME' button, returns game page */
 router.get('/play', function(req, res) {
   res.render('game', {
-    gridDim: gridDim,
+    gridDim: shared.GRID_DIM,
     /* TODO: send to client the grid of each players but not the grid of the rival*/
     /* as all checks of the rival grid is checked in the server side. Also make sure the grid is*/
     /* assigned and set already in the game object.*/

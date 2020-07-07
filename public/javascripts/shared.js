@@ -15,6 +15,8 @@
  * This is a common JavaScript construct to share code between the Node.js and web browser environments. 
  */
 (function(exports) {
+    exports.VERTICAL_DIRECTION = 0; /* Used to indicate vertical placement of a ship */
+    exports.HORIZONTAL_DIRECTION = 1; /* Used to indicate horizontal placement of a ship */
     exports.GRID_DIM = { /* Dimensions of each grid */
       rows: 10,
       cols: 10

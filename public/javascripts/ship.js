@@ -1,3 +1,6 @@
+// TODO: THIS CLASS IS MAYBE NOT NEEDED, THUS ONLY SHIPSGENERATOR CLASS IS NEEDED
+'use strict';
+
 /**
  * Ship class.
  *

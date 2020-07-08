@@ -3,7 +3,7 @@
 
 /**
  * ShipsGenerator class.
- * TODO: console.assert that the values on the grid are all 0 initially.
+ *
  * @constructor
  * @param {Array} - 2D grid of the current user
  */
@@ -30,6 +30,16 @@ function ShipsGenerator(grid) {
     console.assert(
         this.gridRows === this.gridCols,
         "%s: Grid must be square, but got %d rows and %d columns", arguments.callee.name, this.gridRows, this.gridCols
+    );
+
+    // grid must consist of 0 in all entries
+    console.assert(
+        this.grid.every(function(row) {
+            return row.every(function(val) {
+                return val === 0;
+            })
+        }),
+        "%s: Grid does not contain all 0's", arguments.callee.name
     );
 
     // create the ships array
@@ -66,18 +76,8 @@ ShipsGenerator.prototype.getRandomInt = function(max, randomDirection) {
 /**
  * Places each ship in random location on the board/grid.
  * 
- * @param {Array} - The 2D grid array of current user.
  */
-ShipsGenerator.prototype.placeShipsRandomly = function(grid) {
-    // grid must consist of 0 in all entries
-    console.assert(
-        grid.every(function(row) {
-            return row.every(function(val) {
-                return val === 0;
-            })
-        }),
-        "%s: Grid does not contain all 0's", arguments.callee.name
-    );
+ShipsGenerator.prototype.placeShipsRandomly = function() {
 
     // go through all ships and place them on the grid on random locations
     for (let s = 0; s < this.ships.length; s++) {

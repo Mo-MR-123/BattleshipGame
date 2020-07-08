@@ -39,6 +39,16 @@
         data: "B"
     };
     exports.S_PLAYER_B = JSON.stringify(exports.O_PLAYER_B);
+
+    /* 
+     * Server to client: indicate which player is allowed to shoot a tile (happens after each turn)
+     */
+    exports.T_PLAYER_TURN = "PLAYER-TURN";
+    exports.PLAYER_TURN = {                            
+        type: exports.T_PLAYER_TURN,
+        // data must be either "A" or "B"
+        data: null
+    };
     
     /* 
     * Server to Player A & B: game over with result won/loss 
@@ -52,7 +62,7 @@
     /////////////////////////////// TILE LOGIC MESSAGES ///////////////////////////////////
 
     /* 
-     * Player B OR Player A clicked tile: send coordinates of tile to server 
+     * Client to server: Player B OR Player A clicked tile, send coordinates of tile to server 
      */
     exports.T_TILE_SHOT = "CLICK-ON-TILE";         
     exports.TILE_SHOT = {
@@ -68,7 +78,8 @@
     exports.T_TILE_HIT = "TILE-HIT";              
     exports.TILE_HIT = {
         type: exports.T_TILE_HIT,
-        data: null //TODO: check if data needs to be sent
+        // data must contain which player hit the tile (either "A" or "B")
+        data: null
     };
 
     /* 
@@ -77,7 +88,9 @@
     exports.T_TILE_HIT_SINK = "TILE-HIT-SINK";              
     exports.TILE_HIT_SINK = {
         type: exports.T_TILE_HIT_SINK,
-        data: null //TODO: check if data needs to be sent
+        // data must contain which player hit and sank a ship (either "A" or "B") 
+        // so e.g. data: {player: "A", ship: "Destoyer", shipId: 1}
+        data: null
     };
 
     /* 
@@ -86,7 +99,8 @@
     exports.T_TILE_MISS = "TILE-MISS";              
     exports.TILE_MISS = {
         type: exports.T_TILE_MISS,
-        data: null //TODO: check if data needs to be sent
+        // data must contain which player missed (either "A" or "B")
+        data: null
     };
 
     ////////////////////////////// SENDING GRID OF PLAYERS TO SERVER MESSAGES ///////////////////////

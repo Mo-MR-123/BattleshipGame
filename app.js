@@ -7,6 +7,7 @@ const gameStatus = require("./games_tracker")
 const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
 const Game = require("./game");
+const lodashClonedeep = require("lodash.clonedeep");
 const websocket = require("ws");
 
 const port = process.argv[2] || 3000;
@@ -105,16 +106,6 @@ wss.on("connection", function connection(ws) {
      */ 
     con.send((playerType === "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
 
-    // /*
-    //  * TODO: check if we even need the below if statement
-    //  * client B receives the target word (if already available)
-    //  */ 
-    // if (playerType == "B") {
-    //     let msg = messages.S_PLAYER_B;
-    //     //TODO: implement what player b receives
-    //     con.send(JSON.stringify(msg));
-    // }
-
     /*
      * If current game already has 2 players connected,
      * then just make a new game and connect the new 2 players to it
@@ -129,38 +120,117 @@ wss.on("connection", function connection(ws) {
      *  2. determine the game object where this player is linked to
      *  3. determine the opponent.
      *  4. handle message data if there is any
-     *  5. send the message to opponent
+     *  5. send the message to noth players
      */ 
     con.on("message", function incoming(message) {
-        let oMsg = JSON.parse(message);
-        // get the id of the connection that sent a message, to get game object linked to player this con.id
-        let gameObj = websockets[con.id];
-        let isPlayerA = (gameObj.playerA == con) ? true : false;
+        const oMsg = JSON.parse(message);
+        const hasData = oMsg.data ? true : false;
 
-        if (isPlayerA) {
-            if (gameObj.hasTwoConnectedPlayers()) {
-                gameObj.playerB.send(message); 
+        // get the id of the connection that sent a message, to get game object linked to player this con.id
+        const gameObj = websockets[con.id];
+        const isPlayerA = (gameObj.playerA === con) ? true : false;
+        
+        // handle grid initialization of player A if the game is still not started
+        // and when player A grid is still not set
+        if (oMsg.type === messages.T_GRID_PLAYER_A && !gameObj.playerAGrid && !gameObj.isGameStarted()) {
+            if (hasData) {
+                gameObj.setPlayerAGrid(oMsg.data);
+                
+                // game can be started when both grids are present in the game obj.
+                if (gameObj.isGameStarted()) {
+                    // send whos turn it is to start shooting
+                    msgWhoCanStart = lodashClonedeep(messages.T_PLAYER_TURN);
+                    msgWhoCanStart.data = gameObj.getTurn();
+
+                    gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
+                    gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
+                }
+            } else {
+                console.log(`Player A client did not send a grid in data of message. Data: ${oMsg.data}`);
             }
+        }
+
+        // handle grid initialization of player B if the game is still not started 
+        // and when player B grid is still not set
+        if (oMsg.type === messages.T_GRID_PLAYER_B && !gameObj.playerBGrid && !gameObj.isGameStarted()) {
+            if (hasData) {
+                gameObj.setPlayerBGrid(oMsg.data);
+
+                // game can be started when both grids are present in the game obj.
+                if (gameObj.isGameStarted()) {
+                    // send whos turn it is to start shooting
+                    msgWhoCanStart = lodashClonedeep(messages.T_PLAYER_TURN);
+                    msgWhoCanStart.data = gameObj.getTurn();
+
+                    gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
+                    gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
+                }
+            } else {
+                console.log(`Player B client did not send a grid in data of message. Data: ${oMsg.data}`);
+            }
+        }
+
+        // check if current game object has 2 players and whether the game is started and can be played
+        if (gameObj.hasTwoConnectedPlayers() && gameObj.isGameStarted()) {
+            if (isPlayerA) {
+                // handle all logic of player A
+
+                // get opponent of player A
+                const opponent = gameObj.playerB;
+                const currPlayer = gameObj.playerA;
+                
+                // handle case where player A shoots tile on player B grid
+                if (oMsg.type === messages.T_TILE_SHOT && gameObj.getTurn() === "A") {
+                    if (hasData) {
+                        const tileShotMsg = gameObj.tileFired(oMsg.data, true);
+                        
+                        // TODO: check if tileShotMsg can be null and whether this check is even needed
+                        if (tileShotMsg) {
+                            // if player A missed, change turn to player B
+                            if (tileShotMsg.type === messages.T_TILE_MISS) {
+                                gameObj.changeTurn();
+                            }
+                            opponent.send(JSON.stringify(tileShotMsg));
+                            currPlayer.send(JSON.stringify(tileShotMsg));
+                        }
+                    } else {
+                        console.log(`Player A shot a tile but did not pass any data. Data: ${oMsg.data}`);
+                    }
+                }
+            }
+            else {
+                // handle all logic of player B
+
+                // get opponent of player B
+                const opponent = gameObj.playerA;
+                const currPlayer = gameObj.playerB;
+
+                // handle case where player B shoots tile on player A grid
+                if (oMsg.type === messages.T_TILE_SHOT && gameObj.getTurn() === "B") {
+                    if (hasData) {
+                        const tileShotMsg = gameObj.tileFired(oMsg.data, false);
+
+                        // TODO: check if tileShotMsg can be null and whether this check is even needed
+                        if (tileShotMsg) {
+                            // if player B missed, change turn to player A
+                            if (tileShotMsg.type === messages.T_TILE_MISS) {
+                                gameObj.changeTurn();
+                            }
+                            opponent.send(JSON.stringify(tileShotMsg));
+                            currPlayer.send(JSON.stringify(tileShotMsg));
+                        }
+                    } else {
+                        console.log(`Player B shot a tile but did not pass any data. Data: ${oMsg.data}`);
+                    }
+                }
+            }
+
         }
         else {
-            /*
-             * player B can shoot; 
-             * this shot is forwarded to A
-             */ 
-            if (oMsg.type == messages.T_MAKE_A_SHOT) {
-                gameObj.playerA.send(message);
-                gameObj.setStatus("TILE SHOT");
-            }
-
-            /*
-             * player B can state who won/lost
-             */ 
-            if (oMsg.type == messages.T_GAME_WON_BY) {
-                gameObj.setStatus(oMsg.data);
-                //game was won by somebody, update statistics
-                gameStatus.gamesCompleted++;
-            }            
+            console.log(`game with id ${con.id} does not have 2 players connected.
+             Player A is ${gameObj.playerA} and Player B is ${gameObj.playerB}`);
         }
+
     });
 
     con.on("close", function (code) {

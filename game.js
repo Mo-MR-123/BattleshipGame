@@ -1,4 +1,6 @@
 const shared = require('./public/javascripts/shared');
+const messages = require('./public/javascripts/messages');
+const lodashClonedeep = require("lodash.clonedeep");
 
 /* every game has two players, identified by their WebSocket */
 // constructor for the game object
@@ -6,27 +8,58 @@ var game = function (gameID) {
     this.id = gameID;
 
     // NOTE: Client must be player A or player B but not both and not none
+    // this.playerA and this.playerB must be assigned to the websocket of the client of either player A or B
     this.playerA = null;
     this.playerB = null;
 
-    // define all ships needed for the game
-    this.ships = [];
-    this.ships.push(shared.DESTROYER);
-    this.ships.push(shared.SUBMARINE);
-    this.ships.push(shared.CRUISER);
-    this.ships.push(shared.BATTLESHIP);
-    this.ships.push(shared.CARRIER);
+    // deep clone all ships needed for the game for both players
+    // NOTE: ships must be pushed in this order to be able to fetch them by their id !!
+    this.shipsPlayerA = [];
+    this.shipsPlayerA.push(lodashClonedeep(shared.DESTROYER));
+    this.shipsPlayerA.push(lodashClonedeep(shared.SUBMARINE));
+    this.shipsPlayerA.push(lodashClonedeep(shared.CRUISER));
+    this.shipsPlayerA.push(lodashClonedeep(shared.BATTLESHIP));
+    this.shipsPlayerA.push(lodashClonedeep(shared.CARRIER));
+
+    this.shipsPlayerB = [];
+    this.shipsPlayerB.push(lodashClonedeep(shared.DESTROYER));
+    this.shipsPlayerB.push(lodashClonedeep(shared.SUBMARINE));
+    this.shipsPlayerB.push(lodashClonedeep(shared.CRUISER));
+    this.shipsPlayerB.push(lodashClonedeep(shared.BATTLESHIP));
+    this.shipsPlayerB.push(lodashClonedeep(shared.CARRIER));
 
     this.gridRows = shared.GRID_DIM.rows;
     this.gridCols = shared.GRID_DIM.cols;
     this.playerAGrid = null;
     this.playerBGrid = null;
-    this.gameJoinedFirst = false;
+    this.playerAHitCounter = 0;
+    this.playerBHitCounter = 0;
+
+    // randomly select who begins with shooting
+    this.playerTurn = ((Math.floor(Math.random() * 2)) === 0) ? "A" : "B";
+    
+    // indicating whether the game is started
+    this.gameIsStarted = false;
     this.gameState = "0 JOINED"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
 };
 
+// game can be started when both players grid is set
+game.prototype.isGameStarted = function() {
+    return this.playerAGrid && this.playerBGrid;
+}
+
+// setter for player A grid
+game.prototype.setPlayerAGrid = function(playerAGrid) {
+    this.playerAGrid = playerAGrid;
+}
+
+// setter for player B grid
+game.prototype.setPlayerBGrid = function(playerBGrid) {
+    this.playerBGrid = playerBGrid;
+}
+
 // function to create board
-game.prototype.createGrid = function (width=this.gridRows, height=this.gridCols) {
+game.prototype.createGrid = function(width=this.gridRows, height=this.gridCols) {
     // create row
     let column = new Array(width);
     for (let k = 0; k < width; k++) {
@@ -44,43 +77,138 @@ game.prototype.createGrid = function (width=this.gridRows, height=this.gridCols)
 
 // check if ships don't overlap and whether all ships have been placed on the grid
 // also check whether ships are out of bounds
-game.prototype.isValidGrid = function (grid) {
-    // check if ships is an array of ships
-    console.assert(
-        Array.isArray(this.ships),
-        "%s: Expecting an Array of ships, got a %s", arguments.callee.name, typeof this.ships
-    );
+// game.prototype.isValidGrid = function(grid) {
+//     // check if ships is an array of ships
+//     console.assert(
+//         Array.isArray(this.ships),
+//         "%s: Expecting an Array of ships, got a %s", arguments.callee.name, typeof this.ships
+//     );
 
-    // check if grid is an array object
-    console.assert(
-        Array.isArray(grid),
-        "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
-    );
+//     // check if grid is an array object
+//     console.assert(
+//         Array.isArray(grid),
+//         "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
+//     );
 
-    // check if grid is a 2d grid with correct column dimensions
-    console.assert(
-        grid.every(function (row) {
-            return Array.isArray(row) && row.length === this.gridCols;
-        }),
-        "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
-    );
+//     // check if grid is a 2d grid with correct column dimensions
+//     console.assert(
+//         grid.every(function (row) {
+//             return Array.isArray(row) && row.length === this.gridCols;
+//         }),
+//         "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
+//     );
 
-    let counterShips = 0;
-    let shipOutOfBound = false;
+//     let counterShips = 0;
+//     let shipOutOfBound = false;
 
-    this.ships.forEach(ship => {
-        // TODO: 
-    })
+//     this.ships.forEach(ship => {
+//         // TODO: 
+//     })
 
-    for(let i = 0; i < grid.length; i++){
-        for(let j = 0 ; j < grid[i].length; j++){
-            if (grid[i][j] > 0) {
-                counterShips += 1
-            }
-        }
-    }
+//     for(let i = 0; i < grid.length; i++){
+//         for(let j = 0 ; j < grid[i].length; j++){
+//             if (grid[i][j] > 0) {
+//                 counterShips += 1
+//             }
+//         }
+//     }
     
-    return (counterShips === shared.AMOUNT_HITS_WIN ? true : false);
+//     return (counterShips === shared.AMOUNT_HITS_WIN ? true : false);
+// }
+
+// TODO: handle game state transition and validation of those states
+// TODO: refactor this method to be simpler
+game.prototype.tileFired = function(coordinate, playerAShot) {
+    console.log(coordinate);
+    try {
+        const x = coordinate.x;
+        const y = coordinate.y;
+
+        let msgResult = null;
+
+        if (playerAShot) {
+            const id = this.playerBGrid[x][y];
+
+            if (id === 0) {
+
+                // player A missed
+                msgResult = lodashClonedeep(messages.TILE_MISS);
+                msgResult.data = "A"; 
+
+            } else if (id > 0) {
+
+                // player A hit a ship on grid of player B
+                // increment hits of the hit ship and player A hit counter by 1
+                const shipHit = this.shipsPlayerB[id - 1];
+                this.playerAHitCounter++;
+                shipHit.hits++;
+
+                // check if the hit ship sank because of this hit
+                if (shipHit.hits === shipHit.size) {
+                    msgResult = lodashClonedeep(messages.TILE_HIT_SINK);
+                    msgResult.data = { player: "A", ship: shipHit.name, shipId: id };
+                } else {
+                    msgResult = lodashClonedeep(messages.TILE_HIT);
+                    msgResult.data = "A";
+                }
+
+                // check if player A won
+                if (this.playerAHitCounter === shared.AMOUNT_HITS_WIN) {
+                    msgResult = lodashClonedeep(messages.GAME_WON_BY);
+                    msgResult.data = "A";
+                    this.setStatus("A");
+                }
+
+            }
+
+            // set ship part on x and y to -1, so that it can not be hit anymore
+            this.playerBGrid[x][y] = -1;
+
+        } else {
+
+            const id = this.playerAGrid[x][y];
+
+            if (id === 0) {
+
+                // player B missed
+                msgResult = lodashClonedeep(messages.TILE_MISS);
+                msgResult.data = "B"; 
+
+            } else if (id > 0) {
+
+                // player B hit a ship on grid of player A,
+                // increment hits of the hit ship and player B hit counter by 1
+                const shipHit = this.shipsPlayerA[id - 1];
+                this.playerBHitCounter++;
+                shipHit.hits++;
+
+                // check if the hit ship sank because of this hit
+                if (shipHit.hits === shipHit.size) {
+                    msgResult = lodashClonedeep(messages.TILE_HIT_SINK);
+                    msgResult.data = { player: "B", ship: shipHit.name, shipId: id };
+                } else {
+                    msgResult = lodashClonedeep(messages.TILE_HIT);
+                    msgResult.data = "B";
+                }
+
+                // check if player B won
+                if (this.playerBHitCounter === shared.AMOUNT_HITS_WIN) {
+                    msgResult = lodashClonedeep(messages.GAME_WON_BY);
+                    msgResult.data = "B";
+                    this.setStatus("B");
+                }
+
+            }
+
+            // set ship part on x and y to -1, so that it can not be hit anymore
+            this.playerAGrid[x][y] = -1;
+        }
+
+        return msgResult;
+
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 //different states of the game
@@ -157,6 +285,22 @@ game.prototype.hasTwoConnectedPlayers = function () {
     return (this.gameState == "2 JOINED");
 };
 
+game.prototype.changeTurn = function() {
+    turnMessage = lodashClonedeep(messages.PLAYER_TURN);
+    if (this.getTurn() === "A") {
+        this.playerTurn = "B";
+        turnMessage.data = "B";
+    } else {
+        this.playerTurn = "A";
+        turnMessage.data = "A";
+    }
+    return turnMessage;
+} 
+
+game.prototype.getTurn = function() {
+    return this.playerTurn;
+} 
+
 game.prototype.addPlayer = function (player) {
 
     // when a player connects to the game scoket, the game needs to be either in 1 JOINED state 
@@ -175,7 +319,6 @@ game.prototype.addPlayer = function (player) {
 
     if (this.playerA == null) {
         this.playerA = player;
-        this.gameJoinedFirst = true;
         console.log("You are assigned as Player A");
         return "A";
     }

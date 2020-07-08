@@ -6,6 +6,8 @@
 
 2. **BUG**: When "start game" is clicked after ship placement, and it is the second player that join (player B), then the socket is left and new socket connection is made which is not supposed to happen. When player B (2nd player) joins the game, the player should stay connected to the same socket and not create a new one. This Bug is caused because player B goes to a new page that has "initWebsocket.js" which makes a new connection. Player B should stay on the same page in which the "initWebsocket.js" is in and not go to anther page that also has that script. Solve this with EJS to auto-generate the grids depending on which player has connected to the websocket!
 
+3. ** in game.js in server **: add missing transition in transitionMatrix such as "TILE HIT", "TILE MISS" etc... WITH PROPER 0's and 1's to indicate what transition from those states can be done.
+
 **INFO ABOUT HOW BATTLESHIP IS PLAYED:**
 
 Rules for BattleShip (a Milton Bradley Game)

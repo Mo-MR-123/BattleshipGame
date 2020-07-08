@@ -34,7 +34,7 @@ function ShipsGenerator(grid) {
 
     // grid must consist of 0 in all entries
     console.assert(
-        this.grid.every(function(row) {
+        grid.every(function(row) {
             return row.every(function(val) {
                 return val === 0;
             })

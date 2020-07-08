@@ -22,11 +22,11 @@
       cols: 10
     }; 
     exports.AMOUNT_HITS_WIN = 17; /* Amount of hits needed to win the game. NOTE: this is equivalent to  */
-    exports.DESTROYER = { id: 1, size: 2 /* TODO: add color and img path for this ship */ }; /* Destoryer ship properties (ID is used when placed on the board) */
-    exports.SUBMARINE = { id: 2, size: 3 /* TODO: add color and img path for this ship */}; /* Submarine ship properties (ID is used when placed on the board) */
-    exports.CRUISER = { id: 3, size: 3, hit: 0 /* TODO: add color and img path for this ship */}; /* Cruiser ship properties (ID is used when placed on the board) */
-    exports.BATTLESHIP = { id: 4, size: 4,  /* TODO: add color and img path for this ship */}; /* Battleship ship properties (ID is used when placed on the board) */
-    exports.CARRIER = { id: 5, size: 5,  /* TODO: add color and img path for this ship */ }; /* Carrier ship properties (ID is used when placed on the board) */
+    exports.DESTROYER = { id: 1, size: 2, hit: 0 /* TODO: add color this ship */ }; /* Destoryer ship properties (ID is used when placed on the board) */
+    exports.SUBMARINE = { id: 2, size: 3, hit: 0 /* TODO: add color this ship */}; /* Submarine ship properties (ID is used when placed on the board) */
+    exports.CRUISER = { id: 3, size: 3, hit: 0 /* TODO: add color this ship */}; /* Cruiser ship properties (ID is used when placed on the board) */
+    exports.BATTLESHIP = { id: 4, size: 4, hit: 0 /* TODO: add color for this ship */}; /* Battleship ship properties (ID is used when placed on the board) */
+    exports.CARRIER = { id: 5, size: 5, hit: 0  /* TODO: add color for this ship */ }; /* Carrier ship properties (ID is used when placed on the board) */
     exports.WEB_SOCKET_URL = "ws://localhost:3000"; /* WebSocket URL */
     exports.COLOR_HIT = "#FF0000"; /* Hexadecimial color shown when ship is hit on clicked tile */
     exports.COLOR_MISS = "#FFFFFF"; /* Hexadecimial color shown when no ship is hit on clicked tile */

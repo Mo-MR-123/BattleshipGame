@@ -83,7 +83,7 @@ ShipsGenerator.prototype.placeShipsRandomly = function() {
     for (let s = 0; s < this.ships.length; s++) {
         const currShip = this.ships[s];
 
-        const shipID = ship.id;
+        const shipID = currShip.id;
 
         // find location coordinates of current ship that do not overlap with other ships already on the grid
         let currShipLocations;

@@ -7,7 +7,7 @@ const gameStatus = require("./games_tracker")
 const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
 const Game = require("./game");
-const lodashClonedeep = require("lodash.clonedeep");
+const _ = require("lodash");
 const websocket = require("ws");
 
 const port = process.argv[2] || 3000;
@@ -139,7 +139,7 @@ wss.on("connection", function connection(ws) {
                 // game can be started when both grids are present in the game obj.
                 if (gameObj.isGameStarted()) {
                     // send whos turn it is to start shooting
-                    msgWhoCanStart = lodashClonedeep(messages.T_PLAYER_TURN);
+                    msgWhoCanStart = _.cloneDeep(messages.T_PLAYER_TURN);
                     msgWhoCanStart.data = gameObj.getTurn();
 
                     gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
@@ -159,7 +159,7 @@ wss.on("connection", function connection(ws) {
                 // game can be started when both grids are present in the game obj.
                 if (gameObj.isGameStarted()) {
                     // send whos turn it is to start shooting
-                    msgWhoCanStart = lodashClonedeep(messages.T_PLAYER_TURN);
+                    msgWhoCanStart = _.cloneDeep(messages.T_PLAYER_TURN);
                     msgWhoCanStart.data = gameObj.getTurn();
 
                     gameObj.playerA.send(JSON.stringify(msgWhoCanStart));

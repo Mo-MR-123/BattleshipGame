@@ -1,6 +1,6 @@
 const shared = require('./public/javascripts/shared');
 const messages = require('./public/javascripts/messages');
-const lodashClonedeep = require("lodash.clonedeep");
+const _ = require('lodash');
 
 /* every game has two players, identified by their WebSocket */
 // constructor for the game object
@@ -15,18 +15,18 @@ var game = function (gameID) {
     // deep clone all ships needed for the game for both players
     // NOTE: ships must be pushed in this order to be able to fetch them by their id !!
     this.shipsPlayerA = [];
-    this.shipsPlayerA.push(lodashClonedeep(shared.DESTROYER));
-    this.shipsPlayerA.push(lodashClonedeep(shared.SUBMARINE));
-    this.shipsPlayerA.push(lodashClonedeep(shared.CRUISER));
-    this.shipsPlayerA.push(lodashClonedeep(shared.BATTLESHIP));
-    this.shipsPlayerA.push(lodashClonedeep(shared.CARRIER));
+    this.shipsPlayerA.push(_.cloneDeep(shared.DESTROYER));
+    this.shipsPlayerA.push(_.cloneDeep(shared.SUBMARINE));
+    this.shipsPlayerA.push(_.cloneDeep(shared.CRUISER));
+    this.shipsPlayerA.push(_.cloneDeep(shared.BATTLESHIP));
+    this.shipsPlayerA.push(_.cloneDeep(shared.CARRIER));
 
     this.shipsPlayerB = [];
-    this.shipsPlayerB.push(lodashClonedeep(shared.DESTROYER));
-    this.shipsPlayerB.push(lodashClonedeep(shared.SUBMARINE));
-    this.shipsPlayerB.push(lodashClonedeep(shared.CRUISER));
-    this.shipsPlayerB.push(lodashClonedeep(shared.BATTLESHIP));
-    this.shipsPlayerB.push(lodashClonedeep(shared.CARRIER));
+    this.shipsPlayerB.push(_.cloneDeep(shared.DESTROYER));
+    this.shipsPlayerB.push(_.cloneDeep(shared.SUBMARINE));
+    this.shipsPlayerB.push(_.cloneDeep(shared.CRUISER));
+    this.shipsPlayerB.push(_.cloneDeep(shared.BATTLESHIP));
+    this.shipsPlayerB.push(_.cloneDeep(shared.CARRIER));
 
     this.gridRows = shared.GRID_DIM.rows;
     this.gridCols = shared.GRID_DIM.cols;
@@ -135,7 +135,7 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
             if (id === 0) {
 
                 // player A missed
-                msgResult = lodashClonedeep(messages.TILE_MISS);
+                msgResult = _.cloneDeep(messages.TILE_MISS);
                 msgResult.data = "A"; 
 
             } else if (id > 0) {
@@ -148,16 +148,16 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
 
                 // check if the hit ship sank because of this hit
                 if (shipHit.hits === shipHit.size) {
-                    msgResult = lodashClonedeep(messages.TILE_HIT_SINK);
+                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
                     msgResult.data = { player: "A", ship: shipHit.name, shipId: id };
                 } else {
-                    msgResult = lodashClonedeep(messages.TILE_HIT);
+                    msgResult = _.cloneDeep(messages.TILE_HIT);
                     msgResult.data = "A";
                 }
 
                 // check if player A won
                 if (this.playerAHitCounter === shared.AMOUNT_HITS_WIN) {
-                    msgResult = lodashClonedeep(messages.GAME_WON_BY);
+                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
                     msgResult.data = "A";
                     this.setStatus("A");
                 }
@@ -174,7 +174,7 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
             if (id === 0) {
 
                 // player B missed
-                msgResult = lodashClonedeep(messages.TILE_MISS);
+                msgResult = _.cloneDeep(messages.TILE_MISS);
                 msgResult.data = "B"; 
 
             } else if (id > 0) {
@@ -187,16 +187,16 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
 
                 // check if the hit ship sank because of this hit
                 if (shipHit.hits === shipHit.size) {
-                    msgResult = lodashClonedeep(messages.TILE_HIT_SINK);
+                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
                     msgResult.data = { player: "B", ship: shipHit.name, shipId: id };
                 } else {
-                    msgResult = lodashClonedeep(messages.TILE_HIT);
+                    msgResult = _.cloneDeep(messages.TILE_HIT);
                     msgResult.data = "B";
                 }
 
                 // check if player B won
                 if (this.playerBHitCounter === shared.AMOUNT_HITS_WIN) {
-                    msgResult = lodashClonedeep(messages.GAME_WON_BY);
+                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
                     msgResult.data = "B";
                     this.setStatus("B");
                 }
@@ -289,7 +289,7 @@ game.prototype.hasTwoConnectedPlayers = function () {
 };
 
 game.prototype.changeTurn = function() {
-    turnMessage = lodashClonedeep(messages.PLAYER_TURN);
+    turnMessage = _.cloneDeep(messages.PLAYER_TURN);
     if (this.getTurn() === "A") {
         this.playerTurn = "B";
         turnMessage.data = "B";

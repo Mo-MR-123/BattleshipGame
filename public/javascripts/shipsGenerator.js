@@ -90,7 +90,7 @@ ShipsGenerator.prototype.placeShipsRandomly = function() {
         let currShipLocations;
         do {
             currShipLocations = this.generateShipLocations(currShip);
-        } while(this.checkOverlapping(currShipLocations));
+        } while(this.isOverlapping(currShipLocations));
 
         // assign grid location on the grid with proper id of the current ship
         for (let c = 0; c < currShipLocations.length; c++) {
@@ -146,7 +146,7 @@ ShipsGenerator.prototype.generateShipLocations = function(ship) {
  * @param {Array} - An array of Coordinate object to indicate the position of each part of given ship.
  * @returns - true if there are collisions, else false.
  */
-ShipsGenerator.prototype.checkOverlapping = function(shipLocations) {
+ShipsGenerator.prototype.isOverlapping = function(shipLocations) {
     // shipLocations must NOT be empty
     console.assert(
         shipLocations.length !== 0,

@@ -94,7 +94,7 @@ ShipsGenerator.prototype.placeShipsRandomly = function() {
         // assign grid location on the grid with proper id of the current ship
         for (let c = 0; c < currShipLocations.length; c++) {
             const currShipCoordinate = currShipLocations[c];
-            this.grid[currShipCoordinate.x][currShipCoordinate.y] = shipID;
+            this.grid[currShipCoordinate.getX()][currShipCoordinate.getY()] = shipID;
         }
         
     }
@@ -154,7 +154,7 @@ ShipsGenerator.prototype.checkOverlapping = function(shipLocations) {
 
     for (let loc = 0; loc < shipLocations.length; loc++) {
         const currCoordinate = shipLocations[loc];
-        if (this.grid[currCoordinate.x][currCoordinate.y] > 0) {
+        if (this.grid[currCoordinate.getX()][currCoordinate.getY()] > 0) {
             return false;
         }
     }

@@ -3,14 +3,25 @@ const shared = require('./public/javascripts/shared');
 /* every game has two players, identified by their WebSocket */
 // constructor for the game object
 var game = function (gameID) {
+    this.id = gameID;
+
+    // NOTE: Client must be player A or player B but not both and not none
     this.playerA = null;
     this.playerB = null;
+
+    // define all ships needed for the game
+    this.ships = [];
+    this.ships.push(shared.DESTROYER);
+    this.ships.push(shared.SUBMARINE);
+    this.ships.push(shared.CRUISER);
+    this.ships.push(shared.BATTLESHIP);
+    this.ships.push(shared.CARRIER);
+
     this.gridRows = shared.GRID_DIM.rows;
     this.gridCols = shared.GRID_DIM.cols;
     this.playerAGrid = null;
     this.playerBGrid = null;
-    this.id = gameID;
-    this.gameJoinedFirst = false; //first player to join the game, is able to start first so the timer can begin
+    this.gameJoinedFirst = false;
     this.gameState = "0 JOINED"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
 };
 
@@ -31,16 +42,13 @@ game.prototype.createGrid = function (width=this.gridRows, height=this.gridCols)
     return grid;
 }
 
-// randomize ship placement on the grid
-
-
 // check if ships don't overlap and whether all ships have been placed on the grid
 // also check whether ships are out of bounds
-game.prototype.isValidGrid = function (grid, ships) {
+game.prototype.isValidGrid = function (grid) {
     // check if ships is an array of ships
     console.assert(
-        Array.isArray(ships),
-        "%s: Expecting an Array of ships, got a %s", arguments.callee.name, typeof ships
+        Array.isArray(this.ships),
+        "%s: Expecting an Array of ships, got a %s", arguments.callee.name, typeof this.ships
     );
 
     // check if grid is an array object
@@ -60,7 +68,7 @@ game.prototype.isValidGrid = function (grid, ships) {
     let counterShips = 0;
     let shipOutOfBound = false;
 
-    ships.forEach(ship => {
+    this.ships.forEach(ship => {
         // TODO: 
     })
 

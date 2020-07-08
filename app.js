@@ -100,12 +100,10 @@ wss.on("connection", function connection(ws) {
         playerType
     );
 
-    //TODO: when the start button in the game page is clicked remove the script element of the ship placement and insert script for ship selection (gamelogic)
-
-    // /*
-    //  * inform the client about its assigned player type
-    //  */ 
-    // con.send((playerType == "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
+    /*
+     * inform the client about its assigned player type
+     */ 
+    con.send((playerType === "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
 
     // /*
     //  * TODO: check if we even need the below if statement
@@ -127,10 +125,11 @@ wss.on("connection", function connection(ws) {
 
     /*
      * message coming in from a player:
-     *  1. determine which player has current id
+     *  1. determine which player has current id (Player A or Player B)
      *  2. determine the game object where this player is linked to
-     *  2. determine the opponent.
-     *  3. send the message to opponent
+     *  3. determine the opponent.
+     *  4. handle message data if there is any
+     *  5. send the message to opponent
      */ 
     con.on("message", function incoming(message) {
         let oMsg = JSON.parse(message);

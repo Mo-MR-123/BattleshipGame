@@ -22,7 +22,7 @@
     exports.S_GAME_ABORTED = JSON.stringify(exports.O_GAME_ABORTED);
 
     /*
-     * Server to client: set as player A 
+     * Server to client: inform client to set its player as player A 
      */
     exports.T_PLAYER_TYPE = "PLAYER-TYPE";
     exports.O_PLAYER_A = {                            
@@ -32,7 +32,7 @@
     exports.S_PLAYER_A = JSON.stringify(exports.O_PLAYER_A);
 
     /* 
-     * Server to client: set as player B 
+     * Server to client: inform client to set its player as player B
      */
     exports.O_PLAYER_B = {                            
         type: exports.T_PLAYER_TYPE,

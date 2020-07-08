@@ -14,7 +14,7 @@
 	
 //CODE BELOW CHECKS WHETHER THE CLICKED CELL CONTAINS A SHIP OR NOT (THIS MUST BE RUN DURING THE GAME ONLY, SO AFTER THE USER PLACED THE SHIPS ON THE GRID
 $(document).ready(function(){			
-		"use strict"
+		"use strict";
 
 
 		/* tracking when the game is won by tracking how may hits are made and how many ship (parts) are hit 
@@ -32,7 +32,7 @@ $(document).ready(function(){
 		*/
 		var gameBoard = [
 			[0,0,0,0,0,0,0,0,0,0,0],
-			[0,1,1,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0,0],
@@ -42,13 +42,11 @@ $(document).ready(function(){
 			[0,0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0,0]
-			]
+		];
 
 	
-			//calculating how many ships are placed to establish a max. hitcount to determine whether the game has won or not
-			var maxHits = 17;
-
-
+		//calculating how many ships are placed to establish a max. hitcount to determine whether the game has won or not
+		var maxHits = 17;
 
 		// disable the right mouse click menu
 		// $(document).contextmenu(function() {  
@@ -68,35 +66,35 @@ $(document).ready(function(){
             var col = parseInt( $(this).index() ) ;
 			var row = parseInt( $(this).parent().index() );  
 
-		// if player clicks a square with no ship, change the color and change square's value
-		if (gameBoard[row][col] == 0) {
-			this.style.background = 'darkred';
-			// set this square's value to 3 to indicate that they fired and missed
-			gameBoard[row][col] = 3;
-		}	
+			// if player clicks a square with no ship, change the color and change square's value
+			if (gameBoard[row][col] == 0) {
+				this.style.background = 'darkred';
+				// set this square's value to 3 to indicate that they fired and missed
+				gameBoard[row][col] = 3;
+			}	
 
-		// if player clicks a square with a ship, change the color and change square's value
-		else if (gameBoard[row][col] == 1) {
-			this.style.background = 'green';
-			// set this square's value to 2 to indicate the ship has been hit
-			gameBoard[row][col] = 2;
+			// if player clicks a square with a ship, change the color and change square's value
+			else if (gameBoard[row][col] == 1) {
+				this.style.background = 'green';
+				// set this square's value to 2 to indicate the ship has been hit
+				gameBoard[row][col] = 2;
+				
+				// increment hitCount each time a ship is hit
+				hitCount++;
+				
+				$('#hitsself').html(hitCount);
 			
-			// increment hitCount each time a ship is hit
-			hitCount++;
-			
-			$('#hitsself').html(hitCount);
-		
-			// this definitely shouldn't be hard-coded. simple solution:
-			if (hitCount == maxHits) {
-				$("#notification").html("All enemy ships have been sunk! You have won the game!");
-			}
-		}	
+				// this definitely shouldn't be hard-coded. simple solution:
+				if (hitCount == maxHits) {
+					$("#notification").html("All enemy ships have been sunk! You have won the game!");
+				}
+			}	
 
-		// if player clicks a square that's been previously hit, let them know
-		 else if (gameBoard[row][col] > 1) {
-			alert("You already clicked on this tile! Please try another tile.");
-		}	
-    });
+			// if player clicks a square that's been previously hit, let them know
+			else if (gameBoard[row][col] > 1) {
+				alert("You already clicked on this tile! Please try another tile.");
+			}	
+    	});
     
 	
 });

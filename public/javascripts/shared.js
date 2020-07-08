@@ -31,4 +31,4 @@
     exports.COLOR_HIT = "#FF0000"; /* Hexadecimial color shown when ship is hit on clicked tile */
     exports.COLOR_MISS = "#FFFFFF"; /* Hexadecimial color shown when no ship is hit on clicked tile */
   })(typeof exports === "undefined" ? (this.Setup = {}) : exports);
-  
+  /* this.Setup is added to the window object in the client! so by using "this" the Setup object can be accessed */

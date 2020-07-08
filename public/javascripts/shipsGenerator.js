@@ -1,4 +1,4 @@
-// NOTE: shared.js, ship.js and coordinate.js must be included in html before this file for this class to work
+// NOTE: shared.js, coordinate.js must be included in html before this file for this class to work
 'use strict';
 
 /**
@@ -15,7 +15,7 @@ function ShipsGenerator(grid) {
     // check if grid has expected amount of rows
     console.assert(
         grid.length == this.gridRows,
-        "%s: Got grid rows of %d, but should be %d ", arguments.callee.name, grid.length, this.gridRows
+        "Got grid rows of %d, but should be %d ", grid.length, this.gridRows
     );
 
     // check if grid has expected amount of columns on each row
@@ -24,13 +24,13 @@ function ShipsGenerator(grid) {
     //     grid.every(function(row) {
     //         return row.length == this.gridCols;
     //     }),
-    //     "%s: Not all grid columns are %d ", arguments.callee.name, this.gridCols
+    //     "Not all grid columns are %d ", this.gridCols
     // );
 
     // Grid must be square
     console.assert(
         this.gridRows == this.gridCols,
-        "%s: Grid must be square, but got %d rows and %d columns", arguments.callee.name, this.gridRows, this.gridCols
+        "Grid must be square, but got %d rows and %d columns", this.gridRows, this.gridCols
     );
 
     // grid must consist of 0 in all entries
@@ -40,7 +40,7 @@ function ShipsGenerator(grid) {
                 return val === 0;
             })
         }),
-        "%s: Grid does not contain all 0's", arguments.callee.name
+        "Grid does not contain all 0's"
     );
 
     // create the ships array
@@ -150,7 +150,7 @@ ShipsGenerator.prototype.isOverlapping = function(shipLocations) {
     // shipLocations must NOT be empty
     console.assert(
         shipLocations.length !== 0,
-        "%s: Ship location array must not be empty.", arguments.callee.name
+        "Ship location array must not be empty."
     );
 
     for (let loc = 0; loc < shipLocations.length; loc++) {
@@ -163,3 +163,22 @@ ShipsGenerator.prototype.isOverlapping = function(shipLocations) {
     // if loop terminated without returning true means that there were no collisions
     return false;
 }
+
+// INIT EVERYTHING BELOW FOR TESTING
+const grid = [
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0]
+];
+
+const gameObj = new ShipsGenerator(grid);
+gameObj.placeShipsRandomly();
+
+console.table(grid);

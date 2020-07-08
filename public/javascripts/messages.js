@@ -1,8 +1,10 @@
 //messages to let the server and the client communicate with each other 
 (function(exports) {
 
+    ////////////////////////////// GAME STATE LOGIC MESSAGES //////////////////////////////
+
     /* 
-     * Client to server: game is complete, the winner is ... 
+     * Server to client: game is complete, the winner is ... 
      */
     exports.T_GAME_WON_BY = "GAME-WON-BY";             
     exports.GAME_WON_BY = {
@@ -18,7 +20,6 @@
         type: "GAME-ABORTED"
     };
     exports.S_GAME_ABORTED = JSON.stringify(exports.O_GAME_ABORTED);
-
 
     /*
      * Server to client: set as player A 
@@ -38,26 +39,27 @@
         data: "B"
     };
     exports.S_PLAYER_B = JSON.stringify(exports.O_PLAYER_B);
+    
+    /* 
+    * Server to Player A & B: game over with result won/loss 
+    */
+   exports.T_GAME_OVER = "GAME-OVER";              
+   exports.GAME_OVER = {
+       type: exports.T_GAME_OVER,
+       data: null
+    };
 
+    /////////////////////////////// TILE LOGIC MESSAGES ///////////////////////////////////
 
     /* 
-     * Player B OR Player A clicked tile: sens coordinates to server 
+     * Player B OR Player A clicked tile: send coordinates of tile to server 
      */
     exports.T_TILE_SHOT = "CLICK-ON-TILE";         
     exports.TILE_SHOT = {
         type: exports.T_TILE_SHOT,
         // this needs to be replace with which player shot (not here but when a tile is actually clicked)
-        // NOTE: this must be a Coordinate object
+        // NOTE: this must be an object containing x coordinate and y coordinate of clicked tile
         data: null 
-    };
-
-    /* 
-     * Server to Player A & B: game over with result won/loss 
-     */
-    exports.T_GAME_OVER = "GAME-OVER";              
-    exports.GAME_OVER = {
-        type: exports.T_GAME_OVER,
-        data: null
     };
 
     /* 
@@ -70,12 +72,43 @@
     };
 
     /* 
+     * Server to client: clicked tile contained part of ship and that part is last part of that ship, thus hit and sink 
+     */
+    exports.T_TILE_HIT_SINK = "TILE-HIT-SINK";              
+    exports.TILE_HIT_SINK = {
+        type: exports.T_TILE_HIT_SINK,
+        data: null //TODO: check if data needs to be sent
+    };
+
+    /* 
      * Server to client: clicked tile contained no ship part and is a miss 
      */
     exports.T_TILE_MISS = "TILE-MISS";              
-    exports.TILE_HIT = {
+    exports.TILE_MISS = {
         type: exports.T_TILE_MISS,
         data: null //TODO: check if data needs to be sent
+    };
+
+    ////////////////////////////// SENDING GRID OF PLAYERS TO SERVER MESSAGES ///////////////////////
+
+    /* 
+     * Client to server: Send grid of player A to server when player A connects to the socket 
+     */
+    exports.T_GRID_PLAYER_A = "GRID-PLAYER-A";              
+    exports.GRID_PLAYER_A = {
+        type: exports.T_GRID_PLAYER_A,
+        // NOTE: data must be the 2D array of the grid of player A
+        data: null
+    };
+
+    /* 
+     * Client to server: Send grid of player B to server when player B connects to the socket 
+     */
+    exports.T_GRID_PLAYER_B = "GRID-PLAYER-B";              
+    exports.GRID_PLAYER_B = {
+        type: exports.T_GRID_PLAYER_B,
+        // NOTE: data must be the 2D array of the grid of player B
+        data: null
     };
 
 

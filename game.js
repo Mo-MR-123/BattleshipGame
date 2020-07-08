@@ -38,8 +38,6 @@ var game = function (gameID) {
     // randomly select who begins with shooting
     this.playerTurn = ((Math.floor(Math.random() * 2)) === 0) ? "A" : "B";
     
-    // indicating whether the game is started
-    this.gameIsStarted = false;
     this.gameState = "0 JOINED"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
 };
 

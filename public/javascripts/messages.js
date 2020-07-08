@@ -5,14 +5,14 @@
      * Client to server: game is complete, the winner is ... 
      */
     exports.T_GAME_WON_BY = "GAME-WON-BY";             
-    exports.O_GAME_WON_BY = {
+    exports.GAME_WON_BY = {
         type: exports.T_GAME_WON_BY,
         //this needs to be replaced with which player won
         data: null 
     };
 
     /*
-     * Server to client: abort game (e.g. if second player exited the game) 
+     * Server to client: abort game (if first or second player exited the game) 
      */
     exports.O_GAME_ABORTED = {                          
         type: "GAME-ABORTED"
@@ -41,12 +41,13 @@
 
 
     /* 
-     * Player B to server OR server to Player A: clicked tile 
+     * Player B OR Player A clicked tile: sens coordinates to server 
      */
-    exports.T_MAKE_A_SHOT = "CLICK-ON-TILE";         
-    exports.O_MAKE_A_SHOT = {
-        type: exports.T_MAKE_A_SHOT,
+    exports.T_TILE_SHOT = "CLICK-ON-TILE";         
+    exports.TILE_SHOT = {
+        type: exports.T_TILE_SHOT,
         // this needs to be replace with which player shot (not here but when a tile is actually clicked)
+        // NOTE: this must be a Coordinate object
         data: null 
     };
 
@@ -54,9 +55,27 @@
      * Server to Player A & B: game over with result won/loss 
      */
     exports.T_GAME_OVER = "GAME-OVER";              
-    exports.O_GAME_OVER = {
+    exports.GAME_OVER = {
         type: exports.T_GAME_OVER,
         data: null
+    };
+
+    /* 
+     * Server to client: clicked tile contained part of ship and is hit 
+     */
+    exports.T_TILE_HIT = "TILE-HIT";              
+    exports.TILE_HIT = {
+        type: exports.T_TILE_HIT,
+        data: null //TODO: check if data needs to be sent
+    };
+
+    /* 
+     * Server to client: clicked tile contained no ship part and is a miss 
+     */
+    exports.T_TILE_MISS = "TILE-MISS";              
+    exports.TILE_HIT = {
+        type: exports.T_TILE_MISS,
+        data: null //TODO: check if data needs to be sent
     };
 
 

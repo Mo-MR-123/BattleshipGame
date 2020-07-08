@@ -16,9 +16,9 @@ router.get('/place-ships', function(req, res) {
   res.render('shipplacement', { gridDim: shared.GRID_DIM });
 });
 
-router.get('/waiting-page', function(req, res) {
-  res.sendFile('waitingpage.html', { root: './public' });
-});
+// router.get('/waiting-page', function(req, res) {
+//   res.sendFile('waitingpage.html', { root: './public' });
+// });
 
 /* Pressing the 'START GAME' button, returns game page */
 router.get('/play', function(req, res) {

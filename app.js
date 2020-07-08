@@ -120,7 +120,7 @@ wss.on("connection", function connection(ws) {
      *  2. determine the game object where this player is linked to
      *  3. determine the opponent.
      *  4. handle message data if there is any
-     *  5. send the message to noth players
+     *  5. broadcast the message to both players A and B
      */ 
     con.on("message", function incoming(message) {
         const oMsg = JSON.parse(message);

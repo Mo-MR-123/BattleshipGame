@@ -8,7 +8,7 @@ var game = function (gameID) {
     this.id = gameID;
 
     // NOTE: Client must be player A or player B but not both and not none
-    // this.playerA and this.playerB must be assigned to the websocket of the client of either player A or B
+    // this.playerA and this.playerB must be assigned to the websocket of the client of player A and B respectively
     this.playerA = null;
     this.playerB = null;
 
@@ -56,22 +56,27 @@ game.prototype.setPlayerBGrid = function(playerBGrid) {
     this.playerBGrid = playerBGrid;
 }
 
+// TODO: check wether function "createGrid" is needed here or client
+
 // function to create board
-game.prototype.createGrid = function(width=this.gridRows, height=this.gridCols) {
-    // create row
-    let column = new Array(width);
-    for (let k = 0; k < width; k++) {
-        column[k] = 0;
-    }
+// game.prototype.createGrid = function(width=this.gridRows, height=this.gridCols) {
+//     // create row
+//     let column = new Array(width);
+//     for (let k = 0; k < width; k++) {
+//         column[k] = 0;
+//     }
 
-    // add rows to grid
-    let grid = [];
-    for (let c = 0; c < height; c++) {
-        grid.push(column);
-    }
+//     // add rows to grid
+//     let grid = [];
+//     for (let c = 0; c < height; c++) {
+//         grid.push(column);
+//     }
 
-    return grid;
-}
+//     return grid;
+// }
+
+// TODO: check wether function "isValidGrid" is needed here or client. 
+// If yes then it should be fully implemented first (now it is not)
 
 // check if ships don't overlap and whether all ships have been placed on the grid
 // also check whether ships are out of bounds
@@ -114,7 +119,7 @@ game.prototype.createGrid = function(width=this.gridRows, height=this.gridCols) 
 //     return (counterShips === shared.AMOUNT_HITS_WIN ? true : false);
 // }
 
-// TODO: handle game state transition and validation of those states
+// TODO: handle game state transition and validation of those states using methods "isValidTransition" and "isValidState"
 // TODO: refactor this method to be simpler
 game.prototype.tileFired = function(coordinate, playerAShot) {
     console.log(coordinate);

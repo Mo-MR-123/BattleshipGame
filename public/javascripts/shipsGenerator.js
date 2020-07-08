@@ -1,9 +1,9 @@
-// NOTE: shared.js ans ship.js must be included in html before this file for this class to work
+// NOTE: shared.js, ship.js and coordinate.js must be included in html before this file for this class to work
 'use strict';
 
 /**
  * ShipsGenerator class.
- *
+ * TODO: console.assert that the values on the grid are all 0 initially.
  * @constructor
  * @param {Array} - 2D grid of the current user
  */
@@ -83,13 +83,18 @@ ShipsGenerator.prototype.placeShipsRandomly = function(grid) {
     for (let s = 0; s < this.ships.length; s++) {
         const currShip = this.ships[s];
 
+        const shipID = ship.id;
+
+        // find location coordinates of current ship that do not overlap with other ships already on the grid
         let currShipLocations;
         do {
             currShipLocations = this.generateShipLocations(currShip);
-        } while(this.checkCollisions(currShipLocations));
+        } while(this.checkOverlapping(currShipLocations));
 
-        for (let c = 0; c < grid.length; c++) {
-            
+        // assign grid location on the grid with proper id of the current ship
+        for (let c = 0; c < currShipLocations.length; c++) {
+            const currShipCoordinate = currShipLocations[c];
+            this.grid[currShipCoordinate.x][currShipCoordinate.y] = shipID;
         }
         
     }
@@ -100,38 +105,36 @@ ShipsGenerator.prototype.placeShipsRandomly = function(grid) {
 /**
  * Generate array of random ship location Coordinates given a ship.
  * 
- * @param {Object} - Ship.
+ * @param {Object} - Ship Object.
  * @returns - Array of Coordinate objects of randomly generated ship locations.
  */
 ShipsGenerator.prototype.generateShipLocations = function(ship) {
-        // generate 0 OR 1 to place given ship vertically or horizontally
-        const shipID = ship.id;
-        const shipSize = ship.size;
+    const shipSize = ship.size;
 
-        // generates 0 OR 1 randomly
-        const direction = Math.floor(Math.random() * 2);
-        
-        let rowCoord, colCoord;
+    // generate 0 OR 1 to place given ship vertically or horizontally
+    const direction = Math.floor(Math.random() * 2);
+    
+    let rowCoord, colCoord;
 
-        // get startCoord and endCoord depending on direction
+    // get startCoord and endCoord depending on direction
+    if (direction === Setup.HORIZONTAL_DIRECTION) {
+        rowCoord = Math.floor(Math.random() * this.gridRows);
+        colCoord =  Math.floor(Math.random() * (this.gridCols - shipSize + 1));
+    } else {
+        rowCoord = Math.floor(Math.random() * (this.gridRows - shipSize + 1));
+        colCoord =  Math.floor(Math.random() * this.gridCols);
+    }
+
+    let currShipRandomLocations = [];
+    for (let i = 0; i < shipSize; i++) {
         if (direction === Setup.HORIZONTAL_DIRECTION) {
-            rowCoord = Math.floor(Math.random() * this.gridRows);
-            colCoord =  Math.floor(Math.random() * (this.gridCols - shipSize + 1));
+            currShipRandomLocations.push(new Coordinate(rowCoord, colCoord + i));
         } else {
-            rowCoord = Math.floor(Math.random() * (this.gridRows - shipSize + 1));
-            colCoord =  Math.floor(Math.random() * this.gridCols);
+            currShipRandomLocations.push(new Coordinate(rowCoord + i, colCoord));
         }
+    }
 
-        let currShipRandomLocations = [];
-        for (let i = 0; i < shipSize; i++) {
-            if (direction === Setup.HORIZONTAL_DIRECTION) {
-                currShipRandomLocations.push(new Coordinate(rowCoord, colCoord + i));
-            } else {
-                currShipRandomLocations.push(new Coordinate(rowCoord + i, colCoord));
-            }
-        }
-
-        return currShipRandomLocations;
+    return currShipRandomLocations;
 }
 
 
@@ -142,8 +145,8 @@ ShipsGenerator.prototype.generateShipLocations = function(ship) {
  * @param {Array} - An array of Coordinate object to indicate the position of each part of given ship.
  * @returns - true if there are no collision, else false.
  */
-ShipsGenerator.prototype.checkCollisions = function(shipLocations) {
-    // shipLocations must not be empty
+ShipsGenerator.prototype.checkOverlapping = function(shipLocations) {
+    // shipLocations must NOT be empty
     console.assert(
         shipLocations.length === 0,
         "%s: Ship location array must not be empty.", arguments.callee.name

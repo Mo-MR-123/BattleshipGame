@@ -85,7 +85,7 @@ setInterval(function() {
 var currentGame = new Game(0);
 
 //givig each websocket a unique connection ID
-var connectionID = 0;                                       
+var connectionID = 0;
 
 wss.on("connection", function connection(ws) {
     let con = ws;                                // binding the connected client/user (which is the param of the callback function) to a constant called con
@@ -102,23 +102,23 @@ wss.on("connection", function connection(ws) {
 
     //TODO: when the start button in the game page is clicked remove the script element of the ship placement and insert script for ship selection (gamelogic)
 
-    /*
-     * inform the client about its assigned player type
-     */ 
-    con.send((playerType == "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
+    // /*
+    //  * inform the client about its assigned player type
+    //  */ 
+    // con.send((playerType == "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
+
+    // /*
+    //  * TODO: check if we even need the below if statement
+    //  * client B receives the target word (if already available)
+    //  */ 
+    // if (playerType == "B") {
+    //     let msg = messages.S_PLAYER_B;
+    //     //TODO: implement what player b receives
+    //     con.send(JSON.stringify(msg));
+    // }
 
     /*
-     * TODO: check if we even need the below if statement
-     * client B receives the target word (if already available)
-     */ 
-    if (playerType == "B") {
-        let msg = messages.S_PLAYER_B;
-        //TODO: implement what player b receives
-        con.send(JSON.stringify(msg));
-    }
-
-    /*
-     * if current game already has 2 players connected,
+     * If current game already has 2 players connected,
      * then just make a new game and connect the new 2 players to it
      */ 
     if (currentGame.hasTwoConnectedPlayers()) {
@@ -127,9 +127,10 @@ wss.on("connection", function connection(ws) {
 
     /*
      * message coming in from a player:
-     *  1. determine the game object
-     *  2. determine the opposing player OP
-     *  3. send the message to OP 
+     *  1. determine which player has current id
+     *  2. determine the game object where this player is linked to
+     *  2. determine the opponent.
+     *  3. send the message to opponent
      */ 
     con.on("message", function incoming(message) {
         let oMsg = JSON.parse(message);

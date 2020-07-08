@@ -38,5 +38,4 @@
         return new Error("No localStorage available in this browser. Please make sure you use a browser that supports localStorage!");
     }
 } 
-(typeof exports === "undefined" ? this.localStorage = {} : new Error("Don't use this in server please.")));
-
+(typeof exports === "undefined" ? this.LS = {} : new Error("Don't use this in server please."))); 

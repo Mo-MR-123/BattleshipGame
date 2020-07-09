@@ -43,21 +43,36 @@ var game = function (gameID) {
 
 // game can be started when both players grid is set
 game.prototype.isGameStarted = function() {
-    return this.playerAGrid && this.playerBGrid;
+    return (this.playerAGrid && this.playerBGrid);
 }
 
-// setter for player A grid
+/**
+ * Set the grid of player A only if the grid is valid
+ * TODO: is it better to just generate a random valid grid if the grid is not valid? 
+ * (using ShipsGenerator class and createGrid method)
+ * 
+ * @param {Array} playerAGrid - 2D array of player A 
+ */
 game.prototype.setPlayerAGrid = function(playerAGrid) {
-    this.playerAGrid = playerAGrid;
+    if(this.isValidGrid(playerAGrid)) {
+        this.playerAGrid = playerAGrid;
+    }
 }
 
-// setter for player B grid
+/**
+ * Set the grid of player B only if the grid is valid.
+ * TODO: is it better to just generate a random valid grid if the grid is not valid? 
+ * (using ShipsGenerator class and createGrid method)
+ * 
+ * @param {Array} playerBGrid - 2D array of player B
+ */
 game.prototype.setPlayerBGrid = function(playerBGrid) {
-    this.playerBGrid = playerBGrid;
+    if(this.isValidGrid(playerBGrid)) {
+        this.playerBGrid = playerBGrid;
+    }
 }
 
 // TODO: check wether function "createGrid" is needed here or client
-
 // function to create board
 // game.prototype.createGrid = function(width=this.gridRows, height=this.gridCols) {
 //     // create row
@@ -75,49 +90,94 @@ game.prototype.setPlayerBGrid = function(playerBGrid) {
 //     return grid;
 // }
 
-// TODO: check wether function "isValidGrid" is needed here or client. 
-// If yes then it should be fully implemented first (now it is not)
+/**
+ * Checks if all ships have been placed on the grid.
+ * Thus also implicitely checks whether ships are out of bounds.
+ * NOTE: this assumes that all ships do not overlap! 
+ * 
+ * @param {Array} grid - 2D array to check for validity
+ * @returns - true if the grid is valid and all checks returned true, else false if grid is not valid. 
+ */ 
+game.prototype.isValidGrid = function(grid) {
+    // check if grid is an array object
+    const isGridAnArray = Array.isArray(grid);
 
-// check if ships don't overlap and whether all ships have been placed on the grid
-// also check whether ships are out of bounds
-// game.prototype.isValidGrid = function(grid) {
-//     // check if ships is an array of ships
-//     console.assert(
-//         Array.isArray(this.ships),
-//         "%s: Expecting an Array of ships, got a %s", arguments.callee.name, typeof this.ships
-//     );
+    // check if grid is a 2d grid with correct column dimensions
+    const isCorrentColumnDims = grid.every(function (row) {
+        return Array.isArray(row) && row.length === this.gridCols;
+    });
 
-//     // check if grid is an array object
-//     console.assert(
-//         Array.isArray(grid),
-//         "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
-//     );
+    // output debug assertions in case one of above conditions is false
+    console.assert(
+        isGridAnArray,
+        "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
+    );
 
-//     // check if grid is a 2d grid with correct column dimensions
-//     console.assert(
-//         grid.every(function (row) {
-//             return Array.isArray(row) && row.length === this.gridCols;
-//         }),
-//         "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
-//     );
+    console.assert(
+        isCorrentColumnDims,
+        "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
+    );
 
-//     let counterShips = 0;
-//     let shipOutOfBound = false;
+    // define counter of the ships and the ships to check
+    let counterShips = 0;
+    let counterDestroyer = _.cloneDeep(shared.DESTROYER);
+    let counterSubmarine = _.cloneDeep(shared.SUBMARINE);
+    let counterCruiser = _.cloneDeep(shared.CRUISER);
+    let counterBattleship = _.cloneDeep(shared.BATTLESHIP);
+    let counterCarrier = _.cloneDeep(shared.CARRIER);
 
-//     this.ships.forEach(ship => {
-//         // TODO: 
-//     })
+    for(let i = 0; i < grid.length; i++){
+        for(let j = 0 ; j < grid[i].length; j++){
+            const tileId = grid[i][j];
 
-//     for(let i = 0; i < grid.length; i++){
-//         for(let j = 0 ; j < grid[i].length; j++){
-//             if (grid[i][j] > 0) {
-//                 counterShips += 1
-//             }
-//         }
-//     }
+            // if tileId is 0 or higher, then it means that it is part of ship
+            if (tileId > 0) {
+                counterShips += 1
+
+                // determine which ship this tileId correspond to and increment the hits of that ship
+                // NOTE: hits here do not mean anything, here the hits property of each ship is a counter for
+                // parts of each ship found on the grid (to determine whether all ships are placed on grid)
+                switch (tileId) {
+                    case counterDestroyer.id:
+                        counterDestroyer.hits++;
+                        break;
+                    case counterSubmarine.id:
+                        counterSubmarine.hits++;
+                        break;
+                    case counterCruiser.id:
+                        counterCruiser.hits++;
+                        break
+                    case counterBattleship.id:
+                        counterBattleship.hits++;
+                        break;
+                    case counterCarrier.id:
+                        counterCarrier.hits++;
+                        break;
+                }
+            } else if (tileId < 0) {
+                // if tileId is lower than 0, then it means that there is an invalid value found
+                // as the minimum number on the grid allowed is 0. 
+                // This is not allowed and thus immidiately return flase.
+                return false;
+            }
+        }
+    }
     
-//     return (counterShips === shared.AMOUNT_HITS_WIN ? true : false);
-// }
+    // checks if counterShips is equal to expected amount of ships that should be on the grid
+    // this also checks whether each ship is placed on the grid
+    const isGridValid = (
+        isGridAnArray &&
+        isCorrentColumnDims &&
+        counterShips === shared.AMOUNT_HITS_WIN &&
+        counterDestroyer.hits === counterDestroyer.size && 
+        counterSubmarine.hits === counterSubmarine.size &&
+        counterCruiser.hits === counterCruiser.size &&
+        counterBattleship.hits === counterBattleship.size &&
+        counterCarrier.hits === counterCarrier.size
+    );
+
+    return (isGridValid ? true : false);
+}
 
 /**
  * The different possible states of the game
@@ -127,10 +187,10 @@ game.prototype.transitionStates = {};
 game.prototype.transitionStates["0 JOINED"] = 0;
 game.prototype.transitionStates["1 JOINED"] = 1;
 game.prototype.transitionStates["2 JOINED"] = 2;
-game.prototype.transitionStates["TILE SHOT"] = 3;
-game.prototype.transitionStates["A"] = 4; //A won
-game.prototype.transitionStates["B"] = 5; //B won
-game.prototype.transitionStates["ABORTED"] = 6;
+// game.prototype.transitionStates["TILE SHOT"] = 3;
+game.prototype.transitionStates["A"] = 3; //A won
+game.prototype.transitionStates["B"] = 4; //B won
+game.prototype.transitionStates["ABORTED"] = 5;
 
 /*
  * Not all game states can be transformed into each other;
@@ -139,13 +199,13 @@ game.prototype.transitionStates["ABORTED"] = 6;
  * TODO: Update it to contain allowed transitions of states TILE HIT, TILE MISS, TILE-HIT_SINK etc...
  */ 
 game.prototype.transitionMatrix = [
-    [0, 1, 0, 0, 0, 0, 0],   //0 JOINED
-    [1, 0, 1, 0, 0, 0, 0],   //1 JOINED
-    [0, 0, 0, 1, 0, 0, 1],   //2 JOINED (note: once we have two players, there is no way back!)
-    [0, 0, 0, 1, 1, 1, 1],   //TILE SHOT
-    [0, 0, 0, 0, 0, 0, 0],   //A WON
-    [0, 0, 0, 0, 0, 0, 0],   //B WON
-    [0, 0, 0, 0, 0, 0, 0]    //ABORTED
+    [0, 1, 0, 0, 0, 0],   //0 JOINED
+    [1, 0, 1, 0, 0, 0],   //1 JOINED
+    [0, 0, 0, 1, 1, 1],   //2 JOINED (note: once we have two players, there is no way back!)
+    // [0, 0, 0, 1, 1, 1, 1],   //TILE SHOT
+    [0, 0, 0, 0, 0, 0],   //A WON
+    [0, 0, 0, 0, 0, 0],   //B WON
+    [0, 0, 0, 0, 0, 0]    //ABORTED
 ];
 
 /**
@@ -281,6 +341,8 @@ game.prototype.addPlayer = function (player) {
  * @param {Object} coordinate - object containing x and y coordiantes -> {x: x, y: y}.
  *                              NOTE: x represents row of tile and y represents column of tile
  * @param {Boolean} playerAShot - true if player A fired, else false.
+ * @returns - message that is one of following types: TILE_MISS, TILE_HIT, TILE_HIT_SINK and GAME_WON_BY
+ *            depending on the game state and on the tile that has been shot, one of the messages is returned.
  */
 game.prototype.tileFired = function(coordinate, playerAShot) {
     try {
@@ -292,6 +354,8 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
         // check if x and y values are within the boundary of the grid.
         if (x >= 0 && x < this.gridRows && y >= 0 && y < this.gridCols) {
 
+            // define opponent grid array, opponent ships array and current player
+            // depending on who shot a tile
             let opponentGrid, opponentShips, currentPlayer;
             if (playerAShot) {
                 currentPlayer = "A";
@@ -307,19 +371,21 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
 
             if (id === 0) {
 
-                // player A missed
+                // current player (A or B) missed
                 msgResult = _.cloneDeep(messages.TILE_MISS);
                 msgResult.data = { player: currentPlayer, coordinate: { x: x, y: y } }; 
 
             } else if (id > 0) {
 
-                // player A hit a ship on grid of player B
-                // increment hits of the hit ship and player A hit counter by 1
+                // current player (A or B) hit a ship on grid of the opponent
+                // increment hits of the hit ship and current player hit counter by 1
                 const shipHit = opponentShips[id - 1];
                 shipHit.hits++;
 
+                // depending on what player shot, define hit counter of the player that shot
+                // to be used to check whether that player has won or not.
+                // this also increments the current player counter of the game.  
                 let currentPlayerHitCounter;
-
                 if (playerAShot) {
                     this.playerAHitCounter++;
                     currentPlayerHitCounter = this.playerAHitCounter;
@@ -329,6 +395,7 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
                 }
 
                 // check if the hit ship sank because of this hit
+                // else it is just hit and did not sink
                 if (shipHit.hits === shipHit.size) {
                     msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
                     msgResult.data = { player: currentPlayer, coordinate: { x: x, y: y }, ship: shipHit.name };
@@ -341,15 +408,14 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
                 if (currentPlayerHitCounter === shared.AMOUNT_HITS_WIN) {
                     msgResult = _.cloneDeep(messages.GAME_WON_BY);
                     msgResult.data = { player: currentPlayer, coordinate: { x: x, y: y } };
+                    // set game state to the player that won the game.
                     this.setStatus(currentPlayer);
                 }
 
             }
 
-            // set ship part on x and y to -1, so that it can not be hit anymore
+            // set ship part of given coordiantes to -1, so that it can not be hit anymore
             opponentGrid[x][y] = -1;
-
-            return msgResult;
 
         } else {
             // either x or y is out of bounds
@@ -362,6 +428,8 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
     } catch (e) {
         console.error(e);
     }
+
+    return null;
 }
 
 module.exports = game;

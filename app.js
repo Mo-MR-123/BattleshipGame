@@ -184,7 +184,7 @@ wss.on("connection", function connection(ws) {
                     if (hasData) {
                         const tileShotMsg = gameObj.tileFired(oMsg.data, true);
                         
-                        // TODO: check if tileShotMsg can be null and whether this check is even needed
+                        // check if tileShotMsg is not null (so there is a message)
                         if (tileShotMsg) {
                             // if player A missed, change turn to player B
                             if (tileShotMsg.type === messages.T_TILE_MISS) {
@@ -233,6 +233,11 @@ wss.on("connection", function connection(ws) {
 
     });
 
+    //NOTE: The socket is always closed by the client when somebody wins OR when 1 of the players disconnects.
+    // On the client, when somebody wins, boolean needs to be true indicating game is won (on the client).
+    // After that the client needs to close the socket, on client when socket is closed -> check whether gameWon boolean is true.
+    // If yes, then show who won, otherwise say nobody won with ABORTED mesage
+    // THIS NEEDS TO HAPPEN ON EACH CLIENT OF BOTH PLAYERS
     con.on("close", function (code) {
         
         // code 1001 means almost always closing initiated by the client;
@@ -241,7 +246,7 @@ wss.on("connection", function connection(ws) {
         if (code == "1001") {
             //if possible, abort the game; if not, the game is already completed
             let gameObj = websockets[con.id];
-
+            
             if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
                 gameObj.setStatus("ABORTED"); 
                 gameStatus.gamesExited++;
@@ -262,6 +267,8 @@ wss.on("connection", function connection(ws) {
                 catch(e) {
                     console.log("Player B closing: " + e);
                 }                
+            } else {
+                gameStatus.gamesComplete++;
             }
             
         }

@@ -92,7 +92,7 @@
     exports.TILE_HIT_SINK = {
         type: exports.T_TILE_HIT_SINK,
         // data must contain which player hit and sank a ship (either "A" or "B") 
-        // so e.g. data: { player: "A", coordinate: { x: 1, y: 1 }, ship: "Destoyer", shipId: 1 }
+        // so e.g. data: { player: "A", coordinate: { x: 1, y: 1 }, ship: "Destoyer" }
         data: null
     };
 

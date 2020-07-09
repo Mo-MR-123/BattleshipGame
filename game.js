@@ -279,15 +279,26 @@ game.prototype.addPlayer = function (player) {
  * TODO: handle game state transition and validation of those states using methods "isValidTransition" and "isValidState"
  * TODO: refactor this method to be simpler
  * 
- * @param {Object} coordinate - object containing x and y coordiantes -> {x: x, y: y}
+ * @param {Object} coordinate - object containing x and y coordiantes -> {x: x, y: y}.
+ *                              NOTE: x represents row of tile and y represents column of tile
  * @param {Boolean} playerAShot - true if player A fired, else false.
  */
 game.prototype.tileFired = function(coordinate, playerAShot) {
     console.log(coordinate);
     try {
-        // TODO: check if x and y values are within the boundary of the grid!!
         const x = coordinate.x;
         const y = coordinate.y;
+
+        // check if x and y values are within the boundary of the grid.
+        console.assert(
+            x  < this.gridRows,
+            `coordinate x: ${x} is out of bounds!`, arguments.callee.name 
+        )
+
+        console.assert(
+            y  < this.gridCols,
+            `coordinate y: ${y} is out of bounds!`, arguments.callee.name 
+        )
 
         let msgResult = null;
 
@@ -311,7 +322,7 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
                 // check if the hit ship sank because of this hit
                 if (shipHit.hits === shipHit.size) {
                     msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
-                    msgResult.data = { player: "A", coordinate: { x: x, y: y }, ship: shipHit.name, shipId: id };
+                    msgResult.data = { player: "A", coordinate: { x: x, y: y }, ship: shipHit.name };
                 } else {
                     msgResult = _.cloneDeep(messages.TILE_HIT);
                     msgResult.data = { player: "A", coordinate: { x: x, y: y } };
@@ -351,7 +362,7 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
                 // check if the hit ship sank because of this hit
                 if (shipHit.hits === shipHit.size) {
                     msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
-                    msgResult.data = { player: "B", coordinate: { x: x, y: y }, ship: shipHit.name, shipId: id };
+                    msgResult.data = { player: "B", coordinate: { x: x, y: y }, ship: shipHit.name };
                 } else {
                     msgResult = _.cloneDeep(messages.TILE_HIT);
                     msgResult.data = { player: "B", coordinate: { x: x, y: y } };

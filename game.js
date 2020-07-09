@@ -124,6 +124,7 @@ game.prototype.setPlayerBGrid = function(playerBGrid) {
 game.prototype.tileFired = function(coordinate, playerAShot) {
     console.log(coordinate);
     try {
+        // TODO: check if x and y values are within the boundary of the grid!!
         const x = coordinate.x;
         const y = coordinate.y;
 
@@ -156,6 +157,7 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
                 }
 
                 // check if player A won
+                // TODO: send coordinates that caused the win to be displayed on the client
                 if (this.playerAHitCounter === shared.AMOUNT_HITS_WIN) {
                     msgResult = _.cloneDeep(messages.GAME_WON_BY);
                     msgResult.data = "A";
@@ -195,6 +197,7 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
                 }
 
                 // check if player B won
+                // TODO: send coordinates that caused the win to be displayed on the client
                 if (this.playerBHitCounter === shared.AMOUNT_HITS_WIN) {
                     msgResult = _.cloneDeep(messages.GAME_WON_BY);
                     msgResult.data = "B";

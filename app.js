@@ -125,7 +125,7 @@ wss.on("connection", function connection(ws) {
     con.on("message", function incoming(message) {
         const oMsg = JSON.parse(message);
         const hasData = oMsg.data ? true : false;
-
+        
         // get the id of the connection that sent a message, to get game object linked to player this con.id
         const gameObj = websockets[con.id];
         const isPlayerA = (gameObj.playerA === con) ? true : false;
@@ -227,8 +227,8 @@ wss.on("connection", function connection(ws) {
 
         }
         else {
-            console.log(`game with id ${con.id} does not have 2 players connected.
-             Player A is ${gameObj.playerA} and Player B is ${gameObj.playerB}`);
+            console.log(`Player A is `, gameObj.playerA ,` and Player B is `, gameObj.playerB);
+            console.log(`game with id ${con.id} does not have 2 players connected or is not started yet.`);
         }
 
     });
@@ -251,7 +251,7 @@ wss.on("connection", function connection(ws) {
                     gameObj.playerA.close();
                     gameObj.playerA = null;
                 }
-                catch(e){
+                catch(e) {
                     console.log("Player A closing: "+ e);
                 }
 
@@ -259,7 +259,7 @@ wss.on("connection", function connection(ws) {
                     gameObj.playerB.close(); 
                     gameObj.playerB = null;
                 }
-                catch(e){
+                catch(e) {
                     console.log("Player B closing: " + e);
                 }                
             }

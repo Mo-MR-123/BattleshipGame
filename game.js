@@ -221,7 +221,7 @@ game.prototype.hasTwoConnectedPlayers = function () {
  * NOTE: This is only called when the game initially starts and when a players misses
  */ 
 game.prototype.changeTurn = function() {
-    turnMessage = _.cloneDeep(messages.PLAYER_TURN);
+    let turnMessage = _.cloneDeep(messages.PLAYER_TURN);
     if (this.getTurn() === "A") {
         this.playerTurn = "B";
         turnMessage.data = "B";

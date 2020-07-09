@@ -9,7 +9,8 @@
     exports.T_GAME_WON_BY = "GAME-WON-BY";             
     exports.GAME_WON_BY = {
         type: exports.T_GAME_WON_BY,
-        //this needs to be replaced with which player won
+        //this needs to be replaced with which player won, also what tile was shot that caused the win
+        // e.g. { player: "A", coordinate: (0, 0) } -> player A won by hitting last part of last ship on (0,0)
         data: null 
     };
 
@@ -69,6 +70,7 @@
         type: exports.T_TILE_SHOT,
         // this needs to be replace with which player shot (not here but when a tile is actually clicked)
         // NOTE: this must be an object containing x coordinate and y coordinate of clicked tile
+        // e.g. data { player: "A", coordinate: { x: 0, y: 1 } }
         data: null 
     };
 
@@ -78,7 +80,8 @@
     exports.T_TILE_HIT = "TILE-HIT";              
     exports.TILE_HIT = {
         type: exports.T_TILE_HIT,
-        // data must contain which player hit the tile (either "A" or "B")
+        // data must contain which player hit the tile (either "A" or "B") and what tile is hit
+        // e.g. { player: "A", coordinate: { x: 0, y: 2 } }
         data: null
     };
 
@@ -89,7 +92,7 @@
     exports.TILE_HIT_SINK = {
         type: exports.T_TILE_HIT_SINK,
         // data must contain which player hit and sank a ship (either "A" or "B") 
-        // so e.g. data: {player: "A", ship: "Destoyer", shipId: 1}
+        // so e.g. data: { player: "A", coordinate: { x: 1, y: 1 }, ship: "Destoyer", shipId: 1 }
         data: null
     };
 
@@ -99,7 +102,8 @@
     exports.T_TILE_MISS = "TILE-MISS";              
     exports.TILE_MISS = {
         type: exports.T_TILE_MISS,
-        // data must contain which player missed (either "A" or "B")
+        // data must contain which player missed (either "A" or "B") and coordinate missed
+        // e.g. { player: "A", coordinate: { x: 0, y: 1 } }
         data: null
     };
 

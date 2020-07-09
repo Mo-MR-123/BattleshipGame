@@ -119,105 +119,10 @@ game.prototype.setPlayerBGrid = function(playerBGrid) {
 //     return (counterShips === shared.AMOUNT_HITS_WIN ? true : false);
 // }
 
-// TODO: handle game state transition and validation of those states using methods "isValidTransition" and "isValidState"
-// TODO: refactor this method to be simpler
-game.prototype.tileFired = function(coordinate, playerAShot) {
-    console.log(coordinate);
-    try {
-        // TODO: check if x and y values are within the boundary of the grid!!
-        const x = coordinate.x;
-        const y = coordinate.y;
-
-        let msgResult = null;
-
-        if (playerAShot) {
-            const id = this.playerBGrid[x][y];
-
-            if (id === 0) {
-
-                // player A missed
-                msgResult = _.cloneDeep(messages.TILE_MISS);
-                msgResult.data = "A"; 
-
-            } else if (id > 0) {
-
-                // player A hit a ship on grid of player B
-                // increment hits of the hit ship and player A hit counter by 1
-                const shipHit = this.shipsPlayerB[id - 1];
-                this.playerAHitCounter++;
-                shipHit.hits++;
-
-                // check if the hit ship sank because of this hit
-                if (shipHit.hits === shipHit.size) {
-                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
-                    msgResult.data = { player: "A", ship: shipHit.name, shipId: id };
-                } else {
-                    msgResult = _.cloneDeep(messages.TILE_HIT);
-                    msgResult.data = "A";
-                }
-
-                // check if player A won
-                // TODO: send coordinates that caused the win to be displayed on the client
-                if (this.playerAHitCounter === shared.AMOUNT_HITS_WIN) {
-                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
-                    msgResult.data = "A";
-                    this.setStatus("A");
-                }
-
-            }
-
-            // set ship part on x and y to -1, so that it can not be hit anymore
-            this.playerBGrid[x][y] = -1;
-
-        } else {
-
-            const id = this.playerAGrid[x][y];
-
-            if (id === 0) {
-
-                // player B missed
-                msgResult = _.cloneDeep(messages.TILE_MISS);
-                msgResult.data = "B"; 
-
-            } else if (id > 0) {
-
-                // player B hit a ship on grid of player A,
-                // increment hits of the hit ship and player B hit counter by 1
-                const shipHit = this.shipsPlayerA[id - 1];
-                this.playerBHitCounter++;
-                shipHit.hits++;
-
-                // check if the hit ship sank because of this hit
-                if (shipHit.hits === shipHit.size) {
-                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
-                    msgResult.data = { player: "B", ship: shipHit.name, shipId: id };
-                } else {
-                    msgResult = _.cloneDeep(messages.TILE_HIT);
-                    msgResult.data = "B";
-                }
-
-                // check if player B won
-                // TODO: send coordinates that caused the win to be displayed on the client
-                if (this.playerBHitCounter === shared.AMOUNT_HITS_WIN) {
-                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
-                    msgResult.data = "B";
-                    this.setStatus("B");
-                }
-
-            }
-
-            // set ship part on x and y to -1, so that it can not be hit anymore
-            this.playerAGrid[x][y] = -1;
-        }
-
-        return msgResult;
-
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-//different states of the game
+/**
+ * The different possible states of the game
+ * TODO: Update it to contain the TILE HIT, TILE MISS, TILE-HIT_SINK etc...
+ */
 game.prototype.transitionStates = {};
 game.prototype.transitionStates["0 JOINED"] = 0;
 game.prototype.transitionStates["1 JOINED"] = 1;
@@ -231,6 +136,7 @@ game.prototype.transitionStates["ABORTED"] = 6;
  * Not all game states can be transformed into each other;
  * the matrix contains the valid transitions.
  * They are checked each time a state change is attempted.
+ * TODO: Update it to contain allowed transitions of states TILE HIT, TILE MISS, TILE-HIT_SINK etc...
  */ 
 game.prototype.transitionMatrix = [
     [0, 1, 0, 0, 0, 0, 0],   //0 JOINED
@@ -242,6 +148,11 @@ game.prototype.transitionMatrix = [
     [0, 0, 0, 0, 0, 0, 0]    //ABORTED
 ];
 
+/**
+ * Checks whether the transition of current to the "to" state is valid
+ * @param {String} from - current state
+ * @param {String} to - state to transition to
+ */
 game.prototype.isValidTransition = function (from, to) {
     
     //checking for the validation of a transition
@@ -270,12 +181,21 @@ game.prototype.isValidTransition = function (from, to) {
     return (game.prototype.transitionMatrix[i][j] > 0);
 };
 
-//return boolean value. if true, then transitionState is valid. If false, then transitionState is invalid.
+/**
+ * Check if given state is a valid state 
+ * 
+ * @param {String} s - the State to check 
+ * @returns - true if transitionState is valid. Else false if then transitionState is invalid.
+ */
 game.prototype.isValidState = function (s) {
     return (s in game.prototype.transitionStates);
 };
 
-//setting a new game state by transitioning
+/**
+ * setting a new game state by transitioning and check if w is valid transition
+ * 
+ * @param {String} w - Change game state to this state 
+ */
 game.prototype.setStatus = function (w) {
 
     if (game.prototype.isValidState(w) && game.prototype.isValidTransition(this.gameState, w)) {
@@ -287,10 +207,19 @@ game.prototype.setStatus = function (w) {
     }
 };
 
+/**
+ * Indicates whether this game has 2 players connected to it
+ * 
+ * @returns - true if 2 players are joined to this game, else false.
+ */
 game.prototype.hasTwoConnectedPlayers = function () {
     return (this.gameState == "2 JOINED");
 };
 
+/**
+ * Change turn of players
+ * NOTE: This is only called when the game initially starts and when a players misses
+ */ 
 game.prototype.changeTurn = function() {
     turnMessage = _.cloneDeep(messages.PLAYER_TURN);
     if (this.getTurn() === "A") {
@@ -303,15 +232,25 @@ game.prototype.changeTurn = function() {
     return turnMessage;
 } 
 
+/**
+ *  Returns whos turn it is to shoot (either "A" or "B")
+ */
 game.prototype.getTurn = function() {
     return this.playerTurn;
 } 
 
+/**
+ * Adding player to this game
+ * 
+ * @param {WebSocket} player 
+ * @returns - "A" if the added players is first one, "B" if second player is added.
+ *            Else Error object.
+ */
 game.prototype.addPlayer = function (player) {
 
-    // when a player connects to the game scoket, the game needs to be either in 1 JOINED state 
+    // when a player connects to the game socket, the game needs to be either in 1 JOINED state 
     // (which means this new player is 2nd player to join the game)
-    // OR the game needs to be in ) 0 JOINED state which means that this player is the 1st player to join this game.
+    // OR the game needs to be in 0 JOINED state which means that this player is the 1st player to join this game.
     // This means if game state is 2 JOINED then no player can join this game instance.
     if (this.gameState != "0 JOINED" && this.gameState != "1 JOINED") {
         return new Error("Invalid call to addPlayer, current state is %s", this.gameState);
@@ -335,5 +274,108 @@ game.prototype.addPlayer = function (player) {
     }
 };
 
+
+/**
+ * TODO: handle game state transition and validation of those states using methods "isValidTransition" and "isValidState"
+ * TODO: refactor this method to be simpler
+ * 
+ * @param {Object} coordinate - object containing x and y coordiantes -> {x: x, y: y}
+ * @param {Boolean} playerAShot - true if player A fired, else false.
+ */
+game.prototype.tileFired = function(coordinate, playerAShot) {
+    console.log(coordinate);
+    try {
+        // TODO: check if x and y values are within the boundary of the grid!!
+        const x = coordinate.x;
+        const y = coordinate.y;
+
+        let msgResult = null;
+
+        if (playerAShot) {
+            const id = this.playerBGrid[x][y];
+
+            if (id === 0) {
+
+                // player A missed
+                msgResult = _.cloneDeep(messages.TILE_MISS);
+                msgResult.data = { player: "A", coordinate: { x: x, y: y } }; 
+
+            } else if (id > 0) {
+
+                // player A hit a ship on grid of player B
+                // increment hits of the hit ship and player A hit counter by 1
+                const shipHit = this.shipsPlayerB[id - 1];
+                this.playerAHitCounter++;
+                shipHit.hits++;
+
+                // check if the hit ship sank because of this hit
+                if (shipHit.hits === shipHit.size) {
+                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
+                    msgResult.data = { player: "A", coordinate: { x: x, y: y }, ship: shipHit.name, shipId: id };
+                } else {
+                    msgResult = _.cloneDeep(messages.TILE_HIT);
+                    msgResult.data = { player: "A", coordinate: { x: x, y: y } };
+                }
+
+                // check if player A won
+                // Also sends coordinates that caused the win to be displayed on the client
+                if (this.playerAHitCounter === shared.AMOUNT_HITS_WIN) {
+                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
+                    msgResult.data = { player: "A", coordinate: { x: x, y: y } };
+                    this.setStatus("A");
+                }
+
+            }
+
+            // set ship part on x and y to -1, so that it can not be hit anymore
+            this.playerBGrid[x][y] = -1;
+
+        } else {
+
+            const id = this.playerAGrid[x][y];
+
+            if (id === 0) {
+
+                // player B missed
+                msgResult = _.cloneDeep(messages.TILE_MISS);
+                msgResult.data = { player: "B", coordinate: { x: x, y: y } }; 
+
+            } else if (id > 0) {
+
+                // player B hit a ship on grid of player A,
+                // increment hits of the hit ship and player B hit counter by 1
+                const shipHit = this.shipsPlayerA[id - 1];
+                this.playerBHitCounter++;
+                shipHit.hits++;
+
+                // check if the hit ship sank because of this hit
+                if (shipHit.hits === shipHit.size) {
+                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
+                    msgResult.data = { player: "B", coordinate: { x: x, y: y }, ship: shipHit.name, shipId: id };
+                } else {
+                    msgResult = _.cloneDeep(messages.TILE_HIT);
+                    msgResult.data = { player: "B", coordinate: { x: x, y: y } };
+                }
+
+                // check if player B won
+                // Also sends coordinates that caused the win to be displayed on the client
+                if (this.playerBHitCounter === shared.AMOUNT_HITS_WIN) {
+                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
+                    msgResult.data = { player: "B", coordinate: { x: x, y: y } };
+                    this.setStatus("B");
+                }
+
+            }
+
+            // set ship part on x and y to -1, so that it can not be hit anymore
+            this.playerAGrid[x][y] = -1;
+        }
+
+        return msgResult;
+
+    } catch (e) {
+        console.error(e, ' ', arguments.callee.name);
+    }
+}
 
 module.exports = game;

@@ -179,7 +179,7 @@ wss.on("connection", function connection(ws) {
                 const opponent = gameObj.playerB;
                 const currPlayer = gameObj.playerA;
                 
-                // handle case where player A shoots tile on player B grid
+                // handle case where player A shoots tile on player B grid when it is player A turn
                 if (oMsg.type === messages.T_TILE_SHOT && gameObj.getTurn() === "A") {
                     if (hasData) {
                         const tileShotMsg = gameObj.tileFired(oMsg.data, true);
@@ -205,7 +205,7 @@ wss.on("connection", function connection(ws) {
                 const opponent = gameObj.playerA;
                 const currPlayer = gameObj.playerB;
 
-                // handle case where player B shoots tile on player A grid
+                // handle case where player B shoots tile on player A grid when it is player B turn to shoot
                 if (oMsg.type === messages.T_TILE_SHOT && gameObj.getTurn() === "B") {
                     if (hasData) {
                         const tileShotMsg = gameObj.tileFired(oMsg.data, false);

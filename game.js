@@ -289,103 +289,108 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
         const x = coordinate.x;
         const y = coordinate.y;
 
-        // check if x and y values are within the boundary of the grid.
-        console.assert(
-            x  < this.gridRows,
-            `coordinate x: ${x} is out of bounds!`, arguments.callee.name 
-        )
-
-        console.assert(
-            y  < this.gridCols,
-            `coordinate y: ${y} is out of bounds!`, arguments.callee.name 
-        )
-
         let msgResult = null;
+        
+        // check if x and y values are within the boundary of the grid.
+        if (x  < this.gridRows && y  < this.gridCols) {
+    
+            if (playerAShot) {
+                const id = this.playerBGrid[x][y];
 
-        if (playerAShot) {
-            const id = this.playerBGrid[x][y];
+                if (id === 0) {
 
-            if (id === 0) {
+                    // player A missed
+                    msgResult = _.cloneDeep(messages.TILE_MISS);
+                    msgResult.data = { player: "A", coordinate: { x: x, y: y } }; 
 
-                // player A missed
-                msgResult = _.cloneDeep(messages.TILE_MISS);
-                msgResult.data = { player: "A", coordinate: { x: x, y: y } }; 
+                } else if (id > 0) {
 
-            } else if (id > 0) {
+                    // player A hit a ship on grid of player B
+                    // increment hits of the hit ship and player A hit counter by 1
+                    const shipHit = this.shipsPlayerB[id - 1];
+                    this.playerAHitCounter++;
+                    shipHit.hits++;
 
-                // player A hit a ship on grid of player B
-                // increment hits of the hit ship and player A hit counter by 1
-                const shipHit = this.shipsPlayerB[id - 1];
-                this.playerAHitCounter++;
-                shipHit.hits++;
+                    // check if the hit ship sank because of this hit
+                    if (shipHit.hits === shipHit.size) {
+                        msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
+                        msgResult.data = { player: "A", coordinate: { x: x, y: y }, ship: shipHit.name };
+                    } else {
+                        msgResult = _.cloneDeep(messages.TILE_HIT);
+                        msgResult.data = { player: "A", coordinate: { x: x, y: y } };
+                    }
 
-                // check if the hit ship sank because of this hit
-                if (shipHit.hits === shipHit.size) {
-                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
-                    msgResult.data = { player: "A", coordinate: { x: x, y: y }, ship: shipHit.name };
-                } else {
-                    msgResult = _.cloneDeep(messages.TILE_HIT);
-                    msgResult.data = { player: "A", coordinate: { x: x, y: y } };
+                    // check if player A won
+                    // Also sends coordinates that caused the win to be displayed on the client
+                    if (this.playerAHitCounter === shared.AMOUNT_HITS_WIN) {
+                        msgResult = _.cloneDeep(messages.GAME_WON_BY);
+                        msgResult.data = { player: "A", coordinate: { x: x, y: y } };
+                        this.setStatus("A");
+                    }
+
                 }
 
-                // check if player A won
-                // Also sends coordinates that caused the win to be displayed on the client
-                if (this.playerAHitCounter === shared.AMOUNT_HITS_WIN) {
-                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
-                    msgResult.data = { player: "A", coordinate: { x: x, y: y } };
-                    this.setStatus("A");
+                // set ship part on x and y to -1, so that it can not be hit anymore
+                this.playerBGrid[x][y] = -1;
+
+            } else {
+
+                const id = this.playerAGrid[x][y];
+
+                if (id === 0) {
+
+                    // player B missed
+                    msgResult = _.cloneDeep(messages.TILE_MISS);
+                    msgResult.data = { player: "B", coordinate: { x: x, y: y } }; 
+
+                } else if (id > 0) {
+
+                    // player B hit a ship on grid of player A,
+                    // increment hits of the hit ship and player B hit counter by 1
+                    const shipHit = this.shipsPlayerA[id - 1];
+                    this.playerBHitCounter++;
+                    shipHit.hits++;
+
+                    // check if the hit ship sank because of this hit
+                    if (shipHit.hits === shipHit.size) {
+                        msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
+                        msgResult.data = { player: "B", coordinate: { x: x, y: y }, ship: shipHit.name };
+                    } else {
+                        msgResult = _.cloneDeep(messages.TILE_HIT);
+                        msgResult.data = { player: "B", coordinate: { x: x, y: y } };
+                    }
+
+                    // check if player B won
+                    // Also sends coordinates that caused the win to be displayed on the client
+                    if (this.playerBHitCounter === shared.AMOUNT_HITS_WIN) {
+                        msgResult = _.cloneDeep(messages.GAME_WON_BY);
+                        msgResult.data = { player: "B", coordinate: { x: x, y: y } };
+                        this.setStatus("B");
+                    }
+
                 }
 
+                // set ship part on x and y to -1, so that it can not be hit anymore
+                this.playerAGrid[x][y] = -1;
             }
-
-            // set ship part on x and y to -1, so that it can not be hit anymore
-            this.playerBGrid[x][y] = -1;
 
         } else {
+            // either x or y is out of bounds
+            console.assert(
+                x  < this.gridRows,
+                `coordinate x: ${x} is out of bounds!`
+            )
 
-            const id = this.playerAGrid[x][y];
-
-            if (id === 0) {
-
-                // player B missed
-                msgResult = _.cloneDeep(messages.TILE_MISS);
-                msgResult.data = { player: "B", coordinate: { x: x, y: y } }; 
-
-            } else if (id > 0) {
-
-                // player B hit a ship on grid of player A,
-                // increment hits of the hit ship and player B hit counter by 1
-                const shipHit = this.shipsPlayerA[id - 1];
-                this.playerBHitCounter++;
-                shipHit.hits++;
-
-                // check if the hit ship sank because of this hit
-                if (shipHit.hits === shipHit.size) {
-                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
-                    msgResult.data = { player: "B", coordinate: { x: x, y: y }, ship: shipHit.name };
-                } else {
-                    msgResult = _.cloneDeep(messages.TILE_HIT);
-                    msgResult.data = { player: "B", coordinate: { x: x, y: y } };
-                }
-
-                // check if player B won
-                // Also sends coordinates that caused the win to be displayed on the client
-                if (this.playerBHitCounter === shared.AMOUNT_HITS_WIN) {
-                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
-                    msgResult.data = { player: "B", coordinate: { x: x, y: y } };
-                    this.setStatus("B");
-                }
-
-            }
-
-            // set ship part on x and y to -1, so that it can not be hit anymore
-            this.playerAGrid[x][y] = -1;
+            console.assert(
+                y  < this.gridCols,
+                `coordinate y: ${y} is out of bounds!` 
+            )
         }
 
         return msgResult;
 
     } catch (e) {
-        console.error(e, ' ', arguments.callee.name);
+        console.error(e);
     }
 }
 

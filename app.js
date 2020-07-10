@@ -43,9 +43,6 @@ app.get("/", indexRouter);
 // html file for placing the ships before starting the game
 app.get("/place-ships", indexRouter);
 
-// waiting for other players
-app.get("/waiting-page", indexRouter);
-
 // transporting the user to the game page when the "play" button has been clicked
 app.get("/play", (req, res, next)=>{
 	//creating a cookie that expires over 10 minutes when game page is accessed

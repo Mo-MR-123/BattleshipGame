@@ -7,9 +7,8 @@ const gameStatus = require("./games_tracker")
 const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
 const Game = require("./game");
+const WebSocket = require("ws");
 const _ = require("lodash");
-const websocket = require("ws");
-const game = require("./game");
 
 const port = process.argv[2] || 3000;
 const app = express();
@@ -64,7 +63,7 @@ app.get("/play", indexRouter);
 const server = http.createServer(app);
 
 //creating webSocket Server
-const wss = new websocket.Server({ server });
+const wss = new WebSocket.Server({ server });
 
 //websockets object -> property (= key): websocket, value: game
 var websockets = {};
@@ -82,12 +81,6 @@ setInterval(function() {
         }
     }
 }, 50000);
-
-// init a game object used to handle connection and logic of the first game
-var currentGame = new Game(0);
-
-//givig each websocket a unique connection ID
-var connectionID = 0;
 
 /**
  * Close sockets of players in a game that has been won by a player OR when game is aborted.
@@ -116,6 +109,12 @@ const endGame = function (gameObj) {
     // the corresponding game object is garbage collected
     gameObj.finalStatus = true;
 }
+
+// init a game object used to handle connection and logic of the first game
+var currentGame = new Game(0);
+
+//givig each websocket a unique connection ID
+var connectionID = 0;
 
 wss.on("connection", function connection(ws) {
     let con = ws;                                // binding the connected client/user (which is the param of the callback function) to a constant called con
@@ -279,13 +278,9 @@ wss.on("connection", function connection(ws) {
 
             // Check if a winner has been announced, if so then do following:
             // 1. Send who won the game to both players.
-            // 2. Check after some timeout if both players are not closing or closed,
+            // 2. Check after some timeout if both players are not closed,
             //    then force both sockets to close by calling endGame() function.
             // 3. Increment games complete by 1.
-            // TODO: check if below alternative is better!
-            // 1. Before closing sockets, send who won the game to both players.
-            // 2. Close sockets of each player in current game.
-            // 3. increment games complete by 1
             if (gameObj.gameWonBy && !gameObj.finalStatus) {
                 // setup the message of the player that won the game
                 let whoWonMessage = _.cloneDeep(messages.GAME_WON_BY);
@@ -300,44 +295,26 @@ wss.on("connection", function connection(ws) {
                     // check if both players are either closing or closed
                     // if one of the players sockets is not doing that then force closing of both sockets
                     if (
-                        !(
-                            (gameObj.playerA.readyState !== WebSocket.CLOSING
-                                || gameObj.playerA.readyState !== WebSocket.CLOSED)
-                            &&
-                            (gameObj.playerB.readyState !== WebSocket.CLOSING
-                                || gameObj.playerB.readyState !== WebSocket.CLOSED)
-                        )
+                        gameObj.playerA.readyState !== WebSocket.CLOSED
+                         || gameObj.playerB.readyState !== WebSocket.CLOSED
                     ) {
-                        console.log("FORCE CLOSING SOCKETS OF GAME");
+                        console.log(`
+                        FORCE CLOSING SOCKETS OF GAME ${gameObj.id}.
+                        STATE SOCKET PLAYER A: ${gameObj.playerA.readyState}
+                        STATE SOCKET PLAYER B: ${gameObj.playerB.readyState}
+                        `);
+
                         endGame(gameObj);
+                    } else {
+                        // if both sockets are closed then just de-reference sockets and set finalSatus to true
+                        gameObj.playerA = null;
+                        gameObj.playerB = null;
+                        gameObj.finalStatus = true;
                     }
-                }, 500);
+                }, 1500);
 
                 // step 3:
                 gameStatus.gamesComplete++;
-
-                // TODO: ALTERNATIVE see if this is better than letting the client close the socket instead of the server
-                // when the game is won.
-
-                // step 2 of process:
-                // give the messages some time to arrive to both client before closing sockets
-                // setTimeout(() => {
-                //     try {
-                //         gameObj.playerA.close();
-                //         gameObj.playerA = null;
-                //     }
-                //     catch(e) {
-                //         console.log("Player A closing: "+ e);
-                //     }
-        
-                //     try {
-                //         gameObj.playerB.close(); 
-                //         gameObj.playerB = null;
-                //     }
-                //     catch(e) {
-                //         console.log("Player B closing: " + e);
-                //     }
-                // }, 500);
             }
         } catch (e) {
             console.log(`
@@ -367,10 +344,8 @@ wss.on("connection", function connection(ws) {
         // only try to abort the game if the game object still exists in websockets object
         // this check is done in case the game object got removed.
         if (gameObj) {
-            // code 1001 means almost always closing initiated by the client;
-            // code 1001 is only when 1 player disconnects and that player is only one in the game.
-            // THIS DOES NOT HOLD IF 2 PLAYERS ALREADY JOINED THE GAME
-            // CODE 1001 WOULD NOT BE RETURNED BY ONE OF THE PLAYERS WHEN ONE OF THEM DISCONNECTS!
+            // socket closes with code 1001 only when both players leave the game.
+            // Thus if 1 player is in the game and that player leaves, that player socket will not close with 1001 
             if (code == "1001") {
                 //if possible, abort the game; if not, the game is already completed
                 if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
@@ -379,10 +354,12 @@ wss.on("connection", function connection(ws) {
     
                     endGame(gameObj);
                 }
-            } 
-            // TODO: check if this else statement is needed for debugging in the future?
-            else {
-                console.log(`CLOSING SOCKET CODE: ${code}`)
+            }
+
+            // if first player is only one in the game and left, the set status to "0 JOINED"
+            // which resets the game so that new game can start on this game object
+            if (gameObj.gameState === "1 JOINED") {
+                gameObj.setStatus("0 JOINED");
             }
         }
     });

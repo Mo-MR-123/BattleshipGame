@@ -269,17 +269,61 @@ game.prototype.isValidState = function (s) {
 };
 
 /**
+ * Determine which player was only player and first player to join and leave the game
+ * and reset that players game properties.
+ * 
+ * TODO: maybe add if statements to check if new ships, grid etc... need to be reset,
+ * to prevent reseting properties that don't need to be reset
+ * as much as possible which is maybe faster and efficient?
+ */
+game.prototype.resetGame = function() {
+    if (this.playerA) {
+        this.playerA = null;
+
+        this.shipsPlayerA = [];
+        this.shipsPlayerA.push(_.cloneDeep(shared.DESTROYER));
+        this.shipsPlayerA.push(_.cloneDeep(shared.SUBMARINE));
+        this.shipsPlayerA.push(_.cloneDeep(shared.CRUISER));
+        this.shipsPlayerA.push(_.cloneDeep(shared.BATTLESHIP));
+        this.shipsPlayerA.push(_.cloneDeep(shared.CARRIER));
+        
+        this.playerAGrid = null;
+        this.playerAHitCounter = 0;
+    } else {
+        this.playerB = null;
+
+        this.shipsPlayerB = [];
+        this.shipsPlayerB.push(_.cloneDeep(shared.DESTROYER));
+        this.shipsPlayerB.push(_.cloneDeep(shared.SUBMARINE));
+        this.shipsPlayerB.push(_.cloneDeep(shared.CRUISER));
+        this.shipsPlayerB.push(_.cloneDeep(shared.BATTLESHIP));
+        this.shipsPlayerB.push(_.cloneDeep(shared.CARRIER));
+
+        this.playerBGrid = null;
+        this.playerBHitCounter = 0;
+    }
+}
+
+/**
  * setting a new game state by transitioning and check if w is valid transition
  * 
  * @param {String} w - Change game state to this state 
  */
 game.prototype.setStatus = function (w) {
-
+    
     if (game.prototype.isValidState(w) && game.prototype.isValidTransition(this.gameState, w)) {
+        const isResetGame = (this.gameState === "1 JOINED" && w === "0 JOINED");
+        
         this.gameState = w;
 
         // if game is transitioning to winning state, assign the winner of the game
         (w === "A") ? this.gameWonBy = "A" : ((w === "B") ? this.gameWonBy = "B" : {});
+
+        // if first player left game and that player is only one in that game
+        // reset the game so that new players get connect to this game and start over again
+        if (isResetGame) {
+            this.resetGame();
+        }
 
         console.log("[STATUS] %s", this.gameState);
     }
@@ -439,8 +483,10 @@ game.prototype.tileFired = function(coordinates, playerAShot) {
 
         } else {
             // either x or y is out of bounds
-            console.error(`Invalid coordinates: { x: ${x}, y: ${y} }.
-             From player ${playerAShot ? 'A' : 'B'}. At ${ new Date(new Date().getTime()) }`)
+            console.error(`
+            Invalid coordinates: { x: ${x}, y: ${y} }.
+            From player ${playerAShot ? 'A' : 'B'}. At ${ new Date(new Date().getTime()) }
+            `)
         }
 
         return msgResult;

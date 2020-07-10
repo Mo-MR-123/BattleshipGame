@@ -38,7 +38,12 @@ var game = function (gameID) {
     // randomly select who begins with shooting
     this.playerTurn = ((Math.floor(Math.random() * 2)) === 0) ? "A" : "B";
     
+    this.gameWonBy = null;
     this.gameState = "0 JOINED"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
+
+    // indicator for when the game is completed (when a player wins) or when the game is aborted
+    // this is also needed so that the game object is garbage collected if it is ended.
+    this.finalStatus = null;
 };
 
 // game can be started when both players grid is set
@@ -103,19 +108,19 @@ game.prototype.isValidGrid = function(grid) {
     const isGridAnArray = Array.isArray(grid);
 
     // check if grid is a 2d grid with correct column dimensions
-    const isCorrentColumnDims = grid.every(function (row) {
+    const isCorrentColumnDims = grid.every((row) => {
         return Array.isArray(row) && row.length === this.gridCols;
     });
 
     // output debug assertions in case one of above conditions is false
     console.assert(
         isGridAnArray,
-        "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
+        "Expecting the grid to be an Array object, got a %s", typeof grid
     );
 
     console.assert(
         isCorrentColumnDims,
-        "%s: Expecting the grid to be an Array object, got a %s", arguments.callee.name, typeof grid
+        "Expecting every row to have correct column dimension. Not the case with the grid given: %O", grid
     );
 
     // define counter of the ships and the ships to check
@@ -260,6 +265,10 @@ game.prototype.setStatus = function (w) {
 
     if (game.prototype.isValidState(w) && game.prototype.isValidTransition(this.gameState, w)) {
         this.gameState = w;
+
+        // if game is transitioning to winning state, assign the winner of the game
+        (w === "A") ? this.gameWonBy = "A" : ((w === "B") ? this.gameWonBy = "B" : {});
+
         console.log("[STATUS] %s", this.gameState);
     }
     else {
@@ -336,7 +345,7 @@ game.prototype.addPlayer = function (player) {
 
 
 /**
- * TODO: handle game state transition and validation of those states using methods "isValidTransition" and "isValidState"
+ * TODO:  maybe handle game state transition and validation of those states using methods "isValidTransition" and "isValidState"
  * 
  * @param {Object} coordinate - object containing x and y coordiantes -> {x: x, y: y}.
  *                              NOTE: x represents row of tile and y represents column of tile
@@ -406,9 +415,8 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
 
                 // check if player A or B won the game
                 if (currentPlayerHitCounter === shared.AMOUNT_HITS_WIN) {
-                    msgResult = _.cloneDeep(messages.GAME_WON_BY);
-                    msgResult.data = { player: currentPlayer, coordinate: { x: x, y: y } };
                     // set game state to the player that won the game.
+                    // NOTE: this also sets this.gameWonBy to the player that won the game!
                     this.setStatus(currentPlayer);
                 }
 

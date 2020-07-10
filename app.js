@@ -2,7 +2,6 @@ const express = require("express");
 const http = require("http");
 const sessionConfig = require('./sessionConfig');
 const session = require('express-session');
-const credentials = require("./cookiecredential");
 const gameStatus = require("./games_tracker")
 const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
@@ -30,30 +29,12 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 // route to homepage and add homepage cookie
-app.get("/", (req, res, next) => {
-    //creating cookie for the home page
-    res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", {
-        signed: false,
-        sameSite: true
-    });
-    next();
-});
 app.get("/", indexRouter);
 
 // html file for placing the ships before starting the game
 app.get("/place-ships", indexRouter);
 
 // transporting the user to the game page when the "play" button has been clicked
-app.get("/play", (req, res, next)=>{
-	//creating a cookie that expires over 10 minutes when game page is accessed
-    res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { 
-        signed: false,
-        httpOnly: false,
-        sameSite: true,
-        expires: new Date(Date.now() + 600000)
-    });
-    next();
-});
 app.get("/play", indexRouter);
 
 // creating the server to be able to run/use express

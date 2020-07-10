@@ -9,6 +9,7 @@ const messages = require("./public/javascripts/messages");
 const Game = require("./game");
 const _ = require("lodash");
 const websocket = require("ws");
+const game = require("./game");
 
 const port = process.argv[2] || 3000;
 const app = express();
@@ -87,6 +88,34 @@ var currentGame = new Game(0);
 
 //givig each websocket a unique connection ID
 var connectionID = 0;
+
+/**
+ * Close sockets of players in a game that has been won by a player OR when game is aborted.
+ * NOTE: THIS ALSO SETS THE finalStatus FIELD OF THE GAME OBJECT TO true SO THAT IT GETS GARBAGE COLLECTED
+ * @param {Game} gameObj - game object to close the sockets of
+ */
+const endGame = function (gameObj) {
+    //determine whose connection remains open and close it
+    try {
+        gameObj.playerA.close();
+        gameObj.playerA = null;
+    }
+    catch(e) {
+        console.log(`Error closing socket of Player A in game with ID ${gameObj.id}:`, e);
+    }
+
+    try {
+        gameObj.playerB.close(); 
+        gameObj.playerB = null;
+    }
+    catch(e) {
+        console.log(`Error closing socket of Player B in game with ID ${gameObj.id}:`, e);
+    }
+
+    // set finalStatus to true as client socket is aborted to make sure 
+    // the corresponding game object is garbage collected
+    gameObj.finalStatus = true;
+}
 
 wss.on("connection", function connection(ws) {
     let con = ws;                                // binding the connected client/user (which is the param of the callback function) to a constant called con
@@ -250,9 +279,8 @@ wss.on("connection", function connection(ws) {
 
             // Check if a winner has been announced, if so then do following:
             // 1. Send who won the game to both players.
-            // 2. Remove reference of websockets of both players from game object
-            // 3. Set finalStatus to true to garbage collect corresponding game object
-            // 4. Increment games complete by 1
+            // 2. call function to end the game by de-referencing client sockets and set the game to be garabge collected
+            // 3. Increment games complete by 1
             // TODO: check if below alternative is better!
             // 1. Before closing sockets, send who won the game to both players.
             // 2. Close sockets of each player in current game.
@@ -262,18 +290,14 @@ wss.on("connection", function connection(ws) {
                 let whoWonMessage = _.cloneDeep(messages.GAME_WON_BY);
                 whoWonMessage.data = gameObj.gameWonBy;
                 
-                // step 1 of process:
+                // step 1:
                 gameObj.playerA.send(JSON.stringify(whoWonMessage));
                 gameObj.playerB.send(JSON.stringify(whoWonMessage));
 
-                // step 2 of process:
-                gameObj.playerA = null;
-                gameObj.playerB = null;
+                // step 2:
+                endGame(gameObj);
 
-                // step 3 of process:
-                gameObj.finalStatus = true;
-
-                // step 4 of process (last step):
+                // step 3:
                 gameStatus.gamesComplete++;
 
                 // TODO: ALTERNATIVE see if this is better than letting the client close the socket instead of the server
@@ -300,14 +324,16 @@ wss.on("connection", function connection(ws) {
                 // }, 500);
             }
         } catch (e) {
-            console.log(`Error occured at handling incoming messages from client socket`);
-            console.log(`THE ERROR: ${e}`);
-            console.log(`DEBUG INFO:`);
-            console.log(`GAME OBJECT: ${websockets[con.id]}, CLIENT SOCKET ID: ${con.id}`);
-            console.log(`GAME OBJECT PLAYER A SOCKET: ${websockets[con.id] ? websockets[con.id].playerA : null}, GAME OBJECT PLAYER B SOCKET: ${websockets[con.id] ? websockets[con.id].playerB : null}`);
-            console.log(`POSSIBLE CAUSE: game object is accessed after garbage collector deleted it
-            which caused this error to occur. It is also possible that game was won and because both player sockets are set to null
-            and socket is not properly closed by client, the client can send messages and when gameObj.playerA is checked this error is thrown.`);
+            console.log(`
+            Error occured at handling incoming messages from client socket
+            THE ERROR: ${e}
+            DEBUG INFO:
+            GAME OBJECT: ${websockets[con.id]}, CLIENT SOCKET ID: ${con.id}
+            GAME OBJECT PLAYER A SOCKET: ${websockets[con.id] ? websockets[con.id].playerA : null}, GAME OBJECT PLAYER B SOCKET: ${websockets[con.id] ? websockets[con.id].playerB : null}
+            POSSIBLE CAUSE: game object is accessed after garbage collector deleted it which caused this error to occur
+            It is also possible that game was won and because both player sockets are set to null 
+            and socket is not properly closed by client, the client can send messages and when gameObj.playerA is checked this error is thrown.
+            `);
         }
     });
 
@@ -322,41 +348,26 @@ wss.on("connection", function connection(ws) {
 
         let gameObj = websockets[con.id];
         
-        // code 1001 means almost always closing initiated by the client;
-        // code 1001 is only when 1 player disconnects and that player is only one in the game.
-        // THIS DOES NOT HOLD IF 2 PLAYERS ALREADY JOINED THE GAME
-        // CODE 1001 WOULD NOT BE RETURNED BY ONE OF THE PLAYERS WHEN ONE OF THEM DISCONNECTS!
-        if (code == "1001") {
-            //if possible, abort the game; if not, the game is already completed
-            if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
-                gameObj.setStatus("ABORTED"); 
-                gameStatus.gamesExited++;
-
-                //determine whose connection remains open and close it
-                try {
-                    gameObj.playerA.close();
-                    gameObj.playerA = null;
+        // only try to abort the game if the game object still exists in websockets object
+        // this check is done in case the game object got removed.
+        if (gameObj) {
+            // code 1001 means almost always closing initiated by the client;
+            // code 1001 is only when 1 player disconnects and that player is only one in the game.
+            // THIS DOES NOT HOLD IF 2 PLAYERS ALREADY JOINED THE GAME
+            // CODE 1001 WOULD NOT BE RETURNED BY ONE OF THE PLAYERS WHEN ONE OF THEM DISCONNECTS!
+            if (code == "1001") {
+                //if possible, abort the game; if not, the game is already completed
+                if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
+                    gameObj.setStatus("ABORTED"); 
+                    gameStatus.gamesExited++;
+    
+                    endGame(gameObj);
                 }
-                catch(e) {
-                    console.log("Player A closing: "+ e);
-                }
-
-                try {
-                    gameObj.playerB.close(); 
-                    gameObj.playerB = null;
-                }
-                catch(e) {
-                    console.log("Player B closing: " + e);
-                }
-                
-                // set finalStatus to true as client socket is aborted to make sure 
-                // the corresponding game object is garbage collected
-                gameObj.finalStatus = true;
+            } 
+            // TODO: check if this else statement is needed for debugging in the future?
+            else {
+                console.log(`CLOSING SOCKET CODE: ${code}`)
             }
-        } 
-        // TODO: check if this else statement is needed for debugging in the future?
-        else {
-            console.log(`CLOSING SOCKET CODE: ${code}`)
         }
     });
 });

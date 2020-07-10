@@ -46,7 +46,7 @@ var game = function (gameID) {
     this.finalStatus = null;
 };
 
-// game can be started when both players grid is set
+/* Game can be started when both players grid is set */
 game.prototype.isGameStarted = function() {
     return (this.playerAGrid && this.playerBGrid);
 }
@@ -123,6 +123,14 @@ game.prototype.isValidGrid = function(grid) {
         "Expecting every row to have correct column dimension. Not the case with the grid given: %O", grid
     );
 
+    // immidiately return false if grid does not have correct grid dims or if grid is not an array
+    if (!isGridAnArray || !isCorrentColumnDims) {
+        console.log(`Grid is either not an array or does not have correct column dims:
+        colsDimsCorrect = ${isCorrentColumnDims}, isGridArray = ${isGridAnArray}`);
+
+        return false;
+    }
+
     // define counter of the ships and the ships to check
     let counterShips = 0;
     let counterDestroyer = _.cloneDeep(shared.DESTROYER);
@@ -163,6 +171,7 @@ game.prototype.isValidGrid = function(grid) {
                 // if tileId is lower than 0, then it means that there is an invalid value found
                 // as the minimum number on the grid allowed is 0. 
                 // This is not allowed and thus immidiately return flase.
+                console.log(`Found tileId ${tileId} which is lower than 0 in the grid: `, grid);
                 return false;
             }
         }
@@ -171,8 +180,6 @@ game.prototype.isValidGrid = function(grid) {
     // checks if counterShips is equal to expected amount of ships that should be on the grid
     // this also checks whether each ship is placed on the grid
     const isGridValid = (
-        isGridAnArray &&
-        isCorrentColumnDims &&
         counterShips === shared.AMOUNT_HITS_WIN &&
         counterDestroyer.hits === counterDestroyer.size && 
         counterSubmarine.hits === counterSubmarine.size &&
@@ -345,12 +352,13 @@ game.prototype.addPlayer = function (player) {
 
 
 /**
- * TODO:  maybe handle game state transition and validation of those states using methods "isValidTransition" and "isValidState"
+ * TODO: Check if we need to handle game state transition and validation 
+ * of those states using methods "isValidTransition" and "isValidState".
  * 
  * @param {Object} coordinate - object containing x and y coordiantes -> {x: x, y: y}.
  *                              NOTE: x represents row of tile and y represents column of tile
  * @param {Boolean} playerAShot - true if player A fired, else false.
- * @returns - message that is one of following types: TILE_MISS, TILE_HIT, TILE_HIT_SINK and GAME_WON_BY
+ * @returns - message that is one of following types: TILE_MISS, TILE_HIT and TILE_HIT_SINK
  *            depending on the game state and on the tile that has been shot, one of the messages is returned.
  */
 game.prototype.tileFired = function(coordinate, playerAShot) {

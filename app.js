@@ -249,10 +249,10 @@ wss.on("connection", function connection(ws) {
             }
 
             // Check if a winner has been announced, if so then do following:
-            // 1. Before closing sockets, send who won the game to both players.
-            // 2. remove reference of websockets of both players from game object
-            // 3. set finalStatus to true
-            // 4. increment games complete by 1
+            // 1. Send who won the game to both players.
+            // 2. Remove reference of websockets of both players from game object
+            // 3. Set finalStatus to true to garbage collect corresponding game object
+            // 4. Increment games complete by 1
             // TODO: check if below alternative is better!
             // 1. Before closing sockets, send who won the game to both players.
             // 2. Close sockets of each player in current game.
@@ -349,6 +349,8 @@ wss.on("connection", function connection(ws) {
                     console.log("Player B closing: " + e);
                 }
                 
+                // set finalStatus to true as client socket is aborted to make sure 
+                // the corresponding game object is garbage collected
                 gameObj.finalStatus = true;
             }
         } 

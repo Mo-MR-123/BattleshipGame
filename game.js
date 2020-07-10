@@ -3,7 +3,12 @@ const messages = require('./public/javascripts/messages');
 const _ = require('lodash');
 
 /* every game has two players, identified by their WebSocket */
-// constructor for the game object
+
+/** 
+ * Game constructor.
+ * @constructor
+ * @param {Number} gameID - The id of the game (must be unique for every game)
+ */
 var game = function (gameID) {
     this.id = gameID;
 
@@ -361,10 +366,9 @@ game.prototype.addPlayer = function (player) {
  * @returns - message that is one of following types: TILE_MISS, TILE_HIT and TILE_HIT_SINK
  *            depending on the game state and on the tile that has been shot, one of the messages is returned.
  */
-game.prototype.tileFired = function(coordinate, playerAShot) {
+game.prototype.tileFired = function(coordinates, playerAShot) {
     try {
-        const x = coordinate.x;
-        const y = coordinate.y;
+        const { x, y } = coordinates;
 
         let msgResult = null;
         
@@ -390,7 +394,7 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
 
                 // current player (A or B) missed
                 msgResult = _.cloneDeep(messages.TILE_MISS);
-                msgResult.data = { player: currentPlayer, coordinate: { x: x, y: y } }; 
+                msgResult.data = { player: currentPlayer, coordinates: coordinates }; 
 
             } else if (id > 0) {
 
@@ -415,10 +419,10 @@ game.prototype.tileFired = function(coordinate, playerAShot) {
                 // else it is just hit and did not sink
                 if (shipHit.hits === shipHit.size) {
                     msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
-                    msgResult.data = { player: currentPlayer, coordinate: { x: x, y: y }, ship: shipHit.name };
+                    msgResult.data = { player: currentPlayer, coordinates: coordinates, ship: shipHit.name };
                 } else {
                     msgResult = _.cloneDeep(messages.TILE_HIT);
-                    msgResult.data = { player: currentPlayer, coordinate: { x: x, y: y } };
+                    msgResult.data = { player: currentPlayer, coordinates: coordinates };
                 }
 
                 // check if player A or B won the game

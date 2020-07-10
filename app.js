@@ -279,8 +279,9 @@ wss.on("connection", function connection(ws) {
 
             // Check if a winner has been announced, if so then do following:
             // 1. Send who won the game to both players.
-            // 2. call function to end the game by de-referencing client sockets and set the game to be garabge collected
-            // 3. Increment games complete by 1
+            // 2. Check after some timeout if both players are not closing or closed,
+            //    then force both sockets to close by calling endGame() function.
+            // 3. Increment games complete by 1.
             // TODO: check if below alternative is better!
             // 1. Before closing sockets, send who won the game to both players.
             // 2. Close sockets of each player in current game.
@@ -295,7 +296,22 @@ wss.on("connection", function connection(ws) {
                 gameObj.playerB.send(JSON.stringify(whoWonMessage));
 
                 // step 2:
-                endGame(gameObj);
+                setTimeout(() => {
+                    // check if both players are either closing or closed
+                    // if one of the players sockets is not doing that then force closing of both sockets
+                    if (
+                        !(
+                            (gameObj.playerA.readyState !== WebSocket.CLOSING
+                                || gameObj.playerA.readyState !== WebSocket.CLOSED)
+                            &&
+                            (gameObj.playerB.readyState !== WebSocket.CLOSING
+                                || gameObj.playerB.readyState !== WebSocket.CLOSED)
+                        )
+                    ) {
+                        console.log("FORCE CLOSING SOCKETS OF GAME");
+                        endGame(gameObj);
+                    }
+                }, 500);
 
                 // step 3:
                 gameStatus.gamesComplete++;

@@ -10,6 +10,7 @@ const WebSocket = require("ws");
 const _ = require("lodash");
 
 const port = process.argv[2] || 3000;
+const hostName = 'localhost';
 const app = express();
 
 // init session middleware using specified config
@@ -356,7 +357,6 @@ app.use((error, req, res, next) => {
     res.render('error', { error: error.message })
 })
 
-server.listen(port, function(err) {
-    if (err) throw err;
-    console.log(`Listening on port ${server.address().port}`)
+server.listen(port, hostName, () => {
+    console.log(`Server running at ${hostName}:${port}`);
 });

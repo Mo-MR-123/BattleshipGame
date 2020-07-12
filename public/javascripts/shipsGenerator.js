@@ -12,36 +12,8 @@ function ShipsGenerator(grid) {
     this.gridCols = Setup.GRID_DIM.cols;
     this.gridRows = Setup.GRID_DIM.rows;
 
-    // check if grid has expected amount of rows
-    console.assert(
-        grid.length == this.gridRows,
-        "Got grid rows of %d, but should be %d ", grid.length, this.gridRows
-    );
-
-    // check if grid has expected amount of columns on each row
-    //TODO: check why this does not work
-    // console.assert(
-    //     grid.every(function(row) {
-    //         return row.length == this.gridCols;
-    //     }),
-    //     "Not all grid columns are %d ", this.gridCols
-    // );
-
-    // Grid must be square
-    console.assert(
-        this.gridRows == this.gridCols,
-        "Grid must be square, but got %d rows and %d columns", this.gridRows, this.gridCols
-    );
-
-    // grid must consist of 0 in all entries
-    console.assert(
-        grid.every(function(row) {
-            return row.every(function(val) {
-                return val === 0;
-            })
-        }),
-        "Grid does not contain all 0's"
-    );
+    // check grid for validity
+    this.consoleAssertGrid(grid);
 
     // create the ships array
     this.ships = [];
@@ -82,20 +54,21 @@ ShipsGenerator.prototype.placeShipsRandomly = function() {
 
     // go through all ships and place them on the grid on random locations
     for (let s = 0; s < this.ships.length; s++) {
-        const currShip = this.ships[s];
+        var currShip = this.ships[s];
 
         // shipID to be assigned on the grid to indicate where current ship is placed on the grid
-        const shipID = currShip.id;
+        var shipID = currShip.id;
 
         // find location coordinates of current ship that do not overlap with other ships already on the grid
-        let currShipLocations;
+        var currShipLocations;
         do {
             currShipLocations = this.generateShipLocations(currShip);
         } while(this.isOverlapping(currShipLocations));
 
         // assign grid location on the grid with proper id of the current ship
-        for (let c = 0; c < currShipLocations.length; c++) {
-            const currShipCoordinate = currShipLocations[c];
+        var c, currShipCoordinate;
+        for (c = 0; c < currShipLocations.length; c++) {
+            currShipCoordinate = currShipLocations[c];
             this.grid[currShipCoordinate.getX()][currShipCoordinate.getY()] = shipID;
         }
     }
@@ -110,12 +83,12 @@ ShipsGenerator.prototype.placeShipsRandomly = function() {
  * @returns - Array of Coordinate objects of randomly generated ship locations.
  */
 ShipsGenerator.prototype.generateShipLocations = function(ship) {
-    const shipSize = ship.size;
+    var shipSize = ship.size;
 
     // generate 0 OR 1 to place given ship vertically or horizontally
-    const direction = Math.floor(Math.random() * 2);
+    var direction = Math.floor(Math.random() * 2);
     
-    let rowCoord, colCoord;
+    var rowCoord, colCoord;
 
     // get startCoord and endCoord depending on direction
     if (direction === Setup.HORIZONTAL_DIRECTION) {
@@ -126,7 +99,7 @@ ShipsGenerator.prototype.generateShipLocations = function(ship) {
         colCoord =  Math.floor(Math.random() * this.gridCols);
     }
 
-    let currShipRandomLocations = [];
+    var currShipRandomLocations = [];
     for (let i = 0; i < shipSize; i++) {
         if (direction === Setup.HORIZONTAL_DIRECTION) {
             currShipRandomLocations.push(new Coordinate(rowCoord, colCoord + i));
@@ -152,9 +125,10 @@ ShipsGenerator.prototype.isOverlapping = function(shipLocations) {
         shipLocations.length !== 0,
         "Ship location array must not be empty."
     );
-
-    for (let loc = 0; loc < shipLocations.length; loc++) {
-        const currCoordinate = shipLocations[loc];
+    
+    var loc, currCoordinate;
+    for (loc = 0; loc < shipLocations.length; loc++) {
+        currCoordinate = shipLocations[loc];
         if (this.grid[currCoordinate.getX()][currCoordinate.getY()] > 0) {
             return true;
         }
@@ -164,21 +138,48 @@ ShipsGenerator.prototype.isOverlapping = function(shipLocations) {
     return false;
 }
 
-// INIT EVERYTHING BELOW FOR TESTING
-const grid = [
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0]
-];
+/**
+ * Given a new grid, place ships randomly. 
+ * @param {Array} grid - new 2D grid of zeros to re-randomize the ships on   
+ */
+ShipsGenerator.prototype.rerandomizeShips = function(grid) {
+    this.consoleAssertGrid(grid);
+    this.grid = grid;
+    this.placeShipsRandomly();
+}
 
-const gameObj = new ShipsGenerator(grid);
-gameObj.placeShipsRandomly();
+/**
+ * Check whether given grid is a valid grid with expected dimensions and initial values on each entry
+ * @param {Array} grid - grid to check 
+ */
+ShipsGenerator.prototype.consoleAssertGrid = function(grid) {
+    // check if grid has expected amount of rows
+    console.assert(
+        grid.length == this.gridRows,
+        "Got grid rows of %d, but should be %d ", grid.length, this.gridRows
+    );
 
-console.table(grid);
+    // check if grid has expected amount of columns on each row
+    console.assert(
+        grid.every(function(row) {
+            return row.length == Setup.GRID_DIM.cols;
+        }),
+        "Not all grid columns are %d ", this.gridCols
+    );
+
+    // Grid must be square
+    console.assert(
+        this.gridRows == this.gridCols,
+        "Grid must be square, but got %d rows and %d columns", this.gridRows, this.gridCols
+    );
+
+    // grid must consist of 0 in all entries
+    console.assert(
+        grid.every(function(row) {
+            return row.every(function(val) {
+                return val === 0;
+            })
+        }),
+        "Grid does not contain all 0's"
+    );
+}

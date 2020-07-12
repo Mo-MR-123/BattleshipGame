@@ -7,7 +7,7 @@
 
         // Adding object (e.g. { name: "Obaseki Nosa", location: "Lagos" } ) to localStorage
         exports.addObject = function(objectName, objectValue) {
-            if (!(objectName instanceof String)) {
+            if (!(typeof objectName === "string")) {
                 return new Error(`${objectName} is not of a String type. Make sure the object name is a String.`);
             }
             window.localStorage.setItem(objectName, JSON.stringify(objectValue));
@@ -15,7 +15,7 @@
 
         // Getting an object from localStorage
         exports.getObject = function(objectName) {
-            if (!(objectName instanceof String)) {
+            if (!(typeof objectName === "string")) {
                 return new Error(`${objectName} is not of a String type. Make sure the object name is a String.`);
             }
             JSON.parse(window.localStorage.getItem(objectName));
@@ -23,7 +23,7 @@
 
         // Remove object from localStorage
         exports.removeObject = function(objectName) {
-            if (!(objectName instanceof String)) {
+            if (!(typeof objectName === "string")) {
                 return new Error(`${objectName} is not of a String type. Make sure the object name is a String.`);
             }
             window.localStorage.removeItem(objectName);

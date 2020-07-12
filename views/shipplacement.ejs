@@ -36,16 +36,16 @@
 		
 		<div class="battlefield">
 			<div id="roster-sidebar">
-						<h4>Place all the ships on the grid</h4>
+						<!-- <h4>Place all the ships on the grid</h4> -->
 						
-						<button id="patrolboat">Patrol Boat = 2 Tiles</button></br>
-						<button id="submarine">Submarine = 3 Tiles</button></br>
-						<button id="destroyer">Destroyer = 3 Tiles</button></br>
-						<button id="battleship">Battleship = 4 Tiles</button></br>
-						<button id="carrier">Aircraft Carrier = 5 Tiles</button></br>
-						<!-- <button id="rotate-button" data-direction="0">Rotate Ship</button> -->
+						<!-- <button class="btn primary" id="patrolboat">Patrol Boat = 2 Tiles</button></br>
+						<button class="btn primary" id="submarine">Submarine = 3 Tiles</button></br>
+						<button class="btn primary" id="destroyer">Destroyer = 3 Tiles</button></br>
+						<button class="btn primary" id="battleship">Battleship = 4 Tiles</button></br>
+						<button class="btn primary" id="carrier">Aircraft Carrier = 5 Tiles</button></br> -->
+						<button class="btn btn-primary" id="randomize-button">Randomize Ships</button>
 						<form action="/play" method="get">
-							<button id="startgamebutton" type="submit" disabled>Start Game</button>
+							<button class="btn" id="startgamebutton" type="submit">Start Game</button>
 						</form>
 			</div>
 			
@@ -110,10 +110,11 @@
 <!-- below we place the needed scripts to establish Webscoket, max hits etc...  -->
 <script src="javascripts/FullScreen.js" type="text/javascript"></script>
 <!-- <script type="text/javascript" src="javascripts/timer.js" ></script> -->
-<script type="text/javascript" src="javascripts/ShipPlacement.js" id="shipplacement"></script>
+<script type="text/javascript" src="javascripts/localStorageHandler.js" ></script>
 <script type="text/javascript" src="javascripts/shared.js" ></script>
 <script type="text/javascript" src="javascripts/coordinate.js" ></script>
 <script type="text/javascript" src="javascripts/shipsGenerator.js"></script>
+<script type="text/javascript" src="javascripts/shipsRenderer.js"></script>
 
 </body>
 

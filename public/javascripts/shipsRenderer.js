@@ -1,5 +1,9 @@
 "use strict";
 
+// this js file handles the rendering of ships on the grid in html given a grid array using jquery
+// NOTE: this must be the last js file to be included in html document
+// TODO: make sure all ids and classes of divs are assigned and don't change anymore
+
 // BELOW IS THE FORMAT THAT IS GENERATED USING EJS IN THE shipplacement.ejs FILE !!
 {
 /*  <tbody>
@@ -90,9 +94,11 @@
 
 // cell used to select tiles of player A grid
 var cell = ".battlefield_cell1";
+var randomizeButtonId = "randomize-button";
+var startButtonId = "startgamebutton";
 
-// the array to be filled by current player
-var arr = [
+// grid of player
+var grid = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
@@ -105,64 +111,101 @@ var arr = [
     [0,0,0,0,0,0,0,0,0,0]
 ];
 
-// tile clicked counter
-var placeCounter = 0;
+// object to handle random ships placement
+var shipsGenerator = new ShipsGenerator(grid);
+
+// place ships randomly
+shipsGenerator.placeShipsRandomly();
+
+console.table(grid);
 
 // when the DOM creation is finished, do the following:
-$(document).ready(() => {  
+$(document).ready(function() {
+    
+    document.getElementById(startButtonId).addEventListener("click", function(ev) {
+        ev.preventDefault();
+        try {
+            LS.addObject("grid", grid);
+            window.location.href = "/play";
+        } catch (e) {
+            console.error(e);
+        }
+    });
+
+    // handle logic that the randomize button should execute
+    document.getElementById(randomizeButtonId).addEventListener("click", function() {
+        // reset grid
+        grid = [
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0]
+        ];
+
+        // place ships randomly again
+        shipsGenerator.rerandomizeShips(grid);
+
+        console.table(grid);
+    });
           
-    // if a tile is clicked the following happens everytime:
-    $(cell).click((e) => {  
-        // check if max. possible tiles has been reached and current clicked tile is not green (not clicked before)
-        if (placeCounter == 17 && !e.target.getAttribute("style")) {
-            alert("Maximum tile selection of 17 has been reached. No more tiles can be added.")
-            return;
-        }
+    // // if a tile is clicked the following happens everytime:
+    // $(cell).click(function(e) {  
+    //     // check if max. possible tiles has been reached and current clicked tile is not green (not clicked before)
+    //     if (placeCounter == 17 && !e.target.getAttribute("style")) {
+    //         alert("Maximum tile selection of 17 has been reached. No more tiles can be added.")
+    //         return;
+    //     }
 
-        let x = $(e.target).data('x');
-        let y = $(e.target).data('y');
+    //     var x = $(e.target).data('x');
+    //     var y = $(e.target).data('y');
 
-        if (arr[y][x] == 1) {
-            e.target.removeAttribute("style");
-            arr[y][x] = 0;
-            placeCounter--;
-        }
-        else {
-            arr[y][x] = 1;
-            e.target.style.background = 'green';
-            // console.log("Player:  has clicked on coordinates (" + y + "," + x + ").");
-            placeCounter++;
-        }
+    //     if (arr[y][x] == 1) {
+    //         e.target.removeAttribute("style");
+    //         arr[y][x] = 0;
+    //         placeCounter--;
+    //     }
+    //     else {
+    //         arr[y][x] = 1;
+    //         e.target.style.background = 'green';
+    //         // console.log("Player:  has clicked on coordinates (" + y + "," + x + ").");
+    //         placeCounter++;
+    //     }
         
-        switch (placeCounter) {
-            case 17:
-                $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Click start!</span>");
-                $('#startgamebutton').replaceWith("<button id=\"startgamebutton\" type=\"submit\">Start Game</button>");
-                break;
-            case 15:
-                $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Patrol Boat</b> on the grid</span>");
-                break;
-            case 12:
-                $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Submarine</b> on the grid</span>");
-                break;
-            case 9:
-                $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Destroyer</b> ship on the grid</span>");
-                break;
-            case 5:
-                $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Battleship</b> on the grid</span>");
-                break;
-            case 0: 
-                $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Aircraft Carrier</b> on the grid</span>");
-                break;
-            default:
-                $('#startgamebutton').replaceWith("<button id=\"startgamebutton\" type=\"submit\" disabled>Start Game</button>");
-                break;
-        }; 
+    //     switch (placeCounter) {
+    //         case 17:
+    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Click start!</span>");
+    //             $('#startgamebutton').replaceWith("<button id=\"startgamebutton\" type=\"submit\">Start Game</button>");
+    //             break;
+    //         case 15:
+    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Patrol Boat</b> on the grid</span>");
+    //             break;
+    //         case 12:
+    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Submarine</b> on the grid</span>");
+    //             break;
+    //         case 9:
+    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Destroyer</b> ship on the grid</span>");
+    //             break;
+    //         case 5:
+    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Battleship</b> on the grid</span>");
+    //             break;
+    //         case 0: 
+    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Aircraft Carrier</b> on the grid</span>");
+    //             break;
+    //         default:
+    //             $('#startgamebutton').replaceWith("<button id=\"startgamebutton\" type=\"submit\" disabled>Start Game</button>");
+    //             break;
+    //     }; 
 
-        // console.log("PLACECOUNTER: " + placeCounter);
-        // console.log(arr)
+    //     // console.log("PLACECOUNTER: " + placeCounter);
+    //     // console.log(arr)
 
-    }); 
+    // }); 
 
         
 });

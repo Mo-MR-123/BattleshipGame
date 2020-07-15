@@ -1,17 +1,3 @@
-	// function changeContent_Self_Table(me){
-
-	// 	me.classList.toggle("battlefield_Self_Table_cell_full");
-    
-	// }
-	
-	// function changeContent_rival_Table(me){
-
-	// 	me.classList.toggle("battlefield_rival_Table_cell_full");
-    
-	// } 
-
-
-	
 //CODE BELOW CHECKS WHETHER THE CLICKED CELL CONTAINS A SHIP OR NOT (THIS MUST BE RUN DURING THE GAME ONLY, SO AFTER THE USER PLACED THE SHIPS ON THE GRID
 $(document).ready(function(){			
 		"use strict";

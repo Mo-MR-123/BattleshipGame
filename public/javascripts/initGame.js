@@ -8,7 +8,7 @@ function GameState(socket) {
     this.array = LS.getObject('grid');
 
     try {
-        console.log(LS.getObject('grid'))
+        console.log(this.array)
     } catch(e) {
         console.log(e)
     }

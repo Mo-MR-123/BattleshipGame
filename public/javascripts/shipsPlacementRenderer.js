@@ -5,8 +5,6 @@
 // AND this file is only for rendering ships on the shipplacements.ejs page and should only be included there
 // TODO: make sure all ids and classes of divs are assigned and don't change anymore
 
-// cell used to select tiles of player A grid
-var cell = ".battlefield_cell1";
 // buttons in shipplacement.ejs page
 var randomizeButtonId = "randomize-button";
 var startButtonId = "startgamebutton";
@@ -36,10 +34,9 @@ console.table(grid);
 
 // when the DOM creation is finished, do the following:
 $(document).ready(function() {
-    
+
     // when start button is clicked, store the players grid in local storage and go to "play" page
     document.getElementById(startButtonId).addEventListener("click", function(btn) {
-        btn.preventDefault();
         try {
             LS.addObject("grid", grid);
             window.location.href = "/play";

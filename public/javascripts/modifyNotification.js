@@ -5,6 +5,5 @@
  */
 function showNotificationMsg(msg) {
     msgPrefix = "<b>Notification: </b>"
-    $('#notification').append(msgPrefix)
-    $('#notification').append(msg)
+    $('#notification').html(msgPrefix + msg)
 }

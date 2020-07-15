@@ -155,11 +155,11 @@
 
 .notifications {
 	width: 100%;
-	border: 0px solid #000;
-    background:rgb(255, 255, 255);
-    height: 25px;
-	text-align: right;
-	vertical-align: center;
+	text-align: center;
+}
+
+.notifications .alert {
+	margin-bottom: 9px;
 }
 
 .marquee {

@@ -37,7 +37,7 @@
 	border-collapse:collapse;
 }
 
-.battlefield_cell, .battlefield_cell1 {
+.battlefield_cell_rival_tile, .battlefield_cell_self_tile {
 	width:25px;
 	height:25px;
 	border: 1px solid #ffffff;
@@ -46,7 +46,7 @@
 }
 
 
-.battlefield_cell2, .battlefield_cell0 {
+.battlefield_cell_self_coord, .battlefield_cell_rival_coord {
 	width:42.5px;
 	height:42.5px;
 	border: 1px solid #ffffff;
@@ -56,7 +56,7 @@
 }
 
 /* prevent text selection of the coordinates  */
-.battlefield_cell2, .battlefield_cell0 {
+.battlefield_cell_self_coord, .battlefield_cell_rival_coord {
 	user-select: none; /* supported by Chrome and Opera */
 	-webkit-user-select: none; /* Safari */
 	-khtml-user-select: none; /* Konqueror HTML */
@@ -64,15 +64,15 @@
 	-ms-user-select: none; /* Internet Explorer/Edge */
 }
 
-.battlefield_cell0 {
+.battlefield_cell_rival_coord {
 	background-color: rgba(70, 4, 4, 0.7);
 }
 
-.battlefield_cell2 {
+.battlefield_cell_self_coord {
 	background-color: rgba(4, 4, 70, 0.7);
 }
 
-.battlefield_cell1:hover {
+.battlefield_cell_self_tile:hover {
 	background-color: rgb(78, 6, 6);
 }
 

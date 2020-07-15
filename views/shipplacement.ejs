@@ -60,18 +60,22 @@
                             } 
                         %>
 
+                        <%# create variable containing the letter to start with when assigning coordinates in the first row of the grid %>
                         <% var currLetter = 'A' %>
+
+                        <%# Defining the variables to be used for loops %>
+                        <% var row, col, i; %>
 
                         <tbody>
                             <%# Create the first row of letters for coordinates %>
                             <tr class="battlefield_row">
-                                <td class="battlefield_cell2">
+                                <td class="battlefield_cell_self_coord">
                                 </td>
-                                <td class="battlefield_cell2">
+                                <td class="battlefield_cell_self_coord">
                                     <%= currLetter %>
                                 </td>
-                                <% for(var i = 0; i < gridDim.cols - 1; i++) { %>
-                                    <td class="battlefield_cell2">
+                                <% for(i = 0; i < gridDim.cols - 1; i++) { %>
+                                    <td class="battlefield_cell_self_coord">
                                       <% currLetter = nextChar(currLetter) %>
                                       <%= currLetter %>
                                     </td>
@@ -79,13 +83,13 @@
                             </tr>
 
                             <%# Create the clickable tiles and the numbered rows for coordinates %>
-                            <% for (let row = 0; row < gridDim.rows; row++) { %>
+                            <% for (row = 0; row < gridDim.rows; row++) { %>
                                 <tr class="battlefield_row">
-                                    <td class="battlefield_cell2">
-                                        <%= row + 1 %> 
+                                    <td class="battlefield_cell_self_coord">
+                                        <%= row + 1 %>
                                     </td>
-                                    <% for( let col = 0; col < gridDim.cols; col++ ) { %>
-                                        <td class="battlefield_cell1" data-x="<%= col %>"  data-y="<%= row %>">
+                                    <% for(col = 0; col < gridDim.cols; col++) { %>
+                                        <td class="battlefield_cell_self_tile" data-x="<%= col %>"  data-y="<%= row %>">
                                         </td>
                                     <% } %>
                                 </tr>

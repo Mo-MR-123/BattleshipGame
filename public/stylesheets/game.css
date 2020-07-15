@@ -1,243 +1,198 @@
-@import 'Style.css';
+@import "Style.css";
 
 .battlefield {
-	position: relative !important; 
-	width:100%;
-	height:80%;
-	border: 0px solid #FD1E1E;
-	background-color: rgba(255,255,255,0.7);	
+  position: relative;
+  width: 100%;
+  height: 80%;
+  border: 0px solid #fd1e1e;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .battlefield_self {
-	position: absolute !important;
-	float:left !important;
-	margin-left:7% !important;
-	width:500px !important;
-	height:500px !important;
-    border: 0px solid #000000;
-	background: url("../images/template.png") !important;
-	background-size: auto !important;
-    background-repeat: no-repeat !important;
-    opacity: 1 !important;
+  position: absolute;
+  float: left;
+  margin-left: 7%;
+  width: 468px;
+  height: 468px;
+  border: 0px solid #000000;
+  background: url("../images/template.png");
+  background-size: auto;
+  background-repeat: no-repeat;
+  opacity: 1;
 }
 
 .battlefield_self_table {
-	position:relative !important;
-	width:100% !important;
-	height:100% !important;
-	border-collapse:collapse !important;
-	cursor:default !important;
-	display:inline-block !important;
-	border: 0px solid #ffffff !important;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  cursor: default;
+  display: inline-block;
+  border: 0px solid #ffffff;
 }
-
 
 .battlefield_row {
-	width:100%;
-	border-collapse:collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.battlefield_cell_rival_tile, .battlefield_cell_self_tile {
-	width:25px;
-	height:25px;
-	border: 1px solid #ffffff;
-	border-collapse:collapse;
-	cursor: url('../images/crosshair.png') 16 16, crosshair;
+.battlefield_cell_rival_tile,
+.battlefield_cell_self_tile {
+  width: 25px;
+  height: 25px;
+  border: 1px solid #ffffff;
+  border-collapse: collapse;
+  cursor: url("../images/crosshair.png") 16 16, crosshair;
 }
 
-
-.battlefield_cell_self_coord, .battlefield_cell_rival_coord {
-	width:42.5px;
-	height:42.5px;
-	border: 1px solid #ffffff;
-	border-collapse:collapse;
-	color: #ffffff;
-	text-align: center;
+.battlefield_cell_self_coord,
+.battlefield_cell_rival_coord {
+  width: 42.5px;
+  height: 42.5px;
+  border: 1px solid #ffffff;
+  border-collapse: collapse;
+  color: #ffffff;
+  text-align: center;
 }
 
 /* prevent text selection of the coordinates  */
-.battlefield_cell_self_coord, .battlefield_cell_rival_coord {
-	user-select: none; /* supported by Chrome and Opera */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
+.battlefield_cell_self_coord,
+.battlefield_cell_rival_coord {
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
 .battlefield_cell_rival_coord {
-	background-color: rgba(70, 4, 4, 0.7);
+  background-color: rgba(70, 4, 4, 0.7);
 }
 
 .battlefield_cell_self_coord {
-	background-color: rgba(4, 4, 70, 0.7);
+  background-color: rgba(4, 4, 70, 0.7);
 }
 
 .battlefield_cell_self_tile:hover {
-	background-color: rgb(78, 6, 6);
+  background-color: rgb(78, 6, 6);
 }
 
 .battlefield_rival {
-	float:right;
-	margin-top: 7%;
-	margin-right:6%;
-	width:500px;
-	height:500px;
-	border: 0px solid #FD1E1E;
-	background: url("../images/template.png");
-	background-size: auto;
-    background-repeat: no-repeat;
+  float: right;
+  margin-top: 7%;
+  margin-right: 6%;
+  width: 468px;
+  height: 468px;	
+  border: 0px solid #fd1e1e;
+  background: url("../images/template.png");
+  background-size: auto;
+  background-repeat: no-repeat;
 }
 
 .battlefield_rival_table {
-	position:relative;
-	width:100%;
-	height:100%;
-	border-collapse:collapse;
-	cursor: default;
-	display:inline-block;
-	border: 0px solid #BB820F;
-} 
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  cursor: default;
+  display: inline-block;
+  border: 0px solid #bb820f;
+}
 
-#playerb_tag { 
-	position: relative;
-	top: 15.5%;
-	margin-left: 75%; 
-	font-size: 120%;
+#playerb_tag {
+  position: relative;
+  top: 15.5%;
+  margin-left: 75%;
+  font-size: 120%;
 }
 
 #playera_tag {
-	margin-left: 22%; 
-	margin-top: 6%; 
-	font-size: 120%;
+  margin-left: 22%;
+  margin-top: 1%;
+  font-size: 120%;
 }
 
-#timer {
-	font-size: 23px; 
-	right: 45%; 
-	color:rgb(0, 0, 0); 
-	position: absolute; 
-	margin-top:5%; 
-	display: none;
-}
+/* #timer {
+  font-size: 23px;
+  right: 45%;
+  color: rgb(0, 0, 0);
+  position: absolute;
+  margin-top: 5%;
+  display: none;
+} */
 
 #timertext {
-	position: absolute; 
-	left: 46%; 
-	color:white; 
-	font-size: 50px; 
-	margin-top:25px; 
-	display:inline-block;
+  position: absolute;
+  left: 46%;
+  color: white;
+  font-size: 50px;
+  margin-top: 25px;
+  display: inline-block;
 }
 
 #timertext2 {
-	font-size: 23px; 
-	margin-left: 45%;
-	color:rgb(0, 0, 0); 
-	position: absolute; 
-	margin-top:0.4%; 
-	text-decoration: underline;
+  font-size: 23px;
+  margin-left: 45%;
+  color: rgb(0, 0, 0);
+  position: absolute;
+  margin-top: 0.4%;
+  text-decoration: underline;
 }
 
-#fullscreen {
-	width:4%; 
-	height:auto;
-	float: right;
-	margin-top: 1%;
-	margin-right: 5%;
-}
-
-#fullscreen:hover {
-	width:6%;
-	height:auto;
-	margin-top: 0;
-	margin-right: 4%;
-}
-
-.notifications {
-	width: 100%;
-	text-align: center;
-}
-
-.notifications .alert {
-	margin-bottom: 9px;
-}
-
-.marquee {
+/* .marquee {
     white-space: nowrap;
 	-webkit-animation: rightThenLeft 30s ease-in-out;
 			animation: rightThenLeft 30s ease-in-out;
 	animation-iteration-count: infinite;
-}
+} */
 
-@keyframes rightThenLeft {
+/* @keyframes rightThenLeft {
     0%   {margin-right:80%;}
     50%  {margin-right:20%;}
     100% {margin-right:80%;}
-}
+} */
 
 .Scoreboard {
-	position: absolute;
-	background-color:white;
-	width:30%;
-	height:10%;
-	margin-left: 35%;
-	margin-top:1%;
-	text-align: center;
-	line-height: 20%;
-	background-color:rgba(180, 180, 180,0.7);
+  position: absolute;
+  background-color: white;
+  width: 30%;
+  height: 10%;
+  margin-left: 35%;
+  margin-top: 1%;
+  text-align: center;
+  line-height: 20%;
+  background-color: rgba(180, 180, 180, 0.7);
 }
 
 #ScoreSelf {
-	width: 48.5%;
-	float: left;
-	border:dotted;
+  width: 48.5%;
+  float: left;
+  border: dotted;
 }
 
 #ScoreRival {
-	width: 48.5%;
-	float: right;
-	border:dotted;
-}
-
-#roster-sidebar {
-	position: absolute;
-	margin-left:44.5%;
-	width: 10%;
-	padding: 7px;
-	margin-top: 13%;
-	background-color: rgba(253, 253, 253, 0.85);
-	border: solid;
-	text-align: center;
+  width: 48.5%;
+  float: right;
+  border: dotted;
 }
 
 button {
-	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-	color: #EEEEEE;
-	background-color: #25567B;
-	border: none;
-	margin: 1em auto 0 auto;
-	padding: 5px;
-	border-radius: 5px;
-	font-size:100%;
-	
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  color: #eeeeee;
+  background-color: #25567b;
+  border: none;
+  margin: 1em auto 0 auto;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 100%;
 }
+
 button:hover {
-		cursor: pointer;
-		background-color: #ffffff;
-		color:red;
+  cursor: pointer;
+  background-color: #ffffff;
+  color: red;
 }
+
 button:active {
-	background-color:black;
-}
-#startgamebutton {
-		position: relative;
-		color: #FFFFFF;
-		background-color: #FF9200;
-		font-size: 120%;
-}
-#startgamebutton:hover {
-		background-color: #FFB655;
-}
-#startgamebutton:active {
-		background-color:black;
+  background-color: black;
 }

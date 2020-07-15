@@ -1,78 +1,68 @@
-@import 'Style.css';
+@import "Style.css";
 
 .battlefield {
-	position: relative;
-	width:100%;
-	height:80%;
-	border: 0px solid #FD1E1E;
-	background-color: rgba(255,255,255,0.7);	
+  position: relative;
+  width: 100%;
+  height: 80%;
+  border: 0px solid #fd1e1e;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .battlefield_self {
-	position: absolute;
-	float: left;
-	margin-left: 7%;
-	width: 468px;
-	height: 468px;
-    border: 0px solid #000000;
-	background: url("../images/template.png");
-	background-size: auto;
-    background-repeat: no-repeat;
-    opacity: 1;
+  width: 468px;
+  height: 468px;
+  border: 0px solid #000000;
+  background: url("../images/template.png");
+  background-size: auto;
+  background-repeat: no-repeat;
+  opacity: 1;
 }
 
 .battlefield_self_table {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	border-collapse: collapse;
-	display: inline-block;
-	border: 0px solid #ffffff;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  border: 0px solid #ffffff;
 }
 
 .battlefield_row {
-	width:100%;
-	border-collapse:collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .battlefield_cell_self_tile {
-	width:25px;
-	height:25px;
-	border: 1px solid #ffffff;
-	border-collapse:collapse;
-	cursor: url('../images/crosshair.png') 16 16, crosshair;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #ffffff;
+  border-collapse: collapse;
+  cursor: url("../images/crosshair.png") 16 16, crosshair;
 }
 
-
 .battlefield_cell_self_coord {
-	width:42.5px;
-	height:42.5px;
-	border: 1px solid #ffffff;
-	border-collapse:collapse;
-	color: #ffffff;
-	text-align: center;
+  width: 42.5px;
+  height: 42.5px;
+  border: 1px solid #ffffff;
+  border-collapse: collapse;
+  color: #ffffff;
+  text-align: center;
 }
 
 /* prevent text selection of the coordinates  */
 .battlefield_cell_self_coord {
-	user-select: none; /* supported by Chrome and Opera */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
 .battlefield_cell_self_coord {
-	background-color: rgba(4, 4, 70, 0.7);
-}
-
-.battlefield_cell_self_tile:hover {
-	background-color: rgb(78, 6, 6);
+  background-color: rgba(4, 4, 70, 0.7);
 }
 
 .card {
-    margin-top: 1%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    height: 80%;
-    width: 80%;
+  margin-top: 1%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  height: 80%;
+  width: 80%;
 }

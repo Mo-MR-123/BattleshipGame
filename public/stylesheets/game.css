@@ -121,7 +121,7 @@
   display: none;
 } */
 
-#timertext {
+/* #timertext {
   position: absolute;
   left: 46%;
   color: white;
@@ -137,19 +137,6 @@
   position: absolute;
   margin-top: 0.4%;
   text-decoration: underline;
-}
-
-/* .marquee {
-    white-space: nowrap;
-	-webkit-animation: rightThenLeft 30s ease-in-out;
-			animation: rightThenLeft 30s ease-in-out;
-	animation-iteration-count: infinite;
-} */
-
-/* @keyframes rightThenLeft {
-    0%   {margin-right:80%;}
-    50%  {margin-right:20%;}
-    100% {margin-right:80%;}
 } */
 
 .Scoreboard {

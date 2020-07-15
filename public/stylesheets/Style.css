@@ -1,3 +1,5 @@
+/* NOTE: this css file is imported BY ALL OTHER CSS files!! */
+
 html {
   background: #000000;
 }

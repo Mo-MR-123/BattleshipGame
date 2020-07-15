@@ -31,20 +31,7 @@
 	background-position: center;
 }
 
-#right{
-	width: 5%;
-	float: right;
-}
 
-#nav{
-	height: 8%;
-	width:100%;
-	background: rgba(122, 102, 179, 0.9);
-	font-weight:600;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 100%;
-	color: rgb(151, 2, 2);
-}
 
 button:hover{
 	background-color: rgba(150, 0, 0, 0.7);
@@ -61,11 +48,3 @@ button {
 }
 
 /* removed ::before on peopleplaying and peopleonline they are not needed */
-
-#splash_logo{ 
-	
-	height: 70px; 
-	width: auto;
-	vertical-align: middle;
-
-}

@@ -1,26 +1,28 @@
-html {
-	background: #000000;
-
+body, html {
+	height: 100%;
+	background-color: #000000;
  }
  
  .main {
-	border: 1px solid #000;
-    background: url("../images/background.jpg");
-    background-repeat: no-repeat;
-	background-size: auto; 
+	background: url("../images/background.png");
+	height: 100%; 
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
- 
-.body {	
-    position: relative;
-	width:90%;
-	margin-right:auto;
-	margin-bottom:0px;
-	margin-left:auto;
-	height: 900px;
-    z-index:1;
+.header {
+	background: rgba(122, 102, 179, 0.9);
+	font-size: x-large;
+	font-weight:600;
+	color: rgb(151, 2, 2);
+}
 
-} 
+#splash_logo{ 
+	height: 70px; 
+	width: auto;
+	vertical-align: middle;
+}
 
 .centerbutton{
 	position: absolute;
@@ -29,16 +31,6 @@ html {
 	left: 50%;
 }
 
-	
-.header{
-	position:relative;
-	font-weight:600;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 100%;
-	color: rgb(151, 2, 2);
-	background-color: rgba(149, 133, 192, 0.5);
-	
-}
 .online_count{
 	position:relative;
 	height: 5px;
@@ -48,15 +40,7 @@ html {
 	color:#999;
 	background-color: rgb(255, 255, 255);
 }
-.notification{
-	position: relative;
-	width:100%;
-	height:25px;
-	border: 0px solid #000;
-	background-color: rgb(255, 255, 255);
-	font-size: 100%;
 
-}
 .battlefield{
 	position:relative; 
 	width:100%;
@@ -188,12 +172,12 @@ html {
 }
 
 #footer{
-	width:100%;
+	width: 100%;
+	height: 2em;
 	background: rgb(122, 102, 179);
 	color:white;
 	font-weight:bold;
 	font-size:12px;
-	text-align: center;
 	position:fixed;    /*Here's what sticks it*/
 	bottom:0;          /*to the bottom of the body*/
 	left:0;            /*and to the left of the body.*/
@@ -207,34 +191,6 @@ html {
 	background:black;
 }
 
-#l{
-	float: left;
-	width:20%;
-	vertical-align: middle;
-}
-
-#m{
-	float: middle;
-	width: 70%;
-	vertical-align: middle;
-}
-
-#r{
-	float: right;
-	width:30%;
-	vertical-align: middle;
-}
-
-#nav{
-	height: 8%;
-	width:100%;
-	background: rgba(122, 102, 179, 0.9);
-	font-weight:600;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 100%;
-	color: rgb(151, 2, 2);
-}
-
 h1 {
 	font-weight:600;
     font-family: 'Times New Roman', Times, serif;
@@ -243,21 +199,20 @@ h1 {
 	text-align: center;
 }
 
-
-a:hover{
-	background-color: rgba(150, 0, 0, 0.7);
-}
-
 a {
 	background-color: rgb(49, 31, 207);
-	padding: 14px 25px;
-	text-align: center;
+	margin-top: 0.3em;
+	padding: 0.2em;
+	border-radius: 8px;
 	text-decoration: none;
 	display: inline-block;
 	color: white;
 	height: 44px;
 }
 
+a:hover{
+	background-color: rgba(150, 0, 0, 0.7);
+}
 
 i, p {
 	font-size: 86%;
@@ -308,5 +263,3 @@ h3{
 	text-decoration: underline;
 
 }
-
-

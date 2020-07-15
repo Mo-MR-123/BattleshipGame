@@ -2,81 +2,87 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="shortcut icon" type="image/png" href="images/logo.png"/>
         <title>Battleship V: Battle Royale Edition</title>
+        <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
         <link rel = "stylesheet"type = "text/css" href = "stylesheets/splash.css" />   
-        <link rel="shortcut icon" type="image/png" href="images/favi.png"/>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="javascripts/jquery.js"></script>
     </head>
 
     <body>
         <main class="main">
             <div class="body">
-                    <nav id="nav">
-                        <h2><image src="images/logo.png" id="splash_logo">Battleship V</image><a href="contact.html" id="r">How-To-Play Guide</a></h2>
-                    </nav>
+                <div class="header" class="container-fluid">
+                    <div class="row justify-content-between">
+                        <div class="col-4"> <image src="images/logo.png" id="splash_logo">Battleship V</image> </div>
+                        <div class="col-4"> <a href="contact.html">How-To-Play Guide</a> </div>
+                    </div>
+                </div>
+
+                <!-- =================================================================-->
 
                 <div id="content">
-                <div id="left">
-                    <div id="top">
-                        <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Exited Games: </h4>
-                        <h4 id="peopleonline">
-                            <%= exitedGames %>
-                            Exited
+                    <div id="left">
+                        <div id="top">
+                            <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Exited Games: </h4>
+                            <h4 id="peopleonline">
+                                <%= exitedGames %>
+                                Exited
+                                <%if (gamesInitialized != 1) { %>
+                                    Games
+                                <% } else { %>
+                                    Game
+                                <% } %>
+                            </h4>
+                            <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Ongoing games: </h4>
+                            <h4 id="peopleplaying">
+                            <%= gamesInitialized %> 
                             <%if (gamesInitialized != 1) { %>
                                 Games
                             <% } else { %>
                                 Game
                             <% } %>
-                        </h4>
-                        <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Ongoing games: </h4>
-                        <h4 id="peopleplaying">
-                          <%= gamesInitialized %> 
-                          <%if (gamesInitialized != 1) { %>
-                            Games
-                          <% } else { %>
-                            Game
-                          <% } %>
-                          initialized 
-                          
-                        </h4>
-                        <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Games completed: </h4>
-                        <h4 id="completedgames">
-                          <%= gamesCompleted %>
-                          Completed
-                        </h4>
+                            initialized 
+                            
+                            </h4>
+                            <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Games completed: </h4>
+                            <h4 id="completedgames">
+                            <%= gamesCompleted %>
+                            Completed
+                            </h4>
 
+                        </div>
+                        <div id="bottom">
+                                <p>BEST GAME of the year!</p>
+                                <i> -according to us...</i>
+                                <p>FREE to play!</p>
+                                <i> - for the first 2 battles only...</i>
+                                <p>Made by experts!</p>
+                                <i> - self proclaimed experts with only a few months of experience...</i>
+                        </div>
                     </div>
-                    <div id="bottom">
-                            <p>BEST GAME of the year!</p>
-                            <i> -according to us...</i>
-                            <p>FREE to play!</p>
-                            <i> - for the first 2 battles only...</i>
-                            <p>Made by experts!</p>
-                            <i> - self proclaimed experts with only a few months of experience...</i>
-                    </div>
-                </div>
-                <div id="middle">
-                        
-                            <h1>BATTLESHIP V: BATTLE ROYALE EDITION </h1>
-                            <h3>supports 1-v-1 only</h3></br>
-                            <form action="/place-ships" method="get">
-                                <button type="submit">PLAY</button>
-                            </form>
-                </div>
-
-                 
-                <div id="right">   
-                    <div id="bottom">
-                             <p>right</p>
+                    <div id="middle">
+                                <h1>BATTLESHIP V: BATTLE ROYALE EDITION </h1>
+                                <h3>supports 1-v-1 only</h3></br>
+                                <form action="/place-ships" method="get">
+                                    <button type="submit">PLAY</button>
+                                </form>
                     </div>
                 </div>
-                </div>         
             </div>
         </main>
+
+         <!-- =================================================================-->
+
         <footer id="footer">
-                <div id="l">&copy&nbspCopyright 2018  | All rights reserved. </div>
-                <div id="m">Support us on patreon!</div>
-                <div id="r">... we need the money...</div>
+            <div class="container-fluid">
+                <div class="row justify-content-around">
+                  <div class="col-3"> &copy&nbspCopyright 2018  | All rights reserved. </div>
+                  <div class="col-3"> Support us on patreon! </div>
+                  <div class="col-3"> ... we need the money... </div>
+                </div>
+              </div>
         </footer>
     </body>
 </html>

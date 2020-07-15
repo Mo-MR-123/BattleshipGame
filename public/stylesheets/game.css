@@ -147,10 +147,7 @@
 }
 
 #fullscreen:hover {
-	width:6%;
-	height:auto;
-	margin-top: 0;
-	margin-right: 4%;
+	opacity: 50%;
 }
 
 .notifications {

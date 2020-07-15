@@ -10,6 +10,9 @@
     exports.GAME_WON_BY = {
         type: exports.T_GAME_WON_BY,
         //this needs to be replaced with which player won
+        // TODO: CHECK WHETHER THE FOLLOWING IDEA IS BETTER OR SENDING TILE_HIT COORDINATES AND WHO WON SEPERATELY IS BETTER:
+        // also what tile was shot that caused the win
+        // e.g. { player: "A", coordinates: (0, 0) } -> player A won by hitting last part of last ship on (0,0)
         data: null 
     };
 
@@ -22,7 +25,7 @@
     exports.S_GAME_ABORTED = JSON.stringify(exports.O_GAME_ABORTED);
 
     /*
-     * Server to client: set as player A 
+     * Server to client: inform client to set its player as player A 
      */
     exports.T_PLAYER_TYPE = "PLAYER-TYPE";
     exports.O_PLAYER_A = {                            
@@ -32,13 +35,23 @@
     exports.S_PLAYER_A = JSON.stringify(exports.O_PLAYER_A);
 
     /* 
-     * Server to client: set as player B 
+     * Server to client: inform client to set its player as player B
      */
     exports.O_PLAYER_B = {                            
         type: exports.T_PLAYER_TYPE,
         data: "B"
     };
     exports.S_PLAYER_B = JSON.stringify(exports.O_PLAYER_B);
+
+    /* 
+     * Server to client: indicate which player is allowed to shoot a tile (happens after each turn)
+     */
+    exports.T_PLAYER_TURN = "PLAYER-TURN";
+    exports.PLAYER_TURN = {                            
+        type: exports.T_PLAYER_TURN,
+        // data must be either "A" or "B"
+        data: null
+    };
     
     /* 
     * Server to Player A & B: game over with result won/loss 
@@ -52,13 +65,14 @@
     /////////////////////////////// TILE LOGIC MESSAGES ///////////////////////////////////
 
     /* 
-     * Player B OR Player A clicked tile: send coordinates of tile to server 
+     * Client to server: Player B OR Player A clicked tile, send coordinates of tile to server 
      */
     exports.T_TILE_SHOT = "CLICK-ON-TILE";         
     exports.TILE_SHOT = {
         type: exports.T_TILE_SHOT,
         // this needs to be replace with which player shot (not here but when a tile is actually clicked)
         // NOTE: this must be an object containing x coordinate and y coordinate of clicked tile
+        // e.g. data { player: "A", coordinates: { x: 0, y: 1 } }
         data: null 
     };
 
@@ -68,7 +82,9 @@
     exports.T_TILE_HIT = "TILE-HIT";              
     exports.TILE_HIT = {
         type: exports.T_TILE_HIT,
-        data: null //TODO: check if data needs to be sent
+        // data must contain which player hit the tile (either "A" or "B") and what tile is hit
+        // e.g. { player: "A", coordinates: { x: 0, y: 2 } }
+        data: null
     };
 
     /* 
@@ -77,7 +93,9 @@
     exports.T_TILE_HIT_SINK = "TILE-HIT-SINK";              
     exports.TILE_HIT_SINK = {
         type: exports.T_TILE_HIT_SINK,
-        data: null //TODO: check if data needs to be sent
+        // data must contain which player hit and sank a ship (either "A" or "B") 
+        // so e.g. data: { player: "A", coordinates: { x: 1, y: 1 }, ship: "Destoyer" }
+        data: null
     };
 
     /* 
@@ -86,7 +104,9 @@
     exports.T_TILE_MISS = "TILE-MISS";              
     exports.TILE_MISS = {
         type: exports.T_TILE_MISS,
-        data: null //TODO: check if data needs to be sent
+        // data must contain which player missed (either "A" or "B") and coordinate missed
+        // e.g. { player: "A", coordinates: { x: 0, y: 1 } }
+        data: null
     };
 
     ////////////////////////////// SENDING GRID OF PLAYERS TO SERVER MESSAGES ///////////////////////

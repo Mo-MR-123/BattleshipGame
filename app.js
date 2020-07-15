@@ -2,14 +2,15 @@ const express = require("express");
 const http = require("http");
 const sessionConfig = require('./sessionConfig');
 const session = require('express-session');
-const credentials = require("./cookiecredential");
 const gameStatus = require("./games_tracker")
 const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
 const Game = require("./game");
-const websocket = require("ws");
+const WebSocket = require("ws");
+const _ = require("lodash");
 
 const port = process.argv[2] || 3000;
+const hostName = 'localhost';
 const app = express();
 
 // init session middleware using specified config
@@ -29,40 +30,19 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 // route to homepage and add homepage cookie
-app.get("/", (req, res, next) => {
-    //creating cookie for the home page
-    res.cookie("splash_cookie_enjoy", "cookie_from_the_splash_page", {
-        signed: false,
-        sameSite: true
-    });
-    next();
-});
 app.get("/", indexRouter);
 
 // html file for placing the ships before starting the game
 app.get("/place-ships", indexRouter);
 
-// waiting for other players
-app.get("/waiting-page", indexRouter);
-
 // transporting the user to the game page when the "play" button has been clicked
-app.get("/play", (req, res, next)=>{
-	//creating a cookie that expires over 10 minutes when game page is accessed
-    res.cookie("game_cookie_enjoy", "cookie_from_the_game_page", { 
-        signed: false,
-        httpOnly: false,
-        sameSite: true,
-        expires: new Date(Date.now() + 600000)
-    });
-    next();
-});
 app.get("/play", indexRouter);
 
 // creating the server to be able to run/use express
 const server = http.createServer(app);
 
 //creating webSocket Server
-const wss = new websocket.Server({ server });
+const wss = new WebSocket.Server({ server });
 
 //websockets object -> property (= key): websocket, value: game
 var websockets = {};
@@ -80,6 +60,34 @@ setInterval(function() {
         }
     }
 }, 50000);
+
+/**
+ * Close sockets of players in a game that has been won by a player OR when game is aborted.
+ * NOTE: THIS ALSO SETS THE finalStatus FIELD OF THE GAME OBJECT TO true SO THAT IT GETS GARBAGE COLLECTED
+ * @param {Game} gameObj - game object to close the sockets of
+ */
+const endGame = function (gameObj) {
+    //determine whose connection remains open and close it
+    try {
+        gameObj.playerA.close();
+        gameObj.playerA = null;
+    }
+    catch(e) {
+        console.log(`Error closing socket of Player A in game with ID ${gameObj.id}:`, e);
+    }
+
+    try {
+        gameObj.playerB.close(); 
+        gameObj.playerB = null;
+    }
+    catch(e) {
+        console.log(`Error closing socket of Player B in game with ID ${gameObj.id}:`, e);
+    }
+
+    // set finalStatus to true as client socket is aborted to make sure 
+    // the corresponding game object is garbage collected
+    gameObj.finalStatus = true;
+}
 
 // init a game object used to handle connection and logic of the first game
 var currentGame = new Game(0);
@@ -100,22 +108,10 @@ wss.on("connection", function connection(ws) {
         playerType
     );
 
-    //TODO: when the start button in the game page is clicked remove the script element of the ship placement and insert script for ship selection (gamelogic)
-
-    // /*
-    //  * inform the client about its assigned player type
-    //  */ 
-    // con.send((playerType == "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
-
-    // /*
-    //  * TODO: check if we even need the below if statement
-    //  * client B receives the target word (if already available)
-    //  */ 
-    // if (playerType == "B") {
-    //     let msg = messages.S_PLAYER_B;
-    //     //TODO: implement what player b receives
-    //     con.send(JSON.stringify(msg));
-    // }
+    /*
+     * inform the client about its assigned player type
+     */ 
+    con.send((playerType === "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
 
     /*
      * If current game already has 2 players connected,
@@ -126,75 +122,224 @@ wss.on("connection", function connection(ws) {
     }
 
     /*
-     * message coming in from a player:
-     *  1. determine which player has current id
+     * message coming in from a player (handle all logic of game here):
+     *  1. determine which player has current id (Player A or Player B)
      *  2. determine the game object where this player is linked to
-     *  2. determine the opponent.
-     *  3. send the message to opponent
+     *  3. determine the opponent.
+     *  4. handle message data if there is any
+     *  5. broadcast the message to both players A and B
      */ 
     con.on("message", function incoming(message) {
-        let oMsg = JSON.parse(message);
-        // get the id of the connection that sent a message, to get game object linked to player this con.id
-        let gameObj = websockets[con.id];
-        let isPlayerA = (gameObj.playerA == con) ? true : false;
+        try {
+            const oMsg = JSON.parse(message);
+            const hasData = oMsg.data ? true : false;
+            
+            // get the id of the connection that sent a message, to get game object linked to player this con.id
+            const gameObj = websockets[con.id];
+            const isPlayerA = (gameObj.playerA === con) ? true : false;
+            
+            // handle grid initialization of player A if the game is still not started
+            // and when player A grid is still not set
+            if (isPlayerA 
+                && oMsg.type === messages.T_GRID_PLAYER_A 
+                && !gameObj.playerAGrid 
+                && !gameObj.isGameStarted())
+            {
+                if (hasData) {
+                    gameObj.setPlayerAGrid(oMsg.data);
+                    
+                    // game can be started when both grids are present in the game obj.
+                    if (gameObj.isGameStarted()) {
+                        // send whos turn it is to start shooting
+                        msgWhoCanStart = _.cloneDeep(messages.PLAYER_TURN);
+                        msgWhoCanStart.data = gameObj.getTurn();
 
-        if (isPlayerA) {
-            if (gameObj.hasTwoConnectedPlayers()) {
-                gameObj.playerB.send(message); 
-            }
-        }
-        else {
-            /*
-             * player B can shoot; 
-             * this shot is forwarded to A
-             */ 
-            if (oMsg.type == messages.T_MAKE_A_SHOT) {
-                gameObj.playerA.send(message);
-                gameObj.setStatus("TILE SHOT");
+                        gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
+                        gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
+                    }
+                } else {
+                    console.log(`Player A client did not send a grid in data of message. Data: ${oMsg.data}`);
+                }
             }
 
-            /*
-             * player B can state who won/lost
-             */ 
-            if (oMsg.type == messages.T_GAME_WON_BY) {
-                gameObj.setStatus(oMsg.data);
-                //game was won by somebody, update statistics
-                gameStatus.gamesCompleted++;
-            }            
+            // handle grid initialization of player B if the game is still not started 
+            // and when player B grid is still not set
+            // TODO: check whether !gameObj.isGameStarted() is needed here and whether !gameObj.playerBGrid is enough 
+            if (!isPlayerA 
+                && oMsg.type === messages.T_GRID_PLAYER_B 
+                && !gameObj.playerBGrid 
+                && !gameObj.isGameStarted()) 
+            {
+                    
+                if (hasData) {
+                    gameObj.setPlayerBGrid(oMsg.data);
+
+                    // game can be started when both grids are present in the game obj.
+                    if (gameObj.isGameStarted()) {
+                        // send whos turn it is to start shooting
+                        msgWhoCanStart = _.cloneDeep(messages.PLAYER_TURN);
+                        msgWhoCanStart.data = gameObj.getTurn();
+
+                        gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
+                        gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
+                    }
+                } else {
+                    console.log(`Player B client did not send a grid in data of message. Data: ${oMsg.data}`);
+                }
+            }
+
+            // Here goes main flow of game logic: 
+            // check if current game object has 2 players, whether the game is started and can be played
+            // AND check that the game is not won by a player
+            if (gameObj.hasTwoConnectedPlayers() 
+                && gameObj.isGameStarted() 
+                && !gameObj.gameWonBy)
+            {
+                if (isPlayerA) {
+                    // handle all logic of player A
+
+                    // get opponent of player A
+                    const opponent = gameObj.playerB;
+                    const currPlayer = gameObj.playerA;
+                    
+                    // handle case where player A shoots tile on player B grid when it is player A turn
+                    if (oMsg.type === messages.T_TILE_SHOT && gameObj.getTurn() === "A") {
+                        if (hasData) {
+                            const tileShotMsg = gameObj.tileFired(oMsg.data, true);
+                            
+                            // check if tileShotMsg is not null (so there is a message)
+                            if (tileShotMsg) {
+                                // if player A missed, change turn to player B
+                                if (tileShotMsg.type === messages.T_TILE_MISS) {
+                                    gameObj.changeTurn();
+                                }
+                                opponent.send(JSON.stringify(tileShotMsg));
+                                currPlayer.send(JSON.stringify(tileShotMsg));
+                            }
+                        } else {
+                            console.log(`Player A shot a tile but did not pass any data. Data: ${oMsg.data}`);
+                        }
+                    }
+                }
+                else {
+                    // handle all logic of player B
+
+                    // get opponent of player B
+                    const opponent = gameObj.playerA;
+                    const currPlayer = gameObj.playerB;
+
+                    // handle case where player B shoots tile on player A grid when it is player B turn to shoot
+                    if (oMsg.type === messages.T_TILE_SHOT && gameObj.getTurn() === "B") {
+                        if (hasData) {
+                            const tileShotMsg = gameObj.tileFired(oMsg.data, false);
+
+                            // TODO: check if tileShotMsg can be null and whether this check is even needed
+                            if (tileShotMsg) {
+                                // if player B missed, change turn to player A
+                                if (tileShotMsg.type === messages.T_TILE_MISS) {
+                                    gameObj.changeTurn();
+                                }
+                                opponent.send(JSON.stringify(tileShotMsg));
+                                currPlayer.send(JSON.stringify(tileShotMsg));
+                            }
+                        } else {
+                            console.log(`Player B shot a tile but did not pass any data. Data: ${oMsg.data}`);
+                        }
+                    }
+                }
+
+            }
+            else {
+                console.log(`Player A connected to the game with id ${gameObj.id}? ${gameObj.playerA ? true : false}`);
+                console.log(`Player B connected to the game with id ${gameObj.id}? ${gameObj.playerB ? true : false}`);
+                console.log(`Game with id ${gameObj.id} does not have 2 players connected OR is not started yet.`);
+            }
+
+            // Check if a winner has been announced, if so then do following:
+            // 1. Send who won the game to both players.
+            // 2. Check after some timeout if both players are not closed,
+            //    then force both sockets to close by calling endGame() function.
+            // 3. Increment games complete by 1.
+            if (gameObj.gameWonBy && !gameObj.finalStatus) {
+                // setup the message of the player that won the game
+                let whoWonMessage = _.cloneDeep(messages.GAME_WON_BY);
+                whoWonMessage.data = gameObj.gameWonBy;
+                
+                // step 1:
+                gameObj.playerA.send(JSON.stringify(whoWonMessage));
+                gameObj.playerB.send(JSON.stringify(whoWonMessage));
+
+                // step 2:
+                setTimeout(() => {
+                    // check if both players are either closing or closed
+                    // if one of the players sockets is not doing that then force closing of both sockets
+                    if (
+                        gameObj.playerA.readyState !== WebSocket.CLOSED
+                         || gameObj.playerB.readyState !== WebSocket.CLOSED
+                    ) {
+                        console.log(`
+                        FORCE CLOSING SOCKETS OF GAME ${gameObj.id}.
+                        STATE SOCKET PLAYER A: ${gameObj.playerA.readyState}
+                        STATE SOCKET PLAYER B: ${gameObj.playerB.readyState}
+                        `);
+
+                        endGame(gameObj);
+                    } else {
+                        // if both sockets are closed then just de-reference sockets and set finalSatus to true
+                        gameObj.playerA = null;
+                        gameObj.playerB = null;
+                        gameObj.finalStatus = true;
+                    }
+                }, 1500);
+
+                // step 3:
+                gameStatus.gamesComplete++;
+            }
+        } catch (e) {
+            console.log(`
+            Error occured at handling incoming messages from client socket
+            THE ERROR: ${e}
+            DEBUG INFO:
+            GAME OBJECT: ${websockets[con.id]}, CLIENT SOCKET ID: ${con.id}
+            GAME OBJECT PLAYER A SOCKET: ${websockets[con.id] ? websockets[con.id].playerA : null}, GAME OBJECT PLAYER B SOCKET: ${websockets[con.id] ? websockets[con.id].playerB : null}
+            POSSIBLE CAUSE: game object is accessed after garbage collector deleted it which caused this error to occur
+            It is also possible that game was won and because both player sockets are set to null 
+            and socket is not properly closed by client, the client can send messages and when gameObj.playerA is checked this error is thrown.
+            `);
         }
     });
 
+    //NOTE: The socket must always be closed by the client when somebody wins OR when 1 of the players disconnects.
+    // On the client, when somebody wins, boolean needs to be true indicating game is won (on the client).
+    // After that the client needs to close the socket, on client when socket is closed -> check whether gameWon boolean is true.
+    // If yes, then show who won, otherwise say nobody won with ABORTED mesage
+    // THIS NEEDS TO HAPPEN ON EACH CLIENT OF BOTH PLAYERS
     con.on("close", function (code) {
         
-        // code 1001 means almost always closing initiated by the client;
         console.log(con.id + " disconnected ...");
 
-        if (code == "1001") {
-            //if possible, abort the game; if not, the game is already completed
-            let gameObj = websockets[con.id];
-
-            if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
-                gameObj.setStatus("ABORTED"); 
-                gameStatus.gamesExited++;
-
-                //determine whose connection remains open and close it
-                try {
-                    gameObj.playerA.close();
-                    gameObj.playerA = null;
+        let gameObj = websockets[con.id];
+        
+        // only try to abort the game if the game object still exists in websockets object
+        // this check is done in case the game object got removed.
+        if (gameObj) {
+            // socket closes with code 1001 only when both players leave the game.
+            // Thus if 1 player is in the game and that player leaves, that player socket will not close with 1001 
+            if (code == "1001") {
+                //if possible, abort the game; if not, the game is already completed
+                if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
+                    gameObj.setStatus("ABORTED"); 
+                    gameStatus.gamesExited++;
+    
+                    endGame(gameObj);
                 }
-                catch(e){
-                    console.log("Player A closing: "+ e);
-                }
-
-                try {
-                    gameObj.playerB.close(); 
-                    gameObj.playerB = null;
-                }
-                catch(e){
-                    console.log("Player B closing: " + e);
-                }                
             }
-            
+
+            // if first player is only one in the game and left, the set status to "0 JOINED"
+            // which resets the game so that new game can start on this game object
+            if (gameObj.gameState === "1 JOINED") {
+                gameObj.setStatus("0 JOINED");
+            }
         }
     });
 });
@@ -212,7 +357,6 @@ app.use((error, req, res, next) => {
     res.render('error', { error: error.message })
 })
 
-server.listen(port, function(err) {
-    if (err) throw err;
-    console.log(`Listening on port ${server.address().port}`)
+server.listen(port, hostName, () => {
+    console.log(`Server running at ${hostName}:${port}`);
 });

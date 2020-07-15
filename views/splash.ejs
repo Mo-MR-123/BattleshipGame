@@ -21,7 +21,6 @@
                         <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Exited Games: </h4>
                         <h4 id="peopleonline">
                             <%= exitedGames %>
-                            <% console.log("\nExited games: " + exitedGames); %>
                             Exited
                             <%if (gamesInitialized != 1) { %>
                                 Games
@@ -32,7 +31,6 @@
                         <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Ongoing games: </h4>
                         <h4 id="peopleplaying">
                           <%= gamesInitialized %> 
-                          <%console.log("Games initialized: "+gamesInitialized);%>
                           <%if (gamesInitialized != 1) { %>
                             Games
                           <% } else { %>
@@ -44,7 +42,6 @@
                         <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Games completed: </h4>
                         <h4 id="completedgames">
                           <%= gamesCompleted %>
-                          <%console.log("Games completed: "+gamesCompleted);%> 
                           Completed
                         </h4>
 

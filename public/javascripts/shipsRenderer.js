@@ -12,6 +12,12 @@ function ShipsRenderer() {
     // assign class of the tiles of the opponent that the current player can shoot on. (rival)  
     this.opponentTileClass = 'td.battlefield_cell_rival_tile';
 
+    // assign id of self hits
+    this.hitsSelfId = '#hitsself';
+
+    // assign id of rival hits
+    this.hitsOpponentId = '#hitsrival';
+
     // the color to render when a ship is hit on a tile
     this.colorHit = Setup.COLOR_HIT;
 
@@ -85,4 +91,20 @@ ShipsRenderer.prototype.renderTileMiss = function (x, y, isOpponent) {
         var tileHitSelf = $(this.selfTileClass + "[data-x='" + x + "'][data-y='" + y + "']"); 
         tileHitSelf.css("background-color", this.colorMiss);
     }
+}
+
+/**
+ * Render the updated hits number of current player.
+ * @param {Number} hits - the updated hits. 
+ */
+ShipsRenderer.prototype.updateHitsSelf = function (hits) {
+    $(this.hitsSelfId).html(hits.toString());
+}
+
+/**
+ * Render the updated hits number of opponent.
+ * @param {Number} hits - the updated hits. 
+ */
+ShipsRenderer.prototype.updateHitsOpponent = function (hits) {
+    $(this.hitsOpponentId).html(hits.toString());
 }

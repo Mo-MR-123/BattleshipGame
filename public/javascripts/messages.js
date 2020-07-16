@@ -10,14 +10,12 @@
     exports.GAME_WON_BY = {
         type: exports.T_GAME_WON_BY,
         //this needs to be replaced with which player won
-        // TODO: CHECK WHETHER THE FOLLOWING IDEA IS BETTER OR SENDING TILE_HIT COORDINATES AND WHO WON SEPERATELY IS BETTER:
-        // also what tile was shot that caused the win
-        // e.g. { player: "A", coordinates: (0, 0) } -> player A won by hitting last part of last ship on (0,0)
         data: null 
     };
 
     /*
      * Server to client: abort game (if first or second player exited the game) 
+     * TODO: check whether this is used or will be used!
      */
     exports.O_GAME_ABORTED = {                          
         type: "GAME-ABORTED"

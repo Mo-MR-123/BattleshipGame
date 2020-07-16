@@ -73,8 +73,8 @@
   background-color: rgba(4, 4, 70, 0.7);
 }
 
-.battlefield_cell_self_tile:hover {
-  background-color: rgb(78, 6, 6);
+.battlefield_cell_rival_tile:hover {
+  border: 3px solid orange;
 }
 
 .battlefield_rival {

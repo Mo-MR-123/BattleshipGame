@@ -25,7 +25,7 @@
     exports.DESTROYER = { id: 1, name: 'Destroyer',  size: 2, hits: 0, color: '#8d8d8d' }; /* Destoryer ship properties (ID is used when placed on the board) */
     exports.SUBMARINE = { id: 2, name: 'Submarine', size: 3, hits: 0, color: '#009d00' }; /* Submarine ship properties (ID is used when placed on the board) */
     exports.CRUISER = { id: 3, name: 'Cruiser', size: 3, hits: 0, color: '#0000ff' }; /* Cruiser ship properties (ID is used when placed on the board) */
-    exports.BATTLESHIP = { id: 4, name: 'Battleship', size: 4, hits: 0, color: '#DC143C' }; /* Battleship ship properties (ID is used when placed on the board) */
+    exports.BATTLESHIP = { id: 4, name: 'Battleship', size: 4, hits: 0, color: '#996633' }; /* Battleship ship properties (ID is used when placed on the board) */
     exports.CARRIER = { id: 5, name: 'Carrier', size: 5, hits: 0, color: '#FF8C00' }; /* Carrier ship properties (ID is used when placed on the board) */
     exports.WEB_SOCKET_URL = "ws://localhost:3000"; /* WebSocket URL */
     exports.COLOR_HIT = "#FF0000"; /* Hexadecimial color shown when ship is hit on clicked tile */

@@ -31,9 +31,6 @@ var shipsGenerator = new ShipsGenerator(grid);
 shipsGenerator.placeShipsRandomly();
 shipsRenderer.renderSelfGrid(grid);
 
-// TODO: remove this console log after testing
-console.table(grid);
-
 // when the DOM creation is finished, do the following:
 $(document).ready(function() {
 
@@ -42,10 +39,7 @@ $(document).ready(function() {
         try {
             LS.addObject("grid", grid);
             window.location.href = "/play";
-        } catch (e) {
-            // TODO: remove error logging
-            console.error(e);
-        }
+        } catch (e) {}
     });
 
     // when randomize grid button is clicked, should reset the global grid and place the ships randomly again
@@ -64,11 +58,12 @@ $(document).ready(function() {
             [0,0,0,0,0,0,0,0,0,0]
         ];
 
-        // place ships randomly again
+        // 1- place ships randomly again 
+        // 2- remove all styling from grid of current player
+        // 3- render the new ship placements on the grid
         shipsGenerator.rerandomizeShips(grid);
-
-        // TODO: remove this console log after testing
-        console.table(grid);
+        shipsRenderer.resetSelfTilesRendering();
+        shipsRenderer.renderSelfGrid(grid);
     });
           
     // // if a tile is clicked the following happens everytime:

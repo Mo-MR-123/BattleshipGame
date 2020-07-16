@@ -1,103 +1,17 @@
 "use strict";
 
 // this js file handles the rendering of ships on the grid in html given a grid array using jquery
-// NOTE: this must be the last js file to be included in html document
+// NOTE: this must be the last js file to be included in html document of shipplacement.ejs file
+// AND this file is only for rendering ships on the shipplacements.ejs page and should only be included there
 // TODO: make sure all ids and classes of divs are assigned and don't change anymore
-
-// BELOW IS THE FORMAT THAT IS GENERATED USING EJS IN THE shipplacement.ejs FILE !!
-{
-/*  <tbody>
-
-    <tr class="battlefield_row">
-        <td class="battlefield_cell2">
-        </td>
-        <td class="battlefield_cell2">A
-        </td>
-        <td class="battlefield_cell2">B
-        </td>
-        <td class="battlefield_cell2">C
-        </td>			
-        <td class="battlefield_cell2">D
-        </td>
-        <td class="battlefield_cell2">E
-        </td>
-        <td class="battlefield_cell2">F
-        </td>
-        <td class="battlefield_cell2">G
-        </td>
-        <td class="battlefield_cell2">H
-        </td>
-        <td class="battlefield_cell2">I
-        </td>
-        <td class="battlefield_cell2">J
-        </td>
-    </tr>
-
-    <tr class="battlefield_row">
-        <td class="battlefield_cell2">1
-        </td>
-        <td class="battlefield_cell1" data-x="0" data-y="0">
-        </td>
-        <td class="battlefield_cell1" data-x="1" data-y="0">
-        </td>
-        <td class="battlefield_cell1" data-x="2" data-y="0">
-        </td>			
-        <td class="battlefield_cell1" data-x="3" data-y="0">
-        </td>
-        <td class="battlefield_cell1" data-x="4" data-y="0">
-        </td>
-        <td class="battlefield_cell1" data-x="5" data-y="0">
-        </td>
-        <td class="battlefield_cell1" data-x="6" data-y="0">
-        </td>
-        <td class="battlefield_cell1" data-x="7" data-y="0">
-        </td>
-        <td class="battlefield_cell1" data-x="8" data-y="0">
-        </td>
-        <td class="battlefield_cell1" data-x="9" data-y="0">
-        </td>
-    </tr> 
-
-    .
-    .
-    .
-    
-    <tr class="battlefield_row">
-        <td class="battlefield_cell2">10
-        </td>
-        <td class="battlefield_cell1" data-x="0" data-y="9">
-        </td>
-        <td class="battlefield_cell1" data-x="1" data-y="9">
-        </td>
-        <td class="battlefield_cell1" data-x="2" data-y="9">
-        </td>			
-        <td class="battlefield_cell1" data-x="3" data-y="9">
-        </td>
-        <td class="battlefield_cell1" data-x="4" data-y="9">
-        </td>
-        <td class="battlefield_cell1" data-x="5" data-y="9">
-        </td>
-        <td class="battlefield_cell1" data-x="6" data-y="9">
-        </td>
-        <td class="battlefield_cell1" data-x="7" data-y="9">
-        </td>
-        <td class="battlefield_cell1" data-x="8" data-y="9">
-        </td>
-        <td class="battlefield_cell1" data-x="9" data-y="9">
-        </td>
-    </tr>
-
-    </tbody>
-    
-    */
-}
 
 // cell used to select tiles of player A grid
 var cell = ".battlefield_cell1";
+// buttons in shipplacement.ejs page
 var randomizeButtonId = "randomize-button";
 var startButtonId = "startgamebutton";
 
-// grid of player
+// global grid of player
 var grid = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
@@ -117,22 +31,25 @@ var shipsGenerator = new ShipsGenerator(grid);
 // place ships randomly
 shipsGenerator.placeShipsRandomly();
 
+// TODO: remove this console log after testing
 console.table(grid);
 
 // when the DOM creation is finished, do the following:
 $(document).ready(function() {
     
-    document.getElementById(startButtonId).addEventListener("click", function(ev) {
-        ev.preventDefault();
+    // when start button is clicked, store the players grid in local storage and go to "play" page
+    document.getElementById(startButtonId).addEventListener("click", function(btn) {
+        btn.preventDefault();
         try {
             LS.addObject("grid", grid);
             window.location.href = "/play";
         } catch (e) {
+            // TODO: remove error logging
             console.error(e);
         }
     });
 
-    // handle logic that the randomize button should execute
+    // when randomize grid button is clicked, should reset the global grid and place the ships randomly again
     document.getElementById(randomizeButtonId).addEventListener("click", function() {
         // reset grid
         grid = [
@@ -151,6 +68,7 @@ $(document).ready(function() {
         // place ships randomly again
         shipsGenerator.rerandomizeShips(grid);
 
+        // TODO: remove this console log after testing
         console.table(grid);
     });
           

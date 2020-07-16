@@ -29,12 +29,26 @@
             </div>
         </div>
 
-        <div class="battlefield">
+		<div class="notifications">
+            <div class="alert alert-primary" role="alert">
+                <%# Here use JQuery to place notification text %> 
+            </div>
+		</div> 
+		
+		<div class="battlefield">
 			<div id="roster-sidebar">
+						<!-- <h4>Place all the ships on the grid</h4> -->
+                        
+                        <%# Don't remove this for future possibility of placing ships on the grid %> 
+						<!-- <button class="btn primary" id="patrolboat">Patrol Boat = 2 Tiles</button></br>
+						<button class="btn primary" id="submarine">Submarine = 3 Tiles</button></br>
+						<button class="btn primary" id="destroyer">Destroyer = 3 Tiles</button></br>
+						<button class="btn primary" id="battleship">Battleship = 4 Tiles</button></br>
+						<button class="btn primary" id="carrier">Aircraft Carrier = 5 Tiles</button></br> -->
 						<button class="btn btn-primary" id="randomize-button">Randomize Ships</button>
-						<form action="/play" method="get">
-							<button class="btn" id="startgamebutton" type="submit">Start Game</button>
-						</form>
+						<!-- <form action="/play" method="get"> -->
+                        <button class="btn" id="startgamebutton" type="submit">Start Game</button>
+						<!-- </form> -->
 			</div>
 			
 			<div class="battlefield_self">
@@ -111,7 +125,8 @@
 <script type="text/javascript" src="javascripts/shared.js" ></script>
 <script type="text/javascript" src="javascripts/coordinate.js" ></script>
 <script type="text/javascript" src="javascripts/shipsGenerator.js"></script>
-<script type="text/javascript" src="javascripts/shipsRenderer.js"></script>
+<script type="text/javascript" src="javascripts/shipsPlacementRenderer.js"></script>
+
 </body>
 
 

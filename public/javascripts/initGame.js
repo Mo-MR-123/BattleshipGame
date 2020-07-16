@@ -10,14 +10,12 @@ var opponentTileClass = '.battlefield_cell_rival_tile';
  * @param {Game} game - The game object 
  */
 function addEventListenerOpponentTiles(game) {
-    $(opponentTileClass).each(function(el) {
-        this.addEventListener("click", function singleClick(tile) {
-            var xCoord = $(tile).data("x");
-            var yCoord = $(tile).data("y");
-            game.clickedTile(xCoord, yCoord);
-
-            // every tile can only be selected once
-            el.removeEventListener("click", singleClick, false);
+    $(opponentTileClass).each(function() {
+        var tile = this;
+        tile.addEventListener("click", function (e) {
+            var xCoord = $(e.target).data("x");
+            var yCoord = $(e.target).data("y");
+            game.tileClick(yCoord, xCoord);
         });
     })
 }
@@ -28,11 +26,11 @@ function enableTilesOpponent() {
 }
 
 function disableTilesOpponent() {
-    $(opponentTileClass).setAttribute('disabled', 'disabled');
+    $(opponentTileClass).attr('disabled', 'disabled');
 }
 
 function removeAllEventListenersOpponent() {
-    $(opponentTileClass).off();
+    $(opponentTileClass).on();
 }
 
 //////////////////////////////////// START SOCKET AND GAME ////////////////////////////////////////////////
@@ -51,35 +49,37 @@ function removeAllEventListenersOpponent() {
     // to the server almost immidiately when player connects to server socket. To ensure that the grid 
     // is already set and can be sent properly, websocket should be initialized after game object. 
     var socket = new WebSocket(Setup.WEB_SOCKET_URL);
+    game.setSocket(socket);
 
     socket.onmessage = function (event) {
 
         let incomingMsg = JSON.parse(event.data);
- 
+
         // 1- Assign the player to either "A" or "B"
         // 2- Setup expected message to send current player grid to server
-        // 3- when second player joins, the game starts so add event listeners on opponent grid
         if (incomingMsg.type === Messages.T_PLAYER_TYPE) {
             game.setPlayerType( incomingMsg.data );
-
+            
             // Show that this player is assigned as player A
             // And send grid of this player afterwards
-            if (game.getPlayerType() == "A") {
+            if (game.getPlayerType() === "A") {
                 showNotificationMsg(Status.playerAWait);
                 var msgSendGridPlayerA = Messages.GRID_PLAYER_A;
                 msgSendGridPlayerA.data = game.grid;
                 game.sendMessage(msgSendGridPlayerA);
-            } else if (game.getPlayerType() == "B") {
+            } else if (game.getPlayerType() === "B") {
                 var msgSendGridPlayerB = Messages.GRID_PLAYER_B;
                 msgSendGridPlayerB.data = game.grid;
                 game.sendMessage(msgSendGridPlayerB);
-                addEventListenerOpponentTiles(game);
             }
         }
 
         // Notify whether current player or opponent can start shooting.
         // NOTE: this happens only at the start of the game!
+        // when second player joins, the game starts so add event listeners on opponent grid
         if (incomingMsg.type === Messages.T_PLAYER_TURN) {
+            addEventListenerOpponentTiles(game);
+
             var playerTurn = incomingMsg.data;
             if (game.getPlayerType() === playerTurn) {
                 showNotificationMsg(Status.currentPlayerTurn);

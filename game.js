@@ -64,9 +64,9 @@ game.prototype.isGameStarted = function() {
  * @param {Array} playerAGrid - 2D array of player A 
  */
 game.prototype.setPlayerAGrid = function(playerAGrid) {
-    if(this.isValidGrid(playerAGrid)) {
-        this.playerAGrid = playerAGrid;
-    }
+    // if(this.isValidGrid(playerAGrid)) {
+    this.playerAGrid = playerAGrid;
+    // }
 }
 
 /**
@@ -77,9 +77,9 @@ game.prototype.setPlayerAGrid = function(playerAGrid) {
  * @param {Array} playerBGrid - 2D array of player B
  */
 game.prototype.setPlayerBGrid = function(playerBGrid) {
-    if(this.isValidGrid(playerBGrid)) {
-        this.playerBGrid = playerBGrid;
-    }
+    // if(this.isValidGrid(playerBGrid)) {
+    this.playerBGrid = playerBGrid;
+    // }
 }
 
 // TODO: check wether function "createGrid" is needed here or client
@@ -101,6 +101,7 @@ game.prototype.setPlayerBGrid = function(playerBGrid) {
 // }
 
 /**
+ * TODO: check whether checking for validity is needed, as grid creation is controlled in client?
  * Checks if all ships have been placed on the grid.
  * Thus also implicitely checks whether ships are out of bounds.
  * NOTE: this assumes that all ships do not overlap! 
@@ -108,93 +109,93 @@ game.prototype.setPlayerBGrid = function(playerBGrid) {
  * @param {Array} grid - 2D array to check for validity
  * @returns - true if the grid is valid and all checks returned true, else false if grid is not valid. 
  */ 
-game.prototype.isValidGrid = function(grid) {
-    // check if grid is an array object
-    const isGridAnArray = Array.isArray(grid);
+// game.prototype.isValidGrid = function(grid) {
+//     // check if grid is an array object
+//     const isGridAnArray = Array.isArray(grid);
 
-    // check if grid is a 2d grid with correct column dimensions
-    const isCorrentColumnDims = grid.every((row) => {
-        return Array.isArray(row) && row.length === this.gridCols;
-    });
+//     // check if grid is a 2d grid with correct column dimensions
+//     const isCorrentColumnDims = grid.every((row) => {
+//         return Array.isArray(row) && row.length === this.gridCols;
+//     });
 
-    // output debug assertions in case one of above conditions is false
-    console.assert(
-        isGridAnArray,
-        "Expecting the grid to be an Array object, got a %s", typeof grid
-    );
+//     // output debug assertions in case one of above conditions is false
+//     console.assert(
+//         isGridAnArray,
+//         "Expecting the grid to be an Array object, got a %s", typeof grid
+//     );
 
-    console.assert(
-        isCorrentColumnDims,
-        "Expecting every row to have correct column dimension. Not the case with the grid given: %O", grid
-    );
+//     console.assert(
+//         isCorrentColumnDims,
+//         "Expecting every row to have correct column dimension. Not the case with the grid given: %O", grid
+//     );
 
-    // immidiately return false if grid does not have correct grid dims or if grid is not an array
-    if (!isGridAnArray || !isCorrentColumnDims) {
-        console.log(`Grid is either not an array or does not have correct column dims:
-        colsDimsCorrect = ${isCorrentColumnDims}, isGridArray = ${isGridAnArray}`);
+//     // immidiately return false if grid does not have correct grid dims or if grid is not an array
+//     if (!isGridAnArray || !isCorrentColumnDims) {
+//         console.log(`Grid is either not an array or does not have correct column dims:
+//         colsDimsCorrect = ${isCorrentColumnDims}, isGridArray = ${isGridAnArray}`);
 
-        return false;
-    }
+//         return false;
+//     }
 
-    // define counter of the ships and the ships to check
-    let counterShips = 0;
-    let counterDestroyer = _.cloneDeep(shared.DESTROYER);
-    let counterSubmarine = _.cloneDeep(shared.SUBMARINE);
-    let counterCruiser = _.cloneDeep(shared.CRUISER);
-    let counterBattleship = _.cloneDeep(shared.BATTLESHIP);
-    let counterCarrier = _.cloneDeep(shared.CARRIER);
+//     // define counter of the ships and the ships to check
+//     let counterShips = 0;
+//     let counterDestroyer = _.cloneDeep(shared.DESTROYER);
+//     let counterSubmarine = _.cloneDeep(shared.SUBMARINE);
+//     let counterCruiser = _.cloneDeep(shared.CRUISER);
+//     let counterBattleship = _.cloneDeep(shared.BATTLESHIP);
+//     let counterCarrier = _.cloneDeep(shared.CARRIER);
 
-    for(let i = 0; i < grid.length; i++){
-        for(let j = 0 ; j < grid[i].length; j++){
-            const tileId = grid[i][j];
+//     for(let i = 0; i < grid.length; i++){
+//         for(let j = 0 ; j < grid[i].length; j++){
+//             const tileId = grid[i][j];
 
-            // if tileId is 0 or higher, then it means that it is part of ship
-            if (tileId > 0) {
-                counterShips += 1
+//             // if tileId is 0 or higher, then it means that it is part of ship
+//             if (tileId > 0) {
+//                 counterShips += 1
 
-                // determine which ship this tileId correspond to and increment the hits of that ship
-                // NOTE: hits here do not mean anything, here the hits property of each ship is a counter for
-                // parts of each ship found on the grid (to determine whether all ships are placed on grid)
-                switch (tileId) {
-                    case counterDestroyer.id:
-                        counterDestroyer.hits++;
-                        break;
-                    case counterSubmarine.id:
-                        counterSubmarine.hits++;
-                        break;
-                    case counterCruiser.id:
-                        counterCruiser.hits++;
-                        break
-                    case counterBattleship.id:
-                        counterBattleship.hits++;
-                        break;
-                    case counterCarrier.id:
-                        counterCarrier.hits++;
-                        break;
-                }
-            } else if (tileId < 0) {
-                // if tileId is lower than 0, then it means that there is an invalid value found
-                // as the minimum number on the grid allowed is 0. 
-                // This is not allowed and thus immidiately return flase.
-                console.log(`Found tileId ${tileId} which is lower than 0 in the grid: `, grid);
-                return false;
-            }
-        }
-    }
+//                 // determine which ship this tileId correspond to and increment the hits of that ship
+//                 // NOTE: hits here do not mean anything, here the hits property of each ship is a counter for
+//                 // parts of each ship found on the grid (to determine whether all ships are placed on grid)
+//                 switch (tileId) {
+//                     case counterDestroyer.id:
+//                         counterDestroyer.hits++;
+//                         break;
+//                     case counterSubmarine.id:
+//                         counterSubmarine.hits++;
+//                         break;
+//                     case counterCruiser.id:
+//                         counterCruiser.hits++;
+//                         break
+//                     case counterBattleship.id:
+//                         counterBattleship.hits++;
+//                         break;
+//                     case counterCarrier.id:
+//                         counterCarrier.hits++;
+//                         break;
+//                 }
+//             } else if (tileId < 0) {
+//                 // if tileId is lower than 0, then it means that there is an invalid value found
+//                 // as the minimum number on the grid allowed is 0. 
+//                 // This is not allowed and thus immidiately return flase.
+//                 console.log(`Found tileId ${tileId} which is lower than 0 in the grid: `, grid);
+//                 return false;
+//             }
+//         }
+//     }
     
-    // checks if counterShips is equal to expected amount of ships that should be on the grid
-    // this also checks whether each ship is placed on the grid
-    const isGridValid = (
-        counterShips === shared.AMOUNT_HITS_WIN &&
-        counterDestroyer.hits === counterDestroyer.size && 
-        counterSubmarine.hits === counterSubmarine.size &&
-        counterCruiser.hits === counterCruiser.size &&
-        counterBattleship.hits === counterBattleship.size &&
-        counterCarrier.hits === counterCarrier.size
-    );
+//     // checks if counterShips is equal to expected amount of ships that should be on the grid
+//     // this also checks whether each ship is placed on the grid
+//     const isGridValid = (
+//         counterShips === shared.AMOUNT_HITS_WIN &&
+//         counterDestroyer.hits === counterDestroyer.size && 
+//         counterSubmarine.hits === counterSubmarine.size &&
+//         counterCruiser.hits === counterCruiser.size &&
+//         counterBattleship.hits === counterBattleship.size &&
+//         counterCarrier.hits === counterCarrier.size
+//     );
 
-    return (isGridValid ? true : false);
-}
+//     return (isGridValid ? true : false);
+// }
 
 /**
  * The different possible states of the game

@@ -70,7 +70,7 @@
         type: exports.T_TILE_SHOT,
         // this needs to be replace with which player shot (not here but when a tile is actually clicked)
         // NOTE: this must be an object containing x coordinate and y coordinate of clicked tile
-        // e.g. data { player: "A", coordinates: { x: 0, y: 1 } }
+        // e.g. data { x: 0, y: 1 }
         data: null 
     };
 

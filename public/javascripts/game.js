@@ -2,7 +2,6 @@
  * Game constructor.
  * 
  * @constructor
- * @param {WebSocket} socket - socket of current player. 
  */
 function Game(socket) {
     // get and initiate the grid from local storage of the current player.
@@ -10,7 +9,7 @@ function Game(socket) {
     this.grid = LS.getObject("grid");
     
     // socket to send messages to server
-    this.socket = socket;
+    this.socket = null;
 
     // current player (either "A" or "B")
     this.playerType = null;
@@ -24,6 +23,14 @@ function Game(socket) {
     // variable to assign the player that won the game
     // this is determined by the server
     this.whoWon = null
+}
+
+/**
+ * @description Set the socket of current player in this game to be able to send messages to server.
+ * @param {WebSocket} socket - The socket of current player
+ */
+Game.prototype.setSocket = function (socket) {
+    this.socket = socket;
 }
 
 Game.prototype.getPlayerType = function () {
@@ -48,17 +55,14 @@ Game.prototype.increaseOpponentScore = function () {
 
 /**
  * @description Send coordinates of clicked tile to server.
- * @param {Number} x - x-coordinate of tile clicked
- * @param {Number} y - y-coordinate of tile clicked
+ * @param {Number} x - row number in the grid of tile clicked
+ * @param {Number} y - column number in the grid  of tile clicked
  */
 Game.prototype.tileClick = function(x, y) {
     var coodinatesMsg = Messages.TILE_SHOT;
     coodinatesMsg.data = {
-        player: this.getPlayerType(),
-        coordinates: {
             x: x,
             y: y
-        }
     };
     this.sendMessage(coodinatesMsg);
 }

@@ -64,62 +64,7 @@ $(document).ready(function() {
         shipsGenerator.rerandomizeShips(grid);
         shipsRenderer.resetSelfTilesRendering();
         shipsRenderer.renderSelfGrid(grid);
-    });
-          
-    // // if a tile is clicked the following happens everytime:
-    // $(cell).click(function(e) {  
-    //     // check if max. possible tiles has been reached and current clicked tile is not green (not clicked before)
-    //     if (placeCounter == 17 && !e.target.getAttribute("style")) {
-    //         alert("Maximum tile selection of 17 has been reached. No more tiles can be added.")
-    //         return;
-    //     }
-
-    //     var x = $(e.target).data('x');
-    //     var y = $(e.target).data('y');
-
-    //     if (arr[y][x] == 1) {
-    //         e.target.removeAttribute("style");
-    //         arr[y][x] = 0;
-    //         placeCounter--;
-    //     }
-    //     else {
-    //         arr[y][x] = 1;
-    //         e.target.style.background = 'green';
-    //         // console.log("Player:  has clicked on coordinates (" + y + "," + x + ").");
-    //         placeCounter++;
-    //     }
-        
-    //     switch (placeCounter) {
-    //         case 17:
-    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Click start!</span>");
-    //             $('#startgamebutton').replaceWith("<button id=\"startgamebutton\" type=\"submit\">Start Game</button>");
-    //             break;
-    //         case 15:
-    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Patrol Boat</b> on the grid</span>");
-    //             break;
-    //         case 12:
-    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Submarine</b> on the grid</span>");
-    //             break;
-    //         case 9:
-    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Destroyer</b> ship on the grid</span>");
-    //             break;
-    //         case 5:
-    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Battleship</b> on the grid</span>");
-    //             break;
-    //         case 0: 
-    //             $('#notification').replaceWith("<span class=\"marquee\" id=\"notification\">Place the <b>Aircraft Carrier</b> on the grid</span>");
-    //             break;
-    //         default:
-    //             $('#startgamebutton').replaceWith("<button id=\"startgamebutton\" type=\"submit\" disabled>Start Game</button>");
-    //             break;
-    //     }; 
-
-    //     // console.log("PLACECOUNTER: " + placeCounter);
-    //     // console.log(arr)
-
-    // }); 
-
-        
+    }); 
 });
 
 // CODE BELOW WAS USED TO GENERATE THE GRID FOR SHIP PLACEMENT BUT THAT IS ALREADY DONE USING EJS!!!!

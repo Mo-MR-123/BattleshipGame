@@ -5,15 +5,15 @@
 function GameState(socket) {
 
     //initiate a new array for every player with a websocket
-    this.array = LS.getObject('grid');
+    this.array = LS.getObject("grid");
 
     try {
-        console.log(this.array)
+        console.log(LS.getObject("grid"))
     } catch(e) {
         console.log(e)
     }
     
-    this.playerType = null; //Instantiate new player
+    this.playerType = null; //Instantiate new player (This should be either "A" or "B")
     this.amountHits = 0;    //Initiate new amountHits for every player who starts a new game
                                 
     this.getPlayerType = function () {
@@ -51,6 +51,8 @@ function GameState(socket) {
             
             // show in notification who won the game
             showNotificationMsg('The game has been won by ' + this.whoWon);
+
+            // close socket
             socket.close();
         }
     };
@@ -101,7 +103,7 @@ function disableTilesForB() {
     var socket = new WebSocket(Setup.WEB_SOCKET_URL);
     
     // the GameState object coordinates everything
-    var gamestate = new GameState(socket);
+    var game = new GameState(socket);
 
     socket.onmessage = function (event) {
 
@@ -110,28 +112,26 @@ function disableTilesForB() {
         if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
             //setting player type
             //should be "A" or "B"
-            gamestate.setPlayerType( incomingMsg.data );
+            game.setPlayerType( incomingMsg.data );
 
-            // TODO: if player type is A 
-            // (1) show that this player is assigned as player A
-            if (gamestate.getPlayerType() == "A") {
-                showNotificationMsg("You are assigned as Player A. Please wait for a player to join before the game can start.");
-            }
-
-            else { 
-                // TODO: show whos turn it is after player B joined the game
+            // Show that this player is assigned as player A
+            // And send grid of this player afterward
+            if (game.getPlayerType() == "A") {
+                showNotificationMsg(Status.PlayerAWait);
+                socket.send()
             }
         }
 
         //Player B: when player b makes a shot
-        if( incomingMsg.type == Messages.T_MAKE_A_SHOT && gamestate.getPlayerType() == "B"){
-            gamestate.checkTile(incomingMsg.data);
+        if (incomingMsg.type == Messages. && game.getPlayerType() == "B") {
+            
+            game.checkTile(incomingMsg.data);
         }
 
         //Player A: when player a makes a shot
-        if( incomingMsg.type == Messages.T_MAKE_A_SHOT && gamestate.getPlayerType()=="A"){
+        if( incomingMsg.type == Messages.T_MAKE_A_SHOT && game.getPlayerType()=="A"){
             alert("Player B has shot the tile on " + incomingMsg.data);
-            gamestate.updateGame(incomingMsg.data);
+            game.updateGame(incomingMsg.data);
         }
     };
 
@@ -141,8 +141,12 @@ function disableTilesForB() {
     
     //server sends a close event only if the game was aborted from some side
     socket.onclose = function(){
-        if(gamestate.whoWon() == null){
-           alert("ABORTED! Nobody won!");
+        if (game.whoWon() == null) {
+            if (game.whoWon() == game.getPlayerType) {
+                showNotificationMsg(Status.gameWon);
+            } else {
+                showNotificationMsg(Status.aborted);
+            }
         }
     };
     

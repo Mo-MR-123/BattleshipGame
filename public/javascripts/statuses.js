@@ -1,5 +1,6 @@
 // object containing all the game status message to show as notification to the user
 var Status = {
+    "PlayerAWait": "Welcome commander. Please wait for a player to join before the game can start.",
     "gameWon":"Congratulations! You won!",
     "gameLost": "Game over. You lost!",
     "playAgain":"<a href='/play'>Play again!</a>",

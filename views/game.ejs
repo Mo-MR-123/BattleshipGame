@@ -29,34 +29,41 @@
                 </div>
             </div>
 
-            <div class="battlefield">
-                <div class="Scoreboard">
-                    <div id="ScoreSelf">
-                        <h4>Your Hits:</h4>
-                        <h4 id="hitsself">0</h4>
+            <div class="battlefield container-fluid">
+                <div id="Scoreboard" class="container-fluid">
+                    <div class="row justify-content-between">
+                        <div class="col-4">
+                            <h4 id="you_tag"> Your Grid </h4>
+                        </div>
+                        <div class="col-4">
+                            <h4 id="opponent_tag">Enemy's Grid</h4>
+                        </div>
                     </div>
-                    <div id="ScoreRival">
-                        <h4>Enemy's Hits:</h4>
-                        <h4 id="hitsrival">0</h4>
+                    <div class="row justify-content-between">
+                        <div id="ScoreHits" class="col-4">
+                            <h6>Your Hits: <span id="hitsself">0</span></h6>
+                        </div>
+                        <div id="ScoreHits" class="col-4">
+                            <h6>Enemy Hits: <span id="hitsrival">0</span></h6>
+                        </div>
                     </div>
                 </div>
                 
-                <%# return the next character of the current char "c" in the ASCII ordering/ecnoding %>
+                <!-- return the next character of the current char "c" in the ASCII ordering/encoding -->
                 <% 
                     function nextChar(c) {
                         return String.fromCharCode(c.charCodeAt(0) + 1);
                     } 
                 %>
 
-                <%# create variable containing the letter to start with when assigning coordinates in the first row of the grid %>
+                <!-- create variable containing the letter to start with when assigning coordinates in the first row of the grid -->
                 <% var currLetter = 'A' %>
 
-                <%# Defining the variables to be used for loops %>
+                <!-- Defining the variables to be used for loops -->
                 <% var row, col, i; %>
 
-                <%# Create grid of current player %> 
-                <h4 id="playera_tag"> Your Grid </h4>
-                <div class="battlefield_self">
+                <!-- Create grid of current player  -->
+                <div class="battlefield_self col-4">
                     <table class="battlefield_self_table">
                         <tbody>
                             <%# Create the first row of letters for coordinates %> 
@@ -90,9 +97,8 @@
                     </table>         
                 </div>
 
-                <%# generate rival grid %> 
-                <h4 id="playerb_tag">Enemy's Grid</h4>
-                <div class="battlefield_rival">
+                <!-- generate rival grid -->
+                <div class="battlefield_rival col-4">
                     <table class="battlefield_rival_table">
                         <%# Reset currLetter to start letter 'A' %> 
                         <% currLetter = 'A' %>
@@ -141,7 +147,7 @@
     <footer id="footer">
         <div class="container-fluid">
             <div class="row justify-content-around">
-              <div class="col-3"> &copy&nbspCopyright 2018  | All rights reserved. </div>
+              <div class="col-3"> &copy&nbspCopyright 2018-2020 | All rights reserved. </div>
               <div class="col-3"> Support us on patreon! </div>
               <div class="col-3"> ... we need the money... </div>
             </div>

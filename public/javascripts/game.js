@@ -67,7 +67,7 @@ Game.prototype.tileClick = function(x, y) {
  * Function to send a message to the server.
  * @param {Object} msg - Message object from messages.js
  */
-function sendMessage(msg) {
+Game.prototype.sendMessage = function(msg) {
     var msgToSend = JSON.stringify(msg);
     this.socket.send(msgToSend);
 }

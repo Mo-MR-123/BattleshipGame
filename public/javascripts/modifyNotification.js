@@ -13,23 +13,23 @@ var notificationDivId = '#notification';
  *                              0: RED (alert)
  *                              1: GREEN (success)
  *                              2: YELLOW (warning)
- *                              default color: BLUE (default color)
+ *                              default color: BLUE
  *                             }
  */
 function showNotificationMsg(msg, typeAlert=null) {
-    var currentClassAttr = $(notificationDivId).attr('class')
+    $(notificationDivId).removeClass();
     switch (typeAlert) {
         case 0:
-            $(notificationDivId).attr(currentClassAttr, redAlertBarClass)
+            $(notificationDivId).addClass(redAlertBarClass);
             break;
         case 1:
-            $(notificationDivId).attr(currentClassAttr, successGreenAlertBarClass)
+            $(notificationDivId).addClass(successGreenAlertBarClass);
             break;
         case 2:
-            $(notificationDivId).attr(currentClassAttr, warningYellowAlertBarClass)
+            $(notificationDivId).addClass(warningYellowAlertBarClass);
             break;
         default:
-            $(notificationDivId).attr(currentClassAttr, defaultAlertBarClass)
+            $(notificationDivId).addClass(defaultAlertBarClass);
             break;
     }
     msgPrefix = "<b>Notification: </b>"

@@ -23,11 +23,13 @@ var grid = [
     [0,0,0,0,0,0,0,0,0,0]
 ];
 
-// object to handle random ships placement
+// 1- Init ships renderer and ships generator objects
+// 2- Randomly place ships on the grid array
+// 3- Render all ships placed on the grid
+var shipsRenderer = new ShipsRenderer();
 var shipsGenerator = new ShipsGenerator(grid);
-
-// place ships randomly
 shipsGenerator.placeShipsRandomly();
+shipsRenderer.renderSelfGrid(grid);
 
 // TODO: remove this console log after testing
 console.table(grid);
@@ -36,7 +38,7 @@ console.table(grid);
 $(document).ready(function() {
 
     // when start button is clicked, store the players grid in local storage and go to "play" page
-    document.getElementById(startButtonId).addEventListener("click", function(btn) {
+    document.getElementById(startButtonId).addEventListener("click", function() {
         try {
             LS.addObject("grid", grid);
             window.location.href = "/play";

@@ -18,7 +18,7 @@
             if (!(typeof objectName === "string")) {
                 return new Error(`${objectName} is not of a String type. Make sure the object name is a String.`);
             }
-            JSON.parse(window.localStorage.getItem(objectName));
+            return JSON.parse(window.localStorage.getItem(objectName));
         };
 
         // Remove object from localStorage

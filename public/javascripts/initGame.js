@@ -21,11 +21,15 @@ function GameState(socket) {
     };
 
     this.setPlayerType = function (player) {
-        console.assert(typeof player == "string", "%s: Expecting a string, got a %s", arguments.callee.name, typeof player);
+        console.assert(
+            typeof player == "string", "%s: Expecting a string, got a %s",
+            arguments.callee.name,
+            typeof player
+        );
         this.playerType = player;
     };
 
-    //this functions returns who won the game
+    // variable to assign the player that won the game
     // this is determined by the server
     this.whoWon = null
 
@@ -50,7 +54,7 @@ function GameState(socket) {
             disableTilesForB();
             
             // show in notification who won the game
-            showNotificationMsg('The game has been won by ' + this.whoWon);
+            showNotificationMsg('The game has been won by ' + this.whoWon, 1);
 
             // close socket
             socket.close();
@@ -95,7 +99,7 @@ function disableTilesForB() {
     $(".battlefield_cell").setAttribute('disabled', 'disabled');
 }
 
-
+//////////////////////////////////// START SOCKET AND GAME ////////////////////////////////////////////////
 //set everything up, including the WebSocket
 (function setup() {
     //this makes connection with the websocket in app.js and executes the code there first
@@ -118,7 +122,7 @@ function disableTilesForB() {
             // And send grid of this player afterward
             if (game.getPlayerType() == "A") {
                 showNotificationMsg(Status.PlayerAWait);
-                socket.send()
+                // socket.send()
             }
         }
 
@@ -143,7 +147,7 @@ function disableTilesForB() {
     //server sends a close event only if the game was aborted from some side
     socket.onclose = function(){
         if (game.whoWon !== null) {
-            if (game.whoWon() == game.getPlayerType) {
+            if (game.whoWon == game.getPlayerType) {
                 showNotificationMsg(Status.gameWon);
             } else {
                 showNotificationMsg(Status.aborted);

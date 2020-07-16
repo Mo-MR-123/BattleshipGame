@@ -2,8 +2,8 @@
 var redAlertBarClass = 'alert alert-danger';
 var successGreenAlertBarClass = 'alert alert-success';
 var warningYellowAlertBarClass = 'alert alert-warning';
-var defaultAlertBarClass = 'alert alert-primary'
-var notificationDivId = '#notification'
+var defaultAlertBarClass = 'alert alert-primary';
+var notificationDivId = '#notification';
 
 /**
  * Notify the user about game state by showing the notification message in the notification bar
@@ -13,10 +13,10 @@ var notificationDivId = '#notification'
  *                              0: RED (alert)
  *                              1: GREEN (success)
  *                              2: YELLOW (warning)
- *                              default: BLUE (default color)
+ *                              default color: BLUE (default color)
  *                             }
  */
-function showNotificationMsg(msg, typeAlert) {
+function showNotificationMsg(msg, typeAlert=null) {
     var currentClassAttr = $(notificationDivId).attr('class')
     switch (typeAlert) {
         case 0:

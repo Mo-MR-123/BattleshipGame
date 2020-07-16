@@ -122,8 +122,9 @@ function disableTilesForB() {
             }
         }
 
+        // TODO: change bellow if statements to correct behaviour
         //Player B: when player b makes a shot
-        if (incomingMsg.type == Messages. && game.getPlayerType() == "B") {
+        if (incomingMsg.type == Messages.T_MAKE_A_SHOT && game.getPlayerType() == "B") {
             
             game.checkTile(incomingMsg.data);
         }
@@ -141,7 +142,7 @@ function disableTilesForB() {
     
     //server sends a close event only if the game was aborted from some side
     socket.onclose = function(){
-        if (game.whoWon() == null) {
+        if (game.whoWon !== null) {
             if (game.whoWon() == game.getPlayerType) {
                 showNotificationMsg(Status.gameWon);
             } else {

@@ -1,17 +1,27 @@
 // IMPORTANT NOTE: shared.js and messages.js MUST BE INCLUDED BEFORE THIS SCRIPT FILE!!! 
 
+// define current player tiles class and opponents tiles class
+var selfTileClass = '.battlefield_cell_self_tile';
+var opponentTileClass = '.battlefield_cell_rival_tile';
+
+// TODO: Place this GameState class into another js file to seperate initilization of game from game class.
+// TODO: also put the functions in this class seperately by using prototypes!
+
 /* constructor of game state */
+/**
+ * GameState constructor.
+ * 
+ * @constructor
+ * @param {WebSocket} socket - socket of current player. 
+ */
 //gamestate of a player (which player of the two it is depends on the socket of theirs)
 function GameState(socket) {
 
-    //initiate a new array for every player with a websocket
-    this.array = LS.getObject("grid");
-
+    // get and initiate the grid from local storage of the current player. Clear local storage afterwards. 
     try {
-        console.log(LS.getObject("grid"))
-    } catch(e) {
-        console.log(e)
-    }
+        this.grid = LS.getObject("grid");
+        LS.clearLocalStorage();
+    } catch(e) {}
     
     this.playerType = null; //Instantiate new player (This should be either "A" or "B")
     this.amountHits = 0;    //Initiate new amountHits for every player who starts a new game
@@ -82,21 +92,22 @@ function GameState(socket) {
 //     };
 // }
 
+// TODO: maybe replace these functions in shipsRenderer class
 //Functions for enabling and disabling the tiles for the players 
 function enableTilesForA(){
-    $(".battlefield_cell1").attr("disabled", false);
+    $(selfTileClass).attr("disabled", false);
 }
 
 function disableTilesForA() {
-    $(".battlefield_cell1").setAttribute('disabled', 'disabled');
+    $(selfTileClass).setAttribute('disabled', 'disabled');
 }
 
 function enableTilesForB(){
-    $(".battlefield_cell").attr("disabled", false);
+    $(opponentTileClass).attr("disabled", false);
 }
 
 function disableTilesForB() {
-    $(".battlefield_cell").setAttribute('disabled', 'disabled');
+    $(opponentTileClass).setAttribute('disabled', 'disabled');
 }
 
 //////////////////////////////////// START SOCKET AND GAME ////////////////////////////////////////////////
@@ -108,6 +119,12 @@ function disableTilesForB() {
     
     // the GameState object coordinates everything
     var game = new GameState(socket);
+
+    // 1- initilize ships renderer object to render the ships of current player
+    // 2- render the ships on the grid of current player
+    // THIS shipsRenderer object HANDLES ALL THE RENDERING ON BOTH PLAYERS GRIDS
+    var shipsRenderer = new ShipsRenderer();
+    shipsRenderer.renderSelfGrid(game.grid);
 
     socket.onmessage = function (event) {
 

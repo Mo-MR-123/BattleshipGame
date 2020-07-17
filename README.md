@@ -14,6 +14,8 @@
 (enable when it is current player turn, disable when it is the turn of the other player.)
 
 5. Refactor server code to make it more readable and state transitions of the game more clear.
+
+6. Make style of play page better.
 ---
 
 **INFO ABOUT HOW BATTLESHIP IS PLAYED:**

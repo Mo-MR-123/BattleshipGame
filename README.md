@@ -1,12 +1,20 @@
 # BattleshipGame
 
-**TODO**: 
+---
+**TODO**:
 
-1. Make sure that on the ship placement route when the user places all the ships that when the user clicks on the start game button that the board created by the user is propagated to the "game" route **AND** also make sure when the "start game" is clicked that the board is sent to the server before the game can start.
+1. Each ship should not have an adjecent ship next to it.
+   (Add "horizontal", "x", "y" property to each ship object in shared.js to be able determine this.)
 
-2. **BUG**: When "start game" is clicked after ship placement, and it is the second player that join (player B), then the socket is left and new socket connection is made which is not supposed to happen. When player B (2nd player) joins the game, the player should stay connected to the same socket and not create a new one. This Bug is caused because player B goes to a new page that has "initWebsocket.js" which makes a new connection. Player B should stay on the same page in which the "initWebsocket.js" is in and not go to anther page that also has that script. Solve this with EJS to auto-generate the grids depending on which player has connected to the websocket!
+2. Place actual ship images when a ship is sunk.
 
-3. ** in game.js in server **: add missing transition in transitionMatrix such as "TILE HIT", "TILE MISS" etc... WITH PROPER 0's and 1's to indicate what transition from those states can be done.
+3. Add rotate button in ship placement page to give player ability to rotate a ship.
+
+4. Add functionality to enable and disable opponent grid tiles. 
+(enable when it is current player turn, disable when it is the turn of the other player.)
+
+5. Refactor server code to make it more readable and state transitions of the game more clear.
+---
 
 **INFO ABOUT HOW BATTLESHIP IS PLAYED:**
 

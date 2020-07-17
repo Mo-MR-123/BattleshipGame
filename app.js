@@ -151,7 +151,7 @@ wss.on("connection", function connection(ws) {
                     // game can be started when both grids are present in the game obj.
                     if (gameObj.isGameStarted()) {
                         // send whos turn it is to start shooting
-                        msgWhoCanStart = _.cloneDeep(messages.PLAYER_TURN);
+                        msgWhoCanStart = Object.assign({}, messages.PLAYER_TURN);
                         msgWhoCanStart.data = gameObj.getTurn();
 
                         gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
@@ -177,7 +177,7 @@ wss.on("connection", function connection(ws) {
                     // game can be started when both grids are present in the game obj.
                     if (gameObj.isGameStarted()) {
                         // send whos turn it is to start shooting
-                        msgWhoCanStart = _.cloneDeep(messages.PLAYER_TURN);
+                        msgWhoCanStart = Object.assign({}, messages.PLAYER_TURN);
                         msgWhoCanStart.data = gameObj.getTurn();
 
                         gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
@@ -262,7 +262,7 @@ wss.on("connection", function connection(ws) {
             // 3. Increment games complete by 1.
             if (gameObj.gameWonBy && !gameObj.finalStatus) {
                 // setup the message of the player that won the game
-                let whoWonMessage = _.cloneDeep(messages.GAME_WON_BY);
+                let whoWonMessage = Object.assign({}, messages.GAME_WON_BY);
                 whoWonMessage.data = gameObj.gameWonBy;
                 
                 // step 1:

@@ -58,8 +58,6 @@ game.prototype.isGameStarted = function() {
 
 /**
  * Set the grid of player A only if the grid is valid
- * TODO: is it better to just generate a random valid grid if the grid is not valid? 
- * (using ShipsGenerator class and createGrid method)
  * 
  * @param {Array} playerAGrid - 2D array of player A 
  */
@@ -71,8 +69,6 @@ game.prototype.setPlayerAGrid = function(playerAGrid) {
 
 /**
  * Set the grid of player B only if the grid is valid.
- * TODO: is it better to just generate a random valid grid if the grid is not valid? 
- * (using ShipsGenerator class and createGrid method)
  * 
  * @param {Array} playerBGrid - 2D array of player B
  */
@@ -205,7 +201,6 @@ game.prototype.transitionStates = {};
 game.prototype.transitionStates["0 JOINED"] = 0;
 game.prototype.transitionStates["1 JOINED"] = 1;
 game.prototype.transitionStates["2 JOINED"] = 2;
-// game.prototype.transitionStates["TILE SHOT"] = 3;
 game.prototype.transitionStates["A"] = 3; //A won
 game.prototype.transitionStates["B"] = 4; //B won
 game.prototype.transitionStates["ABORTED"] = 5;
@@ -214,13 +209,11 @@ game.prototype.transitionStates["ABORTED"] = 5;
  * Not all game states can be transformed into each other;
  * the matrix contains the valid transitions.
  * They are checked each time a state change is attempted.
- * TODO: Update it to contain allowed transitions of states TILE HIT, TILE MISS, TILE-HIT_SINK etc...
  */ 
 game.prototype.transitionMatrix = [
     [0, 1, 0, 0, 0, 0],   //0 JOINED
     [1, 0, 1, 0, 0, 0],   //1 JOINED
     [0, 0, 0, 1, 1, 1],   //2 JOINED (note: once we have two players, there is no way back!)
-    // [0, 0, 0, 1, 1, 1, 1],   //TILE SHOT
     [0, 0, 0, 0, 0, 0],   //A WON
     [0, 0, 0, 0, 0, 0],   //B WON
     [0, 0, 0, 0, 0, 0]    //ABORTED
@@ -347,15 +340,11 @@ game.prototype.hasTwoConnectedPlayers = function () {
  * NOTE: This is only called when the game initially starts and when a players misses
  */ 
 game.prototype.changeTurn = function() {
-    let turnMessage = _.cloneDeep(messages.PLAYER_TURN);
     if (this.getTurn() === "A") {
         this.playerTurn = "B";
-        turnMessage.data = "B";
     } else {
         this.playerTurn = "A";
-        turnMessage.data = "A";
     }
-    return turnMessage;
 } 
 
 /**
@@ -402,8 +391,6 @@ game.prototype.addPlayer = function (player) {
 
 
 /**
- * TODO: Check if we need to handle game state transition and validation 
- * of those states using methods "isValidTransition" and "isValidState".
  * 
  * @param {Object} coordinate - object containing x and y coordiantes -> {x: x, y: y}.
  *                              NOTE: x represents row of tile and y represents column of tile
@@ -438,7 +425,7 @@ game.prototype.tileFired = function(coordinates, playerAShot) {
             if (id === 0) {
 
                 // current player (A or B) missed
-                msgResult = _.cloneDeep(messages.TILE_MISS);
+                msgResult = Object.assign({}, messages.TILE_MISS);
                 msgResult.data = { player: currentPlayer, coordinates: coordinates }; 
 
             } else if (id > 0) {
@@ -463,10 +450,10 @@ game.prototype.tileFired = function(coordinates, playerAShot) {
                 // check if the hit ship sank because of this hit
                 // else it is just hit and did not sink
                 if (shipHit.hits === shipHit.size) {
-                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
+                    msgResult = Object.assign({}, messages.TILE_HIT_SINK);
                     msgResult.data = { player: currentPlayer, coordinates: coordinates, ship: shipHit.name };
                 } else {
-                    msgResult = _.cloneDeep(messages.TILE_HIT);
+                    msgResult = Object.assign({}, messages.TILE_HIT);
                     msgResult.data = { player: currentPlayer, coordinates: coordinates };
                 }
 

@@ -4,7 +4,8 @@
 **TODO**:
 
 1. Each ship should not have an adjecent ship next to it.
-   (Add "horizontal", "x", "y" property to each ship object in shared.js to be able determine this.)
+   (Add "horizontal", "x", "y" property to each ship object in shared.js to be able determine this. 
+    Also `ships.js` file in `javascripts` folder can be used to store all those information for each ship.)
 
 2. Place actual ship images when a ship is sunk.
 

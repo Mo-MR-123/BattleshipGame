@@ -130,22 +130,10 @@
 } */
 
 .Scoreboard {
-  background-color: white;
-  width: 30%;
-  height: 10%;
-  line-height: 20%;
   background-color: rgba(180, 180, 180, 0.7);
 }
 
-#ScoreSelf {
-  width: 48.5%;
-  float: left;
-  border: dotted;
-}
-
-#ScoreRival {
-  width: 48.5%;
-  float: right;
+#Score {
   border: dotted;
 }
 

@@ -9,9 +9,6 @@
 }
 
 .battlefield_self {
-  position: absolute;
-  float: left;
-  margin-left: 7%;
   width: 468px;
   height: 468px;
   border: 0px solid #000000;
@@ -22,7 +19,6 @@
 }
 
 .battlefield_self_table {
-  position: relative;
   width: 100%;
   height: 100%;
   border-collapse: collapse;
@@ -82,9 +78,6 @@
 }
 
 .battlefield_rival {
-  float: right;
-  margin-top: 7%;
-  margin-right: 6%;
   width: 468px;
   height: 468px;	
   border: 0px solid #fd1e1e;
@@ -94,25 +87,18 @@
 }
 
 .battlefield_rival_table {
-  position: relative;
   width: 100%;
   height: 100%;
   border-collapse: collapse;
   cursor: default;
-  display: inline-block;
   border: 0px solid #bb820f;
 }
 
 #playerb_tag {
-  position: relative;
-  top: 15.5%;
-  margin-left: 75%;
   font-size: 120%;
 }
 
 #playera_tag {
-  margin-left: 22%;
-  margin-top: 1%;
   font-size: 120%;
 }
 
@@ -144,13 +130,9 @@
 } */
 
 .Scoreboard {
-  position: absolute;
   background-color: white;
   width: 30%;
   height: 10%;
-  margin-left: 35%;
-  margin-top: 1%;
-  text-align: center;
   line-height: 20%;
   background-color: rgba(180, 180, 180, 0.7);
 }
@@ -172,7 +154,7 @@ button {
   color: #eeeeee;
   background-color: #25567b;
   border: none;
-  margin: 1em auto 0 auto;
+  /* margin: 1em auto 0 auto; */
   padding: 5px;
   border-radius: 5px;
   font-size: 100%;

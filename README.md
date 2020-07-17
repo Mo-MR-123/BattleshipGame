@@ -18,6 +18,12 @@
 6. Make style of play page better.
 
 7. Add timer to game (handled in server).
+
+8. Finish instructions on "How to play" page. Also fix payment link ( ͡° ͜ʖ ͡°)
+
+9. Make the website compatible for smaller device screens aswell. 
+
+10. Make own images for hitting and missing a tile instead of using colors to show hits or miss.
 ---
 
 **INFO ABOUT HOW BATTLESHIP IS PLAYED:**

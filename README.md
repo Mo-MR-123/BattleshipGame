@@ -16,6 +16,8 @@
 5. Refactor server code to make it more readable and state transitions of the game more clear.
 
 6. Make style of play page better.
+
+7. Add timer to game (handled in server).
 ---
 
 **INFO ABOUT HOW BATTLESHIP IS PLAYED:**

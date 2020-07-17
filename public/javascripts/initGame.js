@@ -12,25 +12,26 @@ var opponentTileClass = '.battlefield_cell_rival_tile';
 function addEventListenerOpponentTiles(game) {
     $(opponentTileClass).each(function() {
         var tile = this;
-        tile.addEventListener("click", function (e) {
+        tile.addEventListener("click", function oneClickTile(e) {
             var xCoord = $(e.target).data("x");
             var yCoord = $(e.target).data("y");
             game.tileClick(yCoord, xCoord);
+
+            // After clicking a tile, it is either hit or missed. So remove event listener as that tile 
+            // should not be processed anymore
+            tile.removeEventListener("click", oneClickTile, false);
         });
     })
 }
 
 //Functions for enabling and disabling the tiles for the players 
-function enableTilesOpponent() {
-    $(opponentTileClass).attr("disabled", false);
-}
+// TODO: enabling tiles of opponent grid should make all the tiles get back their event listener
+// function enableTilesOpponent() {
+//     $(opponentTileClass).on('click', addEventListenerOpponentTiles());
+// }
 
 function disableTilesOpponent() {
-    $(opponentTileClass).attr('disabled', 'disabled');
-}
-
-function removeAllEventListenersOpponent() {
-    $(opponentTileClass).on();
+    $(opponentTileClass).off();
 }
 
 //////////////////////////////////// START SOCKET AND GAME ////////////////////////////////////////////////
@@ -58,7 +59,7 @@ function removeAllEventListenersOpponent() {
         // 1- Assign the player to either "A" or "B"
         // 2- Setup expected message to send current player grid to server
         if (incomingMsg.type === Messages.T_PLAYER_TYPE) {
-            game.setPlayerType( incomingMsg.data );
+            game.setPlayerType(incomingMsg.data);
             
             // Show that this player is assigned as player A
             // And send grid of this player afterwards
@@ -100,14 +101,15 @@ function removeAllEventListenersOpponent() {
         //      4- Show the updated hits of opponent player
         if (incomingMsg.type === Messages.T_TILE_HIT) {
             var dataObj = incomingMsg.data;
+            var coordinates = dataObj.coordinates;
             if (game.getPlayerType() === dataObj.player) {
                 game.increaseSelfScore();
-                shipsRenderer.renderTileHit(dataObj.x, dataObj.y, true);
+                shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
                 shipsRenderer.updateHitsSelf(game.amountHits);
                 showNotificationMsg(Status.currentPlayerShipHit);
             } else {
                 game.increaseOpponentScore();
-                shipsRenderer.renderTileHit(dataObj.x, dataObj.y, false);
+                shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
                 shipsRenderer.updateHitsOpponent(game.opponentHits);
                 showNotificationMsg(Status.opponentShipHit);
             }
@@ -123,13 +125,13 @@ function removeAllEventListenersOpponent() {
         //      3- enable opponent tile selection, as it is current player turn.
         if (incomingMsg.type === Messages.T_TILE_MISS) {
             var dataObj = incomingMsg.data;
+            var coordinates = dataObj.coordinates;
             if (game.getPlayerType() === dataObj.player) {
-                shipsRenderer.renderTileMiss(dataObj.x, dataObj.y, true);
-                disableTilesOpponent();
+                shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, true);
                 showNotificationMsg(Status.currentPlayerMiss);
             } else {
-                shipsRenderer.renderTileMiss(dataObj.x, dataObj.y, false);
-                enableTilesOpponent();
+                shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, false);
+                // enableTilesOpponent();
                 showNotificationMsg(Status.opponentMiss);
             }
         }
@@ -146,14 +148,15 @@ function removeAllEventListenersOpponent() {
         //      4- Show the updated hits of opponent player
         if (incomingMsg.type === Messages.T_TILE_HIT_SINK) {
             var dataObj = incomingMsg.data;
+            var coordinates = dataObj.coordinates;
             if (game.getPlayerType() === dataObj.player) {
                 game.increaseSelfScore();
-                shipsRenderer.renderTileMiss(dataObj.x, dataObj.y, true);
+                shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
                 shipsRenderer.updateHitsSelf(game.amountHits);
                 showNotificationMsg(Status.currentPlayerShipSink);
             } else {
                 game.increaseOpponentScore();
-                shipsRenderer.renderTileMiss(dataObj.x, dataObj.y, false);
+                shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
                 shipsRenderer.updateHitsOpponent(game.opponentHits);
                 showNotificationMsg(Status.opponentShipSink);
             }
@@ -163,10 +166,8 @@ function removeAllEventListenersOpponent() {
         // 2- remove all EventListeners of Opponents' grid
         // 3- close the socket
         if (incomingMsg.type === Messages.T_GAME_WON_BY) {
-            game.setPlayerType(incomingMsg.data);
-            
-            removeAllEventListenersOpponent();
-
+            game.setWhoWon(incomingMsg.data);
+            disableTilesOpponent();
             socket.close();
         }
 
@@ -179,7 +180,7 @@ function removeAllEventListenersOpponent() {
     //server sends a close event only if the game was aborted from some side
     socket.onclose = function() {
         if (game.whoWon) {
-            if (game.whoWon == game.getPlayerType) {
+            if (game.whoWon === game.getPlayerType()) {
                 showNotificationMsg(Status.gameWon, 1);
             } else {
                 showNotificationMsg(Status.gameLost, 0);

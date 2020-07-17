@@ -42,6 +42,8 @@
   height: 25px;
   border: 1px solid #ffffff;
   border-collapse: collapse;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
   cursor: url("../images/crosshair.png") 16 16, crosshair;
 }
 
@@ -74,8 +76,9 @@
 }
 
 .battlefield_cell_rival_tile:hover {
-  /* border: 3px solid orange; */
-  background-color: #b40000;
+  border: 3px solid rgb(255,165,0);
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
 }
 
 .battlefield_rival {

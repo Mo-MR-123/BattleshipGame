@@ -69,10 +69,10 @@ ShipsRenderer.prototype.resetSelfTilesRendering = function () {
  */
 ShipsRenderer.prototype.renderTileHit = function (x, y, isOpponent) {
     if (isOpponent) {
-        var tileHitOpponent = $(this.opponentTileClass + "[data-x='" + x + "'][data-y='" + y + "']");
+        var tileHitOpponent = $(this.opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']");
         tileHitOpponent.css("background-color", this.colorHit);
     } else {
-        var tileHitSelf = $(this.selfTileClass + "[data-x='" + x + "'][data-y='" + y + "']"); 
+        var tileHitSelf = $(this.selfTileClass + "[data-x='" + y + "'][data-y='" + x + "']"); 
         tileHitSelf.css("background-color", this.colorHit);
     }
 }
@@ -85,10 +85,10 @@ ShipsRenderer.prototype.renderTileHit = function (x, y, isOpponent) {
  */
 ShipsRenderer.prototype.renderTileMiss = function (x, y, isOpponent) {
     if (isOpponent) {
-        var tileHitOpponent = $(this.opponentTileClass + "[data-x='" + x + "'][data-y='" + y + "']");
+        var tileHitOpponent = $(this.opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']");
         tileHitOpponent.css("background-color", this.colorMiss);
     } else {
-        var tileHitSelf = $(this.selfTileClass + "[data-x='" + x + "'][data-y='" + y + "']"); 
+        var tileHitSelf = $(this.selfTileClass + "[data-x='" + y + "'][data-y='" + x + "']"); 
         tileHitSelf.css("background-color", this.colorMiss);
     }
 }

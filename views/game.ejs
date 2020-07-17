@@ -20,131 +20,146 @@
     <!-- =================================================================-->  
     <main class="main">
         <div class="body"> 
-            <header class="header">
-                            
+            <header class="header container-fluid">
                 <!-- <h4 id="timertext2">TIMER:</h4>
                 <div id="timertext">30</div> -->
                 
                 <!-- the text "seconds left" must be visible only when the game starts (so when opponents are found)  -->
                 <!-- <h4 id="timer">seconds</h4>
                 <h4 id="timer">left</h4> -->
-
-                <input id="fullscreen" src="images/expand.png" action="openFullscreen();" type="image">
-                <h2><image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">BATTLESHIP V</h2>
+                
+                <div class="d-flex justify-content-between">
+                    <h2>
+                        <image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">
+                        BATTLESHIP V
+                    </h2>
+                    <input id="fullscreen" src="images/expand.png" action="openFullscreen();" type="image">
+                </div>
                     
             </header>
             
-            <div class="notifications-container">
+            <div class="notifications-container mt-2">
                 <div id="notification" class="alert alert-primary" role="alert">
                     <%# Here use JQuery to place notification text %> 
                 </div>
             </div> 
-            
-            <div class="battlefield">
-                <div class="Scoreboard">
-                    <div id="ScoreSelf">
-                        <h4>Your Hits:</h4>
-                        <h4 id="hitsself">0</h4>
-                    </div>
-                    <div id="ScoreRival">
-                        <h4>Enemy's Hits:</h4>
-                        <h4 id="hitsrival">0</h4>
+        
+            <div class="battlefield container-fluid">
+
+                <div class="container-fluid Scoreboard">
+                    <div class="row justify-content-center text-center">
+                        <div class="col" id="Score">
+                            <h4>Your Hits:</h4>
+                            <h4 class="col" id="hitsself">
+                                0
+                            </h4>
+                        </div>
+                        <div class="col" id="Score">
+                            <h4>Enemy's Hits:</h4>
+                            <h4 class="col" id="hitsrival">
+                                0
+                            </h4>
+                        </div>
                     </div>
                 </div>
                 
-                <%# return the next character of the current char "c" in the ASCII ordering/ecnoding %>
-                <% 
-                    function nextChar(c) {
-                        return String.fromCharCode(c.charCodeAt(0) + 1);
-                    } 
-                %>
+                <div class="d-flex align-items-center justify-content-center m-5">
+                    <%# return the next character of the current char "c" in the ASCII ordering/ecnoding %>
+                    <% 
+                        function nextChar(c) {
+                            return String.fromCharCode(c.charCodeAt(0) + 1);
+                        } 
+                    %>
 
-                <%# create variable containing the letter to start with when assigning coordinates in the first row of the grid %>
-                <% var currLetter = 'A' %>
+                    <%# create variable containing the letter to start with when assigning coordinates in the first row of the grid %>
+                    <% var currLetter = 'A' %>
 
-                <%# Defining the variables to be used for loops %>
-                <% var row, col, i; %>
+                    <%# Defining the variables to be used for loops %>
+                    <% var row, col, i; %>
 
-                <%# Create grid of current player %> 
-                <h4 id="playera_tag"> Your Grid </h4>
-                <div class="battlefield_self">
-                    <table class="battlefield_self_table">
-                        <tbody>
-                            <%# Create the first row of letters for coordinates %> 
-                            <tr class="battlefield_row">
-                                <td class="battlefield_cell_self_coord">
-                                </td>
-                                <td class="battlefield_cell_self_coord">
-                                    <%= currLetter %>
-                                </td>
-                                <% for(i = 0; i < gridDim.cols - 1; i++) { %>
-                                    <td class="battlefield_cell_self_coord">
-                                      <% currLetter = nextChar(currLetter) %>
-                                      <%= currLetter %>
-                                    </td>
-                                 <% } %>
-                            </tr>
-
-                            <%# Create the clickable tiles and the numbered rows for coordinates %> 
-                            <% for (row = 0; row < gridDim.rows; row++) { %>
-                                <tr class="battlefield_row">
-                                    <td class="battlefield_cell_self_coord">
-                                        <%= row + 1 %> 
-                                    </td>
-                                    <% for(col = 0; col < gridDim.cols; col++) { %>
-                                        <td class="battlefield_cell_self_tile" data-x="<%= col %>"  data-y="<%= row %>">
+                    <%# Create grid of current player %>
+                    <div class="col">
+                        <h4 id="playera_tag">Your Grid</h4>
+                        <div class="battlefield_self">
+                            <table class="battlefield_self_table">
+                                <tbody>
+                                    <%# Create the first row of letters for coordinates %> 
+                                    <tr class="battlefield_row">
+                                        <td class="battlefield_cell_self_coord">
                                         </td>
-                                    <% } %>
-                                </tr>
-                            <% } %>
-                        </tbody>        
-                    </table>         
-                </div>
-
-                <%# generate rival grid %> 
-                <h4 id="playerb_tag">Enemy's Grid</h4>
-                <div class="battlefield_rival">
-                    <table class="battlefield_rival_table">
-                        <%# Reset currLetter to start letter 'A' %> 
-                        <% currLetter = 'A' %>
-                        
-                        <%# Defining the variables to be used for loops %>
-                        <% var row, col, i; %>
-
-                        <tbody>
-                            <%# Create the first row of letters for coordinates %>
-                            <tr class="battlefield_row">
-                                <td class="battlefield_cell_rival_coord">
-                                </td>
-                                <td class="battlefield_cell_rival_coord">
-                                    <%= currLetter %>
-                                </td>
-                                <% for(i = 0; i < gridDim.cols - 1; i++) { %>
-                                    <td class="battlefield_cell_rival_coord">
-                                      <% currLetter = nextChar(currLetter) %>
-                                      <%= currLetter %>
-                                    </td>
-                                 <% } %>
-                            </tr>
-
-                            <%# Create the clickable tiles and the numbered rows for coordinates %> 
-                            <% for (row = 0; row < gridDim.rows; row++) { %>
-                                <tr class="battlefield_row">
-                                    <td class="battlefield_cell_rival_coord">
-                                        <%= row + 1 %> 
-                                    </td>
-                                    <% for(col = 0; col < gridDim.cols; col++) { %>
-                                        <td class="battlefield_cell_rival_tile" data-x="<%= col %>"  data-y="<%= row %>">
+                                        <td class="battlefield_cell_self_coord">
+                                            <%= currLetter %>
                                         </td>
+                                        <% for(i = 0; i < gridDim.cols - 1; i++) { %>
+                                            <td class="battlefield_cell_self_coord">
+                                            <% currLetter = nextChar(currLetter) %>
+                                            <%= currLetter %>
+                                            </td>
+                                        <% } %>
+                                    </tr>
+
+                                    <%# Create the clickable tiles and the numbered rows for coordinates %> 
+                                    <% for (row = 0; row < gridDim.rows; row++) { %>
+                                        <tr class="battlefield_row">
+                                            <td class="battlefield_cell_self_coord">
+                                                <%= row + 1 %> 
+                                            </td>
+                                            <% for(col = 0; col < gridDim.cols; col++) { %>
+                                                <td class="battlefield_cell_self_tile" data-x="<%= col %>"  data-y="<%= row %>">
+                                                </td>
+                                            <% } %>
+                                        </tr>
                                     <% } %>
-                                </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
+                                </tbody>        
+                            </table>         
+                        </div>
+                    </div>
+
+                    <%# generate rival grid %>
+                    <div class="col">
+                        <h4 id="playerb_tag">Enemy's Grid</h4>
+                        <div class="battlefield_rival">
+                            <table class="battlefield_rival_table">
+                                <%# Reset currLetter to start letter 'A' %> 
+                                <% currLetter = 'A' %>
+                                
+                                <%# Defining the variables to be used for loops %>
+                                <% var row, col, i; %>
+
+                                <tbody>
+                                    <%# Create the first row of letters for coordinates %>
+                                    <tr class="battlefield_row">
+                                        <td class="battlefield_cell_rival_coord">
+                                        </td>
+                                        <td class="battlefield_cell_rival_coord">
+                                            <%= currLetter %>
+                                        </td>
+                                        <% for(i = 0; i < gridDim.cols - 1; i++) { %>
+                                            <td class="battlefield_cell_rival_coord">
+                                            <% currLetter = nextChar(currLetter) %>
+                                            <%= currLetter %>
+                                            </td>
+                                        <% } %>
+                                    </tr>
+
+                                    <%# Create the clickable tiles and the numbered rows for coordinates %> 
+                                    <% for (row = 0; row < gridDim.rows; row++) { %>
+                                        <tr class="battlefield_row">
+                                            <td class="battlefield_cell_rival_coord">
+                                                <%= row + 1 %> 
+                                            </td>
+                                            <% for(col = 0; col < gridDim.cols; col++) { %>
+                                                <td class="battlefield_cell_rival_tile" data-x="<%= col %>"  data-y="<%= row %>">
+                                                </td>
+                                            <% } %>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            
             </div>
-            
         </div>	
     </main>     
     <!-- =================================================================-->

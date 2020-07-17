@@ -425,7 +425,7 @@ game.prototype.tileFired = function(coordinates, playerAShot) {
             if (id === 0) {
 
                 // current player (A or B) missed
-                msgResult = _.cloneDeep(messages.TILE_MISS);
+                msgResult = Object.assign({}, messages.TILE_MISS);
                 msgResult.data = { player: currentPlayer, coordinates: coordinates }; 
 
             } else if (id > 0) {
@@ -450,10 +450,10 @@ game.prototype.tileFired = function(coordinates, playerAShot) {
                 // check if the hit ship sank because of this hit
                 // else it is just hit and did not sink
                 if (shipHit.hits === shipHit.size) {
-                    msgResult = _.cloneDeep(messages.TILE_HIT_SINK);
+                    msgResult = Object.assign({}, messages.TILE_HIT_SINK);
                     msgResult.data = { player: currentPlayer, coordinates: coordinates, ship: shipHit.name };
                 } else {
-                    msgResult = _.cloneDeep(messages.TILE_HIT);
+                    msgResult = Object.assign({}, messages.TILE_HIT);
                     msgResult.data = { player: currentPlayer, coordinates: coordinates };
                 }
 

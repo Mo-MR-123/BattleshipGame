@@ -7,7 +7,6 @@ const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
 const Game = require("./game");
 const WebSocket = require("ws");
-const _ = require("lodash");
 
 const port = process.argv[2] || 3000;
 const hostName = 'localhost';

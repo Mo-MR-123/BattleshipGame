@@ -36,14 +36,10 @@
 9. Make the website compatible for smaller device screens aswell. 
 
 10. Make own images for hitting and missing a tile instead of using colors to show hits or miss.
-
-11. Remove event handler from missed or hit tile on opponent grid permanently.
 ---
 **BUGS:**
 
-1. Fix event listener being unbound on tile clicked on opponent grid even though it is not the turn of the current player to shoot.
-
-2. Fix border not showing properly when hovering on tiles on opponent grid in Mozila Firefox browser.
+1. Fix border not showing properly when hovering on tiles on opponent grid in Mozila Firefox browser.
 ---
 
 **INFO ABOUT HOW BATTLESHIP IS PLAYED:**

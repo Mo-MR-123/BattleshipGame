@@ -70,10 +70,10 @@ ShipsRenderer.prototype.resetSelfTilesRendering = function () {
 ShipsRenderer.prototype.renderTileHit = function (x, y, isOpponent) {
     if (isOpponent) {
         var tileHitOpponent = $(this.opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']");
-        tileHitOpponent.css("background-color", this.colorHit);
+        tileHitOpponent.css({ "background-color": this.colorHit, "border": "2px solid black" });
     } else {
         var tileHitSelf = $(this.selfTileClass + "[data-x='" + y + "'][data-y='" + x + "']"); 
-        tileHitSelf.css("background-color", this.colorHit);
+        tileHitSelf.css({ "background-color": this.colorHit, "border": "2px solid black" });
     }
 }
 
@@ -86,10 +86,10 @@ ShipsRenderer.prototype.renderTileHit = function (x, y, isOpponent) {
 ShipsRenderer.prototype.renderTileMiss = function (x, y, isOpponent) {
     if (isOpponent) {
         var tileHitOpponent = $(this.opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']");
-        tileHitOpponent.css("background-color", this.colorMiss);
+        tileHitOpponent.css({ "background-color": this.colorMiss , "border": "2px solid black" });
     } else {
         var tileHitSelf = $(this.selfTileClass + "[data-x='" + y + "'][data-y='" + x + "']"); 
-        tileHitSelf.css("background-color", this.colorMiss);
+        tileHitSelf.css({ "background-color": this.colorMiss, "border": "2px solid black" });
     }
 }
 

@@ -1,41 +1,42 @@
-// IMPORTANT NOTE: shared.js and messages.js MUST BE INCLUDED BEFORE THIS SCRIPT FILE!!! 
 "use strict";
 
-// define opponents tiles class
+// define opponent tiles class
 var opponentTileClass = '.battlefield_cell_rival_tile';
-
 
 /**
  * @description Adds event listener to all clickable tiles of the opponent and handles sending coordinates if tile is clicked.
- * @param {Game} game - The game object 
+ * @param {Game} game - The game object to send the coordiantes to the server
  */
-function addEventListenerOpponentTiles(game) {
+function enableTilesOpponent(game) {
     $(opponentTileClass).each(function() {
         var tile = this;
-        tile.addEventListener("click", function oneClickTile(e) {
+        $(tile).on("click", function oneClickTile(e) {
             var xCoord = $(e.target).data("x");
             var yCoord = $(e.target).data("y");
             game.tileClick(yCoord, xCoord);
-
-            // After clicking a tile, it is either hit or missed. So remove event listener as that tile 
-            // should not be processed anymore
-            tile.removeEventListener("click", oneClickTile, false);
         });
     })
 }
 
-//Functions for enabling and disabling the tiles for the players 
-// TODO: enabling tiles of opponent grid should make all the tiles get back their event listener
-// function enableTilesOpponent() {
-//     $(opponentTileClass).on('click', addEventListenerOpponentTiles());
-// }
-
+/**
+ * @description Disable all opponents' tiles by removing all event handlers from all <td></td> tags of the tiles.
+ */
 function disableTilesOpponent() {
     $(opponentTileClass).off();
 }
 
+/**
+ * @description Disable specific opponents' tile by removing its event handlers PERMANENTLY.
+ * 
+ * @param {Number} x - The row coordinate of the tile
+ * @param {Number} y - The column coordinate of the tile
+ */
+function disableATileOpponent(x, y) {
+    $('td' + opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']").off();
+}
+
+
 //////////////////////////////////// START SOCKET AND GAME ////////////////////////////////////////////////
-//set everything up, including the WebSocket
 (function setup() {    
     // the GameState object coordinates everything
     var game = new Game(socket);
@@ -75,14 +76,13 @@ function disableTilesOpponent() {
             }
         }
 
-        // Notify whether current player or opponent can start shooting.
+        // Notify whether current player or opponent can start shooting and enable tiles event listeners of player the can start shooting.
         // NOTE: this happens only at the start of the game!
         // when second player joins, the game starts so add event listeners on opponent grid
         if (incomingMsg.type === Messages.T_PLAYER_TURN) {
-            addEventListenerOpponentTiles(game);
-
             var playerTurn = incomingMsg.data;
             if (game.getPlayerType() === playerTurn) {
+                enableTilesOpponent(game);
                 showNotificationMsg(Status.currentPlayerTurn);
             } else {
                 showNotificationMsg(Status.opponentTurn);
@@ -90,15 +90,16 @@ function disableTilesOpponent() {
         }
 
         // If current player hit a ship:
-        //      1- Show notification that current player has hit a ship.
+        //      1- increase amount of hits of current player
         //      2- Color the ship tile that is hit on opponents grid.
-        //      3- increase amount of hits of current player
-        //      4- Show the updated hits of current player
+        //      3- Show the updated hits of current player
+        //      4- TODO: permanently disable/remove event handler from the hit tile
+        //      5- Show notification that current player has hit a ship.
         // If opponent has hit a ship of current player:
-        //      1- Show notification that opponent has hit a ship.
+        //      1- increase amount of hits of opponent player
         //      2- Color the ship tile that is hit on current player grid.
-        //      3- increase amount of hits of opponent player
-        //      4- Show the updated hits of opponent player
+        //      3- Show the updated hits of opponent player
+        //      4- Show notification that opponent has hit a ship.
         if (incomingMsg.type === Messages.T_TILE_HIT) {
             var dataObj = incomingMsg.data;
             var coordinates = dataObj.coordinates;
@@ -106,6 +107,7 @@ function disableTilesOpponent() {
                 game.increaseSelfScore();
                 shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
                 shipsRenderer.updateHitsSelf(game.amountHits);
+                // disableATileOpponent(coordinates.x, coordinates.y);
                 showNotificationMsg(Status.currentPlayerShipHit);
             } else {
                 game.increaseOpponentScore();
@@ -116,36 +118,40 @@ function disableTilesOpponent() {
         }
 
         // If current player missed:
-        //      1- Show notification that current player has missed.
-        //      2- Color the tile that is missed on opponents grid.
+        //      1- Color the tile that is missed on opponents grid.
+        //      2- TODO: permanently disable/remove event handler from the missed tile
         //      3- disable tiles of opponent
+        //      4- Show notification that current player has missed.
         // If opponent has missed:
-        //      1- Show notification that opponent has missed.
-        //      2- Color the tile that is missed on current player grid. 
-        //      3- enable opponent tile selection, as it is current player turn.
+        //      1- Color the tile that is missed on current player grid. 
+        //      2- enable opponent tile selection, as it is current player turn.
+        //      3- Show notification that opponent has missed.
         if (incomingMsg.type === Messages.T_TILE_MISS) {
             var dataObj = incomingMsg.data;
             var coordinates = dataObj.coordinates;
             if (game.getPlayerType() === dataObj.player) {
                 shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, true);
+                // disableCurrentTilePermanintly();
+                disableTilesOpponent();
                 showNotificationMsg(Status.currentPlayerMiss);
             } else {
                 shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, false);
-                // enableTilesOpponent();
+                enableTilesOpponent(game);
                 showNotificationMsg(Status.opponentMiss);
             }
         }
 
         // If current player hit and sank a ship:
-        //      1- Show notification that current player has hit and sank a ship.
+        //      1- increase amount of hits of current player
         //      2- Color the tile that is missed on opponents grid.
-        //      3- increase amount of hits of current player
-        //      4- Show the updated hits of current player
+        //      3- Show the updated hits of current player
+        //      4- TODO: permanently disable/remove event handler from the hit tile
+        //      5- Show notification that current player has hit and sank a ship.
         // If opponent has missed:
-        //      1- Show notification that opponent has missed.
+        //      1- increase amount of hits of opponent player
         //      2- Color the tile that is missed on current player grid. 
-        //      3- increase amount of hits of opponent player
-        //      4- Show the updated hits of opponent player
+        //      3- Show the updated hits of opponent player
+        //      4- Show notification that opponent has missed.
         if (incomingMsg.type === Messages.T_TILE_HIT_SINK) {
             var dataObj = incomingMsg.data;
             var coordinates = dataObj.coordinates;
@@ -153,6 +159,7 @@ function disableTilesOpponent() {
                 game.increaseSelfScore();
                 shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
                 shipsRenderer.updateHitsSelf(game.amountHits);
+                // disableATileOpponent(coordinates.x, coordinates.y);
                 showNotificationMsg(Status.currentPlayerShipSink);
             } else {
                 game.increaseOpponentScore();
@@ -163,11 +170,9 @@ function disableTilesOpponent() {
         }
 
         // 1- Set who won the game 
-        // 2- remove all EventListeners of Opponents' grid
-        // 3- close the socket
+        // 2- close the socket
         if (incomingMsg.type === Messages.T_GAME_WON_BY) {
             game.setWhoWon(incomingMsg.data);
-            disableTilesOpponent();
             socket.close();
         }
 
@@ -188,6 +193,9 @@ function disableTilesOpponent() {
         } else {
             showNotificationMsg(Status.aborted, 2);
         }
+
+        // Remove all EventListeners from Opponents' grid
+        disableTilesOpponent();
     };
     
     socket.onerror = function() { 

@@ -1,6 +1,17 @@
 # BattleshipGame
 
 ---
+**How to run server:**
+
+1. Open terminal in root folder of the project (where `package.json` is located)
+
+2. Type `npm install` to install all the dependencies.
+
+3. Make sure you have `node` installed.
+
+4. To run the server, type `node app.js` to run server on port 3000 (default port). 
+   A custom port on which the server needs to run can also be given as argument e.g. `node app.js 9000` (runs server on port 9000)
+---
 **TODO**:
 
 1. Each ship should not have an adjecent ship next to it.

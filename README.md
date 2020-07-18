@@ -26,6 +26,7 @@
 
 10. Make own images for hitting and missing a tile instead of using colors to show hits or miss.
 
+11. Remove event handler from missed or hit tile on opponent grid permanently.
 ---
 **BUGS:**
 

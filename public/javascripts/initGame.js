@@ -11,6 +11,11 @@ function enableTilesOpponent(game) {
     $(opponentTileClass).each(function() {
         var tile = this;
         $(tile).on("click", function oneClickTile(e) {
+            // if tile is disabled (tile is either missed or hit), then do not send clicked tile coordinates to server
+            // as that causes unnecessary overhead.
+            var isTileDisabled = $(e.target).prop('disabled');
+            if (isTileDisabled) return;
+
             var xCoord = $(e.target).data("x");
             var yCoord = $(e.target).data("y");
             game.tileClick(yCoord, xCoord);
@@ -26,13 +31,14 @@ function disableTilesOpponent() {
 }
 
 /**
- * @description Disable specific opponents' tile by removing its event handlers PERMANENTLY.
+ * @description adds "disabled" value to a tile. 
+ *              This is needed to prevent sending tiles coordinates that are already clicked and handled.
  * 
- * @param {Number} x - The row coordinate of the tile
- * @param {Number} y - The column coordinate of the tile
+ * @param {Number} x - column coordinate of tile
+ * @param {Number} y - row coordinate of tile
  */
-function disableATileOpponent(x, y) {
-    $('td' + opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']").off();
+function addDisabledToTile(x, y) {
+    $('td'+ opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']").prop('disabled', true);
 }
 
 
@@ -93,7 +99,7 @@ function disableATileOpponent(x, y) {
         //      1- increase amount of hits of current player
         //      2- Color the ship tile that is hit on opponents grid.
         //      3- Show the updated hits of current player
-        //      4- TODO: permanently disable/remove event handler from the hit tile
+        //      4- disable the hit tile
         //      5- Show notification that current player has hit a ship.
         // If opponent has hit a ship of current player:
         //      1- increase amount of hits of opponent player
@@ -107,7 +113,7 @@ function disableATileOpponent(x, y) {
                 game.increaseSelfScore();
                 shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
                 shipsRenderer.updateHitsSelf(game.amountHits);
-                // disableATileOpponent(coordinates.x, coordinates.y);
+                addDisabledToTile(coordinates.x, coordinates.y);
                 showNotificationMsg(Status.currentPlayerShipHit);
             } else {
                 game.increaseOpponentScore();
@@ -119,7 +125,7 @@ function disableATileOpponent(x, y) {
 
         // If current player missed:
         //      1- Color the tile that is missed on opponents grid.
-        //      2- TODO: permanently disable/remove event handler from the missed tile
+        //      2- disable missed tile
         //      3- disable tiles of opponent
         //      4- Show notification that current player has missed.
         // If opponent has missed:
@@ -131,7 +137,7 @@ function disableATileOpponent(x, y) {
             var coordinates = dataObj.coordinates;
             if (game.getPlayerType() === dataObj.player) {
                 shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, true);
-                // disableCurrentTilePermanintly();
+                addDisabledToTile(coordinates.x, coordinates.y);
                 disableTilesOpponent();
                 showNotificationMsg(Status.currentPlayerMiss);
             } else {
@@ -145,7 +151,7 @@ function disableATileOpponent(x, y) {
         //      1- increase amount of hits of current player
         //      2- Color the tile that is missed on opponents grid.
         //      3- Show the updated hits of current player
-        //      4- TODO: permanently disable/remove event handler from the hit tile
+        //      4- disable the hit tile
         //      5- Show notification that current player has hit and sank a ship.
         // If opponent has missed:
         //      1- increase amount of hits of opponent player
@@ -159,7 +165,7 @@ function disableATileOpponent(x, y) {
                 game.increaseSelfScore();
                 shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
                 shipsRenderer.updateHitsSelf(game.amountHits);
-                // disableATileOpponent(coordinates.x, coordinates.y);
+                addDisabledToTile(coordinates.x, coordinates.y);
                 showNotificationMsg(Status.currentPlayerShipSink);
             } else {
                 game.increaseOpponentScore();

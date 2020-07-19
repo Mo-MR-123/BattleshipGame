@@ -13,12 +13,14 @@ Step 2: Install dependencies.
 ```
 npm install
 ```
-Step 3: Start server.
+Step 3: Start server on default port 3000.
 ```
 node app.js
 ```
-run server on port 3000 (default port). 
-A custom port on which the server needs to run can also be given as argument e.g. `node app.js 9000` (runs server on port 9000)
+Optional step: Start server on custom port.
+```
+node app.js <your-custom-port>
+```
 ---
 **TODO**:
 

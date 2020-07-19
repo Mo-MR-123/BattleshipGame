@@ -48,7 +48,7 @@ node app.js <your-custom-port>
 9. Make the website compatible for smaller device screens aswell. ❌
 
 10. Make own images for hitting and missing a tile instead of using colors to show hits or miss. ❌
----
+
 **BUGS:**
 
 1. Fix border not showing properly when hovering on tiles on opponent grid in Mozila Firefox browser. ❌

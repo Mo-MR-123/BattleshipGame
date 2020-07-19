@@ -21,10 +21,11 @@ Optional step: Start server on custom port.
 ```
 node app.js <your-custom-port>
 ```
+Finally, goto ```localhost:3000``` or ```localhost:<your-custom-port>``` and have fun :)
 ---
-**TODO**:
-
 **❌ = not implemented/fixed yet, ✔ = implemented/fixed**
+
+**TODO**:
 
 1. Each ship should not have an adjecent ship next to it.
    (Add "horizontal", "x", "y" property to each ship object in shared.js to be able determine this. 

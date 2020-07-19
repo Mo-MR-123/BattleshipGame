@@ -1,16 +1,24 @@
 # BattleshipGame
 
 ---
-**How to run server:**
+## Install
 
-1. Open terminal in root folder of the project (where `package.json` is located)
+**NOTE:** make sure that you already have `node` installed.
 
-2. Type `npm install` to install all the dependencies.
-
-3. Make sure you have `node` installed.
-
-4. To run the server, type `node app.js` to run server on port 3000 (default port). 
-   A custom port on which the server needs to run can also be given as argument e.g. `node app.js 9000` (runs server on port 9000)
+Step 1: Download/clone.
+```
+git clone https://github.com/MoNigma/BattleshipGame
+```
+Step 2: Install dependencies.
+```
+npm install
+```
+Step 3: Start server.
+```
+node app.js
+```
+run server on port 3000 (default port). 
+A custom port on which the server needs to run can also be given as argument e.g. `node app.js 9000` (runs server on port 9000)
 ---
 **TODO**:
 

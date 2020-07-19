@@ -45,10 +45,8 @@
   border-collapse: collapse;
   color: #ffffff;
   text-align: center;
-}
 
-/* prevent text selection of the coordinates  */
-.battlefield_cell_self_coord {
+  /* prevent text selection of the coordinates  */
   user-select: none; /* supported by Chrome and Opera */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */

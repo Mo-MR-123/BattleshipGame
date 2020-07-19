@@ -51,11 +51,8 @@
   border-collapse: collapse;
   color: #ffffff;
   text-align: center;
-}
 
-/* prevent text selection of the coordinates  */
-.battlefield_cell_self_coord,
-.battlefield_cell_rival_coord {
+  /* prevent text selection of the coordinates  */
   user-select: none; /* supported by Chrome and Opera */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
@@ -102,58 +99,10 @@
   font-size: 120%;
 }
 
-/* #timer {
-  font-size: 23px;
-  right: 45%;
-  color: rgb(0, 0, 0);
-  position: absolute;
-  margin-top: 5%;
-  display: none;
-} */
-
-/* #timertext {
-  position: absolute;
-  left: 46%;
-  color: white;
-  font-size: 50px;
-  margin-top: 25px;
-  display: inline-block;
-}
-
-#timertext2 {
-  font-size: 23px;
-  margin-left: 45%;
-  color: rgb(0, 0, 0);
-  position: absolute;
-  margin-top: 0.4%;
-  text-decoration: underline;
-} */
-
 .Scoreboard {
   background-color: rgba(180, 180, 180, 0.7);
 }
 
 #Score {
   border: dotted;
-}
-
-button {
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  color: #eeeeee;
-  background-color: #25567b;
-  border: none;
-  /* margin: 1em auto 0 auto; */
-  padding: 5px;
-  border-radius: 5px;
-  font-size: 100%;
-}
-
-button:hover {
-  cursor: pointer;
-  background-color: #ffffff;
-  color: red;
-}
-
-button:active {
-  background-color: black;
 }

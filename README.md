@@ -46,6 +46,8 @@ node app.js <your-custom-port>
 9. Make the website compatible for smaller device screens aswell. 
 
 10. Make own images for hitting and missing a tile instead of using colors to show hits or miss.
+
+11. Implement functionality that makes it possible for 2 persons to join a game together via invite link.
 ---
 **BUGS:**
 

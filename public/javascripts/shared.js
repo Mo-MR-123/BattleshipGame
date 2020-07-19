@@ -22,11 +22,11 @@
       cols: 10
     }; 
     exports.AMOUNT_HITS_WIN = 17; /* Amount of hits needed to win the game. NOTE: this is equivalent to  */
-    exports.DESTROYER = { id: 1, name: 'Destroyer',  size: 2, hits: 0, color: '#8d8d8d' }; /* Destoryer ship properties (ID is used when placed on the board) */
-    exports.SUBMARINE = { id: 2, name: 'Submarine', size: 3, hits: 0, color: '#009d00' }; /* Submarine ship properties (ID is used when placed on the board) */
-    exports.CRUISER = { id: 3, name: 'Cruiser', size: 3, hits: 0, color: '#0000ff' }; /* Cruiser ship properties (ID is used when placed on the board) */
-    exports.BATTLESHIP = { id: 4, name: 'Battleship', size: 4, hits: 0, color: '#996633' }; /* Battleship ship properties (ID is used when placed on the board) */
-    exports.CARRIER = { id: 5, name: 'Carrier', size: 5, hits: 0, color: '#FF8C00' }; /* Carrier ship properties (ID is used when placed on the board) */
+    exports.DESTROYER = { id: 1, name: 'Destroyer',  size: 2, hits: 0, color: '#8d8d8d', x: null, y: null, horizontal: null }; /* Destoryer ship properties (ID is used when placed on the board) */
+    exports.SUBMARINE = { id: 2, name: 'Submarine', size: 3, hits: 0, color: '#009d00', x: null, y: null, horizontal: null }; /* Submarine ship properties (ID is used when placed on the board) */
+    exports.CRUISER = { id: 3, name: 'Cruiser', size: 3, hits: 0, color: '#0000ff', x: null, y: null, horizontal: null }; /* Cruiser ship properties (ID is used when placed on the board) */
+    exports.BATTLESHIP = { id: 4, name: 'Battleship', size: 4, hits: 0, color: '#996633', x: null, y: null, horizontal: null }; /* Battleship ship properties (ID is used when placed on the board) */
+    exports.CARRIER = { id: 5, name: 'Carrier', size: 5, hits: 0, color: '#FF8C00', x: null, y: null, horizontal: null }; /* Carrier ship properties (ID is used when placed on the board) */
     exports.WEB_SOCKET_URL = "ws://localhost:3000"; /* WebSocket URL */
     exports.COLOR_HIT = "#FF0000"; /* Hexadecimial color shown when ship is hit on clicked tile */
     exports.COLOR_MISS = "#FFFFFF"; /* Hexadecimial color shown when no ship is hit on clicked tile */

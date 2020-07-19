@@ -24,34 +24,36 @@ node app.js <your-custom-port>
 ---
 **TODO**:
 
+**❌ = not implemented/fixed yet, ✔ = implemented/fixed**
+
 1. Each ship should not have an adjecent ship next to it.
    (Add "horizontal", "x", "y" property to each ship object in shared.js to be able determine this. 
-    Also `ships.js` file in `javascripts` folder can be used to store all those information for each ship.)
+    Also `ships.js` file in `javascripts` folder can be used to store all those information for each ship.) ✔️
 
-2. Place actual ship images when a ship is sunk.
+2. Place actual ship images when a ship is sunk. ❌
 
-3. Add rotate button in ship placement page to give player ability to rotate a ship.
+3. Add rotate button in ship placement page to give player ability to rotate a ship. ❌
 
 4. Add functionality to enable and disable opponent grid tiles. 
-(enable when it is current player turn, disable when it is the turn of the other player.)
+(enable when it is current player turn, disable when it is the turn of the other player.) ❌
 
-5. Refactor server code to make it more readable and state transitions of the game more clear.
+5. Refactor server code to make it more readable and state transitions of the game more clear. ❌
 
-6. Make style of play page better.
+6. Make style of play page better. ❌
 
-7. Add timer to game (handled in server).
+7. Add timer to game (handled in server). ❌
 
-8. Finish instructions on "How to play" page. Also fix payment link ( ͡° ͜ʖ ͡°)
+8. Finish instructions on "How to play" page. Also fix payment link ( ͡° ͜ʖ ͡°) ❌
 
-9. Make the website compatible for smaller device screens aswell. 
+9. Make the website compatible for smaller device screens aswell. ❌
 
-10. Make own images for hitting and missing a tile instead of using colors to show hits or miss.
+10. Make own images for hitting and missing a tile instead of using colors to show hits or miss. ❌
 
 11. Implement functionality that makes it possible for 2 persons to join a game together via invite link.
----
+
 **BUGS:**
 
-1. Fix border not showing properly when hovering on tiles on opponent grid in Mozila Firefox browser.
+1. Fix border not showing properly when hovering on tiles on opponent grid in Mozila Firefox browser. ❌
 ---
 
 **INFO ABOUT HOW BATTLESHIP IS PLAYED:**

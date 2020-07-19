@@ -35,7 +35,7 @@ node app.js <your-custom-port>
 3. Add rotate button in ship placement page to give player ability to rotate a ship. ❌
 
 4. Add functionality to enable and disable opponent grid tiles. 
-(enable when it is current player turn, disable when it is the turn of the other player.) ❌
+(enable when it is current player turn, disable when it is the turn of the other player.) ✔️
 
 5. Refactor server code to make it more readable and state transitions of the game more clear. ❌
 
@@ -49,7 +49,7 @@ node app.js <your-custom-port>
 
 10. Make own images for hitting and missing a tile instead of using colors to show hits or miss. ❌
 
-11. Implement functionality that makes it possible for 2 persons to join a game together via invite link.
+11. Implement functionality that makes it possible for 2 persons to join a game together via invite link. ❌
 
 **BUGS:**
 

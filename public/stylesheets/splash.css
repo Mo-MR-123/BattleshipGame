@@ -1,93 +1,94 @@
-@import "Style.css";
-
-#how-to-button {
-  float: right;
-  width: 30%;
-  vertical-align: middle;
-}
+@import 'Style.css';
 
 #content {
-  background-color: rgba(248, 218, 218, 0.5);
-  height: 80%;
+	margin-top: 1em;
+	background-color: rgba(248, 218, 218, 0.5);
+	height:47em;
+	width: 90%;
+	margin-left: 5%;
+	border-radius: 8px;
 }
 
-#left {
-  width: 15%;
-  float: left;
+#guidelink {
+	background-color: rgb(49, 31, 207);
+	margin-top: 0.3em;
+	padding: 0.2em;
+	border-radius: 8px;
+	text-decoration: none;
+	display: inline-block;
+	color: white;
+	height: 44px;
+	font-weight: 100;
 }
 
-#top {
-  margin-top: 40%;
-  margin-left: 5%;
+#guidelink:hover {
+	background-color: rgba(150, 0, 0, 0.7);
 }
 
-#bottom {
-  margin-top: 100%;
-  margin-left: 5%;
+#stats-top {
+ 	margin-left: 2%;
+ 	margin-top: 10%;
 }
 
-#middle {
-  width: 80%;
-  margin: auto;
-  text-align: center;
-  height: 100%;
-  background: url("../images/world.png");
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
+#stats-bottom {
+	position: absolute;
+	bottom: 5%;
+	margin-left: 5%;
 }
 
-#right {
-  width: 5%;
-  float: right;
+#counter-text {
+	text-decoration:underline; 
+	font-weight: bold; 
+	color: rgb(83, 0, 0);
 }
 
-#nav {
-  height: 8%;
-  width: 100%;
-  background: rgba(122, 102, 179, 0.9);
-  font-weight: 600;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 100%;
-  color: rgb(151, 2, 2);
+#counter {
+	color: white;
 }
 
-button:hover {
-  background-color: rgba(150, 0, 0, 0.7);
-  cursor: pointer;
+#gamestart{
+	margin: auto;
+	height: 100%;
+	background: url("../images/world.png");
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#gamestart-title {
+	margin-top: 10%;
+	text-shadow: -1.5px 0 white, 0 1.5px white, 1.5px 0 white, 0 -1.5px white;
+	font-weight: bold; 
+}
+
+h2 {
+	color: white;
+	font-weight: bold; 
+}
+
+#gamestart-button {
+	margin-top: 5%;
+	margin-left: 50%;
+}
+
+.online_count{
+	position:relative;
+	height: 5px;
+	font-size:12px;
+	font-weight:400;
+	white-space:nowrap;
+	color:#999;
+	background-color: rgb(255, 255, 255);
 }
 
 button {
-  background-color: rgb(49, 31, 207);
-  padding: 14px 25px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  color: white;
+	padding-left: 1em;
+	padding-right: 1em;
+	margin: 0px;
+	border-style: none;
+	font-weight: bold; 
 }
 
-#splash_logo {
-  height: 70px;
-  width: auto;
-  vertical-align: middle;
-}
-
-i,
-p {
-  font-size: 86%;
-  color: rgb(83, 0, 0);
-}
-
-a {
-  background-color: rgb(49, 31, 207);
-  padding: 14px 25px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  color: white;
-  height: 44px;
-}
-
-a:hover {
-  background-color: rgba(150, 0, 0, 0.7);
+button:hover{
+	cursor: pointer;
 }

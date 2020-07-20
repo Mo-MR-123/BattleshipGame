@@ -92,16 +92,13 @@ button:hover{
 }
 
 #fullscreen {
-  width: 4%;
+  width: 8%;
   height: auto;
   float: right;
-  margin-top: 1%;
-  margin-right: 5%;
+  margin-top: 3%;
+  margin-right: 10%;
 }
 
 #fullscreen:hover {
-  width: 6%;
-  height: auto;
-  margin-top: 0;
-  margin-right: 4%;
+  opacity: 50%;
 }

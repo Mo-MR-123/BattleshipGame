@@ -7,7 +7,7 @@
 
 Step 1: Download/clone.
 ```
-git clone https://github.com/MoNigma/BattleshipGame
+git clone https://github.com/4d6f5079/BattleshipGame
 ```
 Step 2: Install dependencies.
 ```

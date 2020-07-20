@@ -8,7 +8,7 @@
         <title>Battleship V: Battle Royale Edition</title>   
         <link rel = "stylesheet"type = "text/css" href = "stylesheets/game.css" />   
         <script type="text/javascript" src="javascripts/jquery.js"> </script>
-        <link rel="shortcut icon" type="image/png" href="images/favi.png"/>
+        <link rel="shortcut icon" type="image/png" href="images/logo.png"/>
 
         <!-- TODO: make styling only using bootstrap -->
         <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
@@ -20,23 +20,12 @@
     <!-- =================================================================-->  
     <main class="main">
         <div class="body"> 
-            <header class="header container-fluid">
-                <!-- <h4 id="timertext2">TIMER:</h4>
-                <div id="timertext">30</div> -->
-                
-                <!-- the text "seconds left" must be visible only when the game starts (so when opponents are found)  -->
-                <!-- <h4 id="timer">seconds</h4>
-                <h4 id="timer">left</h4> -->
-                
-                <div class="d-flex justify-content-between">
-                    <h2>
-                        <image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">
-                        BATTLESHIP V
-                    </h2>
-                    <input id="fullscreen" src="images/expand.png" action="openFullscreen();" type="image">
+            <div class="header" class="container-fluid">
+                <div class="row justify-content-between">
+                    <div class="col-4"> <image src="images/logo.png" id="splash_logo">Battleship V</image> </div>
+                    <div class="col-4"> <input id="fullscreen" src="images/expand.png" action="openFullscreen();" type="image"> </div>
                 </div>
-                    
-            </header>
+            </div>
             
             <div class="notifications-container mt-2">
                 <div id="notification" class="alert alert-primary" role="alert">
@@ -165,10 +154,15 @@
     <!-- =================================================================-->
     
     <footer id="footer">
-            <div id="footer-l">&copy&nbspCopyright 2018  | All rights reserved. </div>
-            <div id="footer-m">Support us on patreon!</div>
-            <div id="footer-r">... we need the money...</div>
+        <div class="container-fluid">
+            <div class="row justify-content-around">
+              <div class="col-3"> &copy&nbspCopyright 2018-2020  | All rights reserved. </div>
+              <div class="col-3"> Support us on patreon! </div>
+              <div class="col-3"> ... we need the money... </div>
+            </div>
+          </div>
     </footer>
+
     <!-- below we place the needed scripts to establish Webscoket, game handler etc...  -->
     <script src="javascripts/FullScreen.js" type="text/javascript"></script>
     <script type="text/javascript" src="javascripts/statuses.js" ></script>

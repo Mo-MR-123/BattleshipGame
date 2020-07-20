@@ -1,17 +1,25 @@
 @import "Style.css";
 
+.card {
+  margin-top: 1%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 50%;
+}
+
 .battlefield {
   position: relative;
-  width: 100%;
-  height: 80%;
-  border: 0px solid #fd1e1e;
-  background-color: rgba(255, 255, 255, 0.7);
+  width: 90%;
+  height: 40em;
+  background-color: rgba(248, 218, 218, 0.5);
+  margin-left: 5%;
+  margin-top: 1%;
+  border-radius: 8px;
 }
 
 .battlefield_self {
-  width: 468px;
-  height: 468px;
-  border: 0px solid #000000;
+  margin-top: 5%;
+	width:500px;
+	height:500px;
   background: url("../images/template.png");
   background-size: auto;
   background-repeat: no-repeat;
@@ -22,7 +30,6 @@
   width: 100%;
   height: 100%;
   border-collapse: collapse;
-  border: 0px solid #ffffff;
 }
 
 .battlefield_row {
@@ -39,30 +46,18 @@
 }
 
 .battlefield_cell_self_coord {
+  background-color: rgba(4, 4, 70, 0.7);
   width: 42.5px;
   height: 42.5px;
   border: 1px solid #ffffff;
   border-collapse: collapse;
   color: #ffffff;
   text-align: center;
-}
 
-/* prevent text selection of the coordinates  */
-.battlefield_cell_self_coord {
+  /* prevent text selection of the coordinates  */
   user-select: none; /* supported by Chrome and Opera */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
-}
-
-.battlefield_cell_self_coord {
-  background-color: rgba(4, 4, 70, 0.7);
-}
-
-.card {
-  margin-top: 1%;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  height: 80%;
-  width: 80%;
 }

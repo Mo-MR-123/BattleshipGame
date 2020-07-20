@@ -13,7 +13,7 @@
 	<title>Battleship V: Battle Royale Edition</title>   
 	<link rel = "stylesheet"type = "text/css" href = "stylesheets/shipplacement.css" />   
 	<script type="text/javascript" src="javascripts/jquery.js"> </script>
-	<link rel="shortcut icon" type="image/png" href="images/favi.png"/>
+	<link rel="shortcut icon" type="image/png" href="images/logo.png"/>
 	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 
@@ -23,45 +23,41 @@
  <!-- =================================================================-->  
    <main class="main">
 	<div class="body"> 
-		<header class="header">
+		<div class="header" class="container-fluid">
+            <div class="row justify-content-between">
+                <div class="col-4"> <image src="images/logo.png" id="splash_logo">Battleship V</image> </div>
+                <div class="col-4"> <input id="fullscreen" src="images/expand.png" action="openFullscreen();" type="image"> </div>
+            </div>
+        </div>
 
-			<input id="fullscreen" src="images/expand.png" action="openFullscreen();" type="image">
-			<h2><image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">BATTLESHIP V</h2>
-				
-		</header>
-		
+		<div class="row">
+            <div class="card text-center shadow mx-auto">
+                <div class="card-body">
+                    <button class="btn btn-primary" id="randomize-button">Randomize Ships</button>
+                    <button class="btn btn-primary" id="rotate-button">Rotate Selected</button>
+                    <button class="btn btn-success btn-lg" id="startgamebutton">Start Game</button>
+                </div>
+            </div>
+            <!-- <div id="roster-sidebar"> -->
+                <!-- <h4>Place all the ships on the grid</h4> -->
+                
+                <%# Don't remove this for future possibility of placing ships on the grid %> 
+                <!-- <button class="btn primary" id="patrolboat">Patrol Boat = 2 Tiles</button></br>
+                <button class="btn primary" id="submarine">Submarine = 3 Tiles</button></br>
+                <button class="btn primary" id="destroyer">Destroyer = 3 Tiles</button></br>
+                <button class="btn primary" id="battleship">Battleship = 4 Tiles</button></br>
+                <button class="btn primary" id="carrier">Aircraft Carrier = 5 Tiles</button></br> -->
+                <!-- <button class="btn btn-primary" id="randomize-button">Randomize Ships</button> -->
+                
+                <%# <form action="/play" method="get"> %> 
+                <!-- <button class="btn" id="startgamebutton" type="submit">Start Game</button> -->
+                <%# </form> %>
+            <!-- </div> -->
+        </div>
+
 		<div class="battlefield">
             <div class="container">
-                <div class="row mb-3">
-                    <div class="card text-center shadow mx-auto">
-                        <div class="card-body">
-                            <div class="col">
-                                <button class="btn btn-primary" id="randomize-button">Randomize Ships</button>
-                            </div>
-                            <hr>
-                            <div class="col">
-                                <button class="btn btn-success btn-lg" id="startgamebutton">Start Game</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- <div id="roster-sidebar"> -->
-                        <!-- <h4>Place all the ships on the grid</h4> -->
-                        
-                        <%# Don't remove this for future possibility of placing ships on the grid %> 
-                        <!-- <button class="btn primary" id="patrolboat">Patrol Boat = 2 Tiles</button></br>
-                        <button class="btn primary" id="submarine">Submarine = 3 Tiles</button></br>
-                        <button class="btn primary" id="destroyer">Destroyer = 3 Tiles</button></br>
-                        <button class="btn primary" id="battleship">Battleship = 4 Tiles</button></br>
-                        <button class="btn primary" id="carrier">Aircraft Carrier = 5 Tiles</button></br> -->
-                        <!-- <button class="btn btn-primary" id="randomize-button">Randomize Ships</button> -->
-                        
-                        <%# <form action="/play" method="get"> %> 
-                        <!-- <button class="btn" id="startgamebutton" type="submit">Start Game</button> -->
-                        <%# </form> %>
-                    <!-- </div> -->
-                </div>
-                
-                <div class="row align-items-center justify-content-center">
+                <div class="row justify-content-center">
                     <div class="battlefield_self">
                         <table class="battlefield_self_table">
                                 <%# here the grid is auto generated %>
@@ -119,9 +115,13 @@
  <!-- =================================================================-->
  
  <footer id="footer">
-		<div id="footer-l">&copy&nbspCopyright 2018  | All rights reserved. </div>
-		<div id="footer-m">Support us on patreon!</div>
-		<div id="footer-r">... we need the money...</div>
+    <div class="container-fluid">
+        <div class="row justify-content-around">
+          <div class="col-3"> &copy&nbspCopyright 2018-2020  | All rights reserved. </div>
+          <div class="col-3"> Support us on patreon! </div>
+          <div class="col-3"> ... we need the money... </div>
+        </div>
+      </div>
 </footer>
 <!-- below we place the needed scripts to establish Webscoket, max hits etc...  -->
 <script src="javascripts/FullScreen.js" type="text/javascript"></script>

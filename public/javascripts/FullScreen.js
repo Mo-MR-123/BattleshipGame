@@ -1,50 +1,48 @@
-$(document).ready(function(){
+$(document).ready(function() {
 
-    var elem = document.documentElement;
-    
-    $('#fullscreen').click(  
-    function openFullscreen() {
-
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-        // $("#fullscreen").replaceWith("<input type=\"image\" id=\"fullscreenclose\" src=\"images/minimize.png\" action=\"closeFullscreen();\">");
-      } 
-
-      else if (elem.mozRequestFullScreen) { /* for Firefox */
-        elem.mozRequestFullScreen();
-        // $("#fullscreen").replaceWith("<input type=\"image\" id=\"fullscreenclose\" src=\"images/minimize.png\" action=\"closeFullscreen();\">");
-      } 
-      
-      else if (elem.webkitRequestFullscreen) { /* for Chrome, Safari & Opera */
-        elem.webkitRequestFullscreen();
-        // $("#fullscreen").replaceWith("<input type=\"image\" id=\"fullscreenclose\" src=\"images/minimize.png\" action=\"closeFullscreen();\">");
-      } 
-
+  var elem = document.documentElement;
+  var fullScreenButton = $('#fullscreen');
+  
+  /* View in fullscreen */
+  function openFullscreen() {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+      elem.msRequestFullscreen();
     }
+  }
 
-    );
+  /* Close fullscreen */
+  function closeFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) { /* Firefox */
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE/Edge */
+      document.msExitFullscreen();
+    }
+  }
 
-    // we had this idea but because of time we couldn't implement this part
-    // $('#fullscreenclose').click( 
-     
-    //   function closeFullscreen() {
-    //     console.log("fullscreenclose"); 
-    //     if (document.exitFullscreen) {
-    //       document.exitFullscreen();
-    //       $("#fullscreenclose").replaceWith( "<input type=\"image\" id=\"fullscreen\" src=\"images/expand.png\" action=\"openFullscreen();\">");
-          
-    //     } else if (document.mozCancelFullScreen) {
-    //       document.mozCancelFullScreen();
-    //       $("#fullscreenclose").replaceWith( "<input type=\"image\" id=\"fullscreen\" src=\"images/expand.png\" action=\"openFullscreen();\">");
-    //     } else if (document.webkitExitFullscreen) {
-    //       document.webkitExitFullscreen();
-    //       $("#fullscreenclose").replaceWith( "<input type=\"image\" id=\"fullscreen\" src=\"images/expand.png\" action=\"openFullscreen();\">");
-    //     } else if (document.msExitFullscreen) {
-    //       document.msExitFullscreen();
-    //       $("#fullscreenclose").replaceWith( "<input type=\"image\" id=\"fullscreen\" src=\"images/expand.png\" action=\"openFullscreen();\">");
-    //     }
-    //   }
-    
-    // );
-    
-    });
+  // event handler for disabling fullscreen
+  function disableFullScreen() {
+    closeFullscreen();
+    fullScreenButton.off();
+    fullScreenButton.on("click", enableFullScreen);
+  }
+  
+  // event handler for opening fullscreen
+  function enableFullScreen() {
+    openFullscreen();
+    fullScreenButton.off();
+    fullScreenButton.on("click", disableFullScreen)
+  }
+
+  fullScreenButton.on("click", enableFullScreen)
+
+});

@@ -7,7 +7,6 @@ const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
 const Game = require("./game");
 const WebSocket = require("ws");
-const _ = require("lodash");
 
 const port = process.argv[2] || 3000;
 const hostName = 'localhost';
@@ -62,8 +61,10 @@ setInterval(function() {
 }, 50000);
 
 /**
- * Close sockets of players in a game that has been won by a player OR when game is aborted.
- * NOTE: THIS ALSO SETS THE finalStatus FIELD OF THE GAME OBJECT TO true SO THAT IT GETS GARBAGE COLLECTED
+ * @description Close sockets of players in a game that has been won by a player OR when game is aborted.
+ * 
+ *              NOTE: THIS ALSO SETS THE finalStatus FIELD OF THE GAME OBJECT TO true 
+ *                    SO THAT THE PLAYERS CLIENT SOCKETS OF THE GAME OBJECT ARE GARBAGE COLLECTED
  * @param {Game} gameObj - game object to close the sockets of
  */
 const endGame = function (gameObj) {
@@ -84,8 +85,8 @@ const endGame = function (gameObj) {
         console.log(`Error closing socket of Player B in game with ID ${gameObj.id}:`, e);
     }
 
-    // set finalStatus to true as client socket is aborted to make sure 
-    // the corresponding game object is garbage collected
+    // set finalStatus to true as client sockets are aborted to make sure 
+    // that the client sockets are are garbage collected
     gameObj.finalStatus = true;
 }
 
@@ -142,8 +143,7 @@ wss.on("connection", function connection(ws) {
             // and when player A grid is still not set
             if (isPlayerA 
                 && oMsg.type === messages.T_GRID_PLAYER_A 
-                && !gameObj.playerAGrid 
-                && !gameObj.isGameStarted())
+                && !gameObj.playerAGrid)
             {
                 if (hasData) {
                     gameObj.setPlayerAGrid(oMsg.data);
@@ -151,7 +151,7 @@ wss.on("connection", function connection(ws) {
                     // game can be started when both grids are present in the game obj.
                     if (gameObj.isGameStarted()) {
                         // send whos turn it is to start shooting
-                        msgWhoCanStart = _.cloneDeep(messages.PLAYER_TURN);
+                        msgWhoCanStart = Object.assign({}, messages.PLAYER_TURN);
                         msgWhoCanStart.data = gameObj.getTurn();
 
                         gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
@@ -164,11 +164,9 @@ wss.on("connection", function connection(ws) {
 
             // handle grid initialization of player B if the game is still not started 
             // and when player B grid is still not set
-            // TODO: check whether !gameObj.isGameStarted() is needed here and whether !gameObj.playerBGrid is enough 
             if (!isPlayerA 
                 && oMsg.type === messages.T_GRID_PLAYER_B 
-                && !gameObj.playerBGrid 
-                && !gameObj.isGameStarted()) 
+                && !gameObj.playerBGrid) 
             {
                     
                 if (hasData) {
@@ -177,7 +175,7 @@ wss.on("connection", function connection(ws) {
                     // game can be started when both grids are present in the game obj.
                     if (gameObj.isGameStarted()) {
                         // send whos turn it is to start shooting
-                        msgWhoCanStart = _.cloneDeep(messages.PLAYER_TURN);
+                        msgWhoCanStart = Object.assign({}, messages.PLAYER_TURN);
                         msgWhoCanStart.data = gameObj.getTurn();
 
                         gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
@@ -188,7 +186,7 @@ wss.on("connection", function connection(ws) {
                 }
             }
 
-            // Here goes main flow of game logic: 
+            // Here game state and game logic is handled: 
             // check if current game object has 2 players, whether the game is started and can be played
             // AND check that the game is not won by a player
             if (gameObj.hasTwoConnectedPlayers() 
@@ -207,7 +205,7 @@ wss.on("connection", function connection(ws) {
                         if (hasData) {
                             const tileShotMsg = gameObj.tileFired(oMsg.data, true);
                             
-                            // check if tileShotMsg is not null (so there is a message)
+                            // check if tileShotMsg is not null (means that coordinates are handled correctly without any errors)
                             if (tileShotMsg) {
                                 // if player A missed, change turn to player B
                                 if (tileShotMsg.type === messages.T_TILE_MISS) {
@@ -233,7 +231,7 @@ wss.on("connection", function connection(ws) {
                         if (hasData) {
                             const tileShotMsg = gameObj.tileFired(oMsg.data, false);
 
-                            // TODO: check if tileShotMsg can be null and whether this check is even needed
+                            // check if tileShotMsg is not null (means that coordinates are handled correctly without any errors)
                             if (tileShotMsg) {
                                 // if player B missed, change turn to player A
                                 if (tileShotMsg.type === messages.T_TILE_MISS) {
@@ -257,12 +255,12 @@ wss.on("connection", function connection(ws) {
 
             // Check if a winner has been announced, if so then do following:
             // 1. Send who won the game to both players.
-            // 2. Check after some timeout if both players are not closed,
+            // 2. Check after some timeout if both players sockets are not closed,
             //    then force both sockets to close by calling endGame() function.
             // 3. Increment games complete by 1.
             if (gameObj.gameWonBy && !gameObj.finalStatus) {
                 // setup the message of the player that won the game
-                let whoWonMessage = _.cloneDeep(messages.GAME_WON_BY);
+                let whoWonMessage = Object.assign({}, messages.GAME_WON_BY);
                 whoWonMessage.data = gameObj.gameWonBy;
                 
                 // step 1:
@@ -278,9 +276,9 @@ wss.on("connection", function connection(ws) {
                          || gameObj.playerB.readyState !== WebSocket.CLOSED
                     ) {
                         console.log(`
-                        FORCE CLOSING SOCKETS OF GAME ${gameObj.id}.
-                        STATE SOCKET PLAYER A: ${gameObj.playerA.readyState}
-                        STATE SOCKET PLAYER B: ${gameObj.playerB.readyState}
+                            FORCE CLOSING SOCKETS OF GAME ${gameObj.id}.
+                            STATE SOCKET PLAYER A: ${gameObj.playerA.readyState}
+                            STATE SOCKET PLAYER B: ${gameObj.playerB.readyState}
                         `);
 
                         endGame(gameObj);
@@ -297,14 +295,14 @@ wss.on("connection", function connection(ws) {
             }
         } catch (e) {
             console.log(`
-            Error occured at handling incoming messages from client socket
-            THE ERROR: ${e}
-            DEBUG INFO:
-            GAME OBJECT: ${websockets[con.id]}, CLIENT SOCKET ID: ${con.id}
-            GAME OBJECT PLAYER A SOCKET: ${websockets[con.id] ? websockets[con.id].playerA : null}, GAME OBJECT PLAYER B SOCKET: ${websockets[con.id] ? websockets[con.id].playerB : null}
-            POSSIBLE CAUSE: game object is accessed after garbage collector deleted it which caused this error to occur
-            It is also possible that game was won and because both player sockets are set to null 
-            and socket is not properly closed by client, the client can send messages and when gameObj.playerA is checked this error is thrown.
+                Error occured at handling incoming messages from client socket
+                THE ERROR: ${e}
+                DEBUG INFO:
+                GAME OBJECT: ${websockets[con.id]}, CLIENT SOCKET ID: ${con.id}
+                GAME OBJECT PLAYER A SOCKET: ${websockets[con.id] ? websockets[con.id].playerA : null}, GAME OBJECT PLAYER B SOCKET: ${websockets[con.id] ? websockets[con.id].playerB : null}
+                POSSIBLE CAUSE: game object is accessed after garbage collector deleted it which caused this error to occur
+                It is also possible that game was won and because both player sockets are set to null 
+                and socket is not properly closed by client, the client can send messages and when gameObj.playerA is checked this error is thrown.
             `);
         }
     });

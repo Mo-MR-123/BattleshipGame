@@ -63,7 +63,7 @@ ShipsGenerator.prototype.placeShipsRandomly = function() {
         var currShipLocations;
         do {
             currShipLocations = this.generateShipLocations(currShip);
-        } while(this.isOverlapping(currShipLocations));
+        } while(this.isOverlapping(currShipLocations) || this.hasAdjecentShips(currShip));
 
         // assign grid location on the grid with proper id of the current ship
         var c, currShipCoordinate;
@@ -98,6 +98,12 @@ ShipsGenerator.prototype.generateShipLocations = function(ship) {
         rowCoord = Math.floor(Math.random() * (this.gridRows - shipSize + 1));
         colCoord =  Math.floor(Math.random() * this.gridCols);
     }
+
+    // store start tile x-coordinate and y-coordinate in the ship object.
+    // store whether ships is placed horizontally or vertically in ship object. 
+    direction === Setup.HORIZONTAL_DIRECTION ? ship.horizontal = true : ship.horizontal = false;
+    ship.x = rowCoord;
+    ship.y = colCoord;
 
     var currShipRandomLocations = [];
     for (let i = 0; i < shipSize; i++) {
@@ -135,6 +141,32 @@ ShipsGenerator.prototype.isOverlapping = function(shipLocations) {
     }
 
     // if loop terminated without returning true means that there were no collisions
+    return false;
+}
+
+/**
+ * @description Checks whether there are any adjecent ships near a given ship.
+ * @param {Object} ship - The ship of which to check whether there are any other adjecent ships next it
+ * @returns true if there are adjecent ships are found, otherwise false. 
+ */
+ShipsGenerator.prototype.hasAdjecentShips = function (ship) {
+    var currShipIsHorizontal = ship.horizontal;
+    var r1 = ship.x - 1; 
+    var c1 = ship.y - 1;
+    var r2 = currShipIsHorizontal ? ship.x + 1 : ship.x + ship.size;
+    var c2 = currShipIsHorizontal ? ship.y + ship.size : ship.y + 1;
+
+    var c, r;
+    for(c = c1; c <= c2; c++) {
+        if(c < 0 || c > this.gridCols - 1) continue;
+        for(r = r1; r <= r2; r++) {
+            if(r < 0 || r > this.gridRows - 1) continue;
+            if(this.grid[r][c] > 0) {
+                return true;
+            }
+        }
+    }
+    
     return false;
 }
 

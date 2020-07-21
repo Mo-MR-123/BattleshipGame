@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/4d6f5079/BattleshipGame.svg)](https://travis-ci.org/4d6f5079/BattleshipGame)
+
 # BattleshipGame
 
 ---

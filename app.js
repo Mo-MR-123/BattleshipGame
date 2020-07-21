@@ -7,7 +7,7 @@ const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
 const Game = require("./game");
 const WebSocket = require("ws");
-``l`
+
 const port = process.argv[2] || 3000;
 const hostName = 'localhost';
 const app = express();
@@ -357,4 +357,8 @@ app.use((error, req, res, next) => {
 
 server.listen(port, hostName, () => {
     console.log(`Server running at ${hostName}:${port}`);
+
 });
+
+// exporting server to be able to test it
+module.exports = server;

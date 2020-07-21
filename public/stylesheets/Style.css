@@ -102,3 +102,15 @@ button:hover{
 #fullscreen:hover {
   opacity: 50%;
 }
+
+#homepage, #supportlink {
+	color: rgb(151, 2, 2);
+}
+
+#homepage:hover {
+	color: black;
+}
+
+#supportlink:hover {
+	color: white;
+}

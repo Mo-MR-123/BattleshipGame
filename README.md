@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/4d6f5079/BattleshipGame.svg)](https://travis-ci.org/4d6f5079/BattleshipGame)
+[![Build Status](https://travis-ci.org/4d6f5079/BattleshipGame.svg?branch=master)](https://travis-ci.org/4d6f5079/BattleshipGame)
 
 # BattleshipGame
 

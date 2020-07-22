@@ -355,10 +355,9 @@ app.use((error, req, res, next) => {
     res.render('error', { error: error.message })
 })
 
-server.listen(port, hostName, () => {
+const listeningServer = server.listen(port, hostName, () => {
     console.log(`Server running at ${hostName}:${port}`);
-
 });
 
 // exporting server to be able to test it
-module.exports = server;
+module.exports = listeningServer;

@@ -1,47 +1,60 @@
 var expect  = require('chai').expect;
 var request = require('request');
 
-describe('Tests', function() {
-    let server;
+
+describe('Tests', () => {
+    let server = null;
     
-    this.beforeAll(function () {
-        // delete require.cache[require.resolve('../app')];
+    beforeEach( () => {
         server = require('../app');
     });
-
-    this.afterAll(function (done) {
-        server.close(done);
+    
+    afterEach( (done) => {
+        new Promise((resolve, reject) => {
+            server.close((err) => {
+                if (err) {
+                    reject(err);
+                };
+                resolve();
+            })
+        })
+        .then(() => {
+            // delete the cached server object to create a fresh one for next test
+            delete require.cache[require.resolve('../app')];
+            done();
+        })
+        .catch((err) => console.log(err));
     });
     
-    it('splash page', function(done) {
+    it('splash page', (done) => {
         request('http://localhost:3000/' , function(error, response, body) {
             expect(response.statusCode).to.equal(200);
             done();
         });
     });
 
-    it('place ships', function(done){
+    it('place ships', (done) => {
         request('http://localhost:3000/place-ships', function(error, response, body) {
             expect(response.statusCode).to.equal(200);
             done();
         });
     });
     
-    it('play page', function(done){
+    it('play page', (done) => {
         request('http://localhost:3000/play', function(error, response, body) {
             expect(response.statusCode).to.equal(200);
             done();
         });
     });
 
-    it('contact page', function(done){
+    it('contact page', (done) => {
         request('http://localhost:3000/contact.html', function(error, response, body) {
             expect(response.statusCode).to.equal(200);
             done();
         });
     });
 
-    it('non existent page', function(done){
+    it('non existent page', (done) => {
         request('http://localhost:3000/asdasd', function(error, response, body) {
             expect(response.statusCode).to.equal(404);
             done();

@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/4d6f5079/BattleshipGame.svg?branch=master)](https://travis-ci.org/4d6f5079/BattleshipGame)
 
+[![Known Vulnerabilities](https://snyk.io/test/github/4d6f5079/BattleshipGame/badge.svg?targetFile=package.json)](https://snyk.io/test/github/4d6f5079/BattleshipGame?targetFile=package.json)
+
 # BattleshipGame
 
 ---

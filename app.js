@@ -355,7 +355,8 @@ app.use((error, req, res, next) => {
     res.render('error', { error: error.message })
 })
 
-if(!module.parent){
+// making sure only 1 instance of the server is listening
+if (!module.parent) {
     server.listen(port, hostName, () => {
         console.log(`Server running at ${hostName}:${port}`);
     });

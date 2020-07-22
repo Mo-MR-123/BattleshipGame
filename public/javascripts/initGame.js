@@ -41,6 +41,106 @@ function addDisabledToTile(x, y) {
     $('td'+ opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']").prop('disabled', true);
 }
 
+/**
+ * @description Assign a player type to current player and send grid of current player to server.   
+ * @param {Game} game - The game object used to assign player type.
+ * @param {String} data - The player type to assign to the game (must be either "A" or "B"). 
+ */
+function handlePlayerAssignment(game, data) {
+    game.setPlayerType(data);
+            
+    // Show that this player is assigned as player A
+    // And send grid of this player afterwards
+    if (game.getPlayerType() === "A") {
+        showNotificationMsg(Status.playerAWait);
+        var msgSendGridPlayerA = Messages.GRID_PLAYER_A;
+        msgSendGridPlayerA.data = game.grid;
+        game.sendMessage(msgSendGridPlayerA);
+    } else if (game.getPlayerType() === "B") {
+        var msgSendGridPlayerB = Messages.GRID_PLAYER_B;
+        msgSendGridPlayerB.data = game.grid;
+        game.sendMessage(msgSendGridPlayerB);
+    }
+}
+
+/**
+ * @description Shows which player is allowed to shoot first when the game starts.
+ * @param {Game} game - game object to check what type current player is assigned to.
+ * @param {String} data - The player to assign the turn to.
+ */
+function handlePlayerTurn(game, data) {
+    var playerTurn = data;
+    if (game.getPlayerType() === playerTurn) {
+        enableTilesOpponent(game);
+        showNotificationMsg(Status.currentPlayerTurn);
+    } else {
+        showNotificationMsg(Status.opponentTurn);
+    }
+}
+
+/**
+ * @description Increase score, disable the hit tile so that no unnecessary tile coordinates are sent and show notification.
+ * @param {Game} game - Game object to increase score and check player type.
+ * @param {ShipsRenderer} shipsRenderer - ShipsRenderer object to render updated score and hit tile.
+ * @param {Object} dataObj - The data object that should contain coordinates of the hit tile.
+ */
+function handlePlayerHit(game, shipsRenderer, dataObj) {
+    var coordinates = dataObj.coordinates;
+    if (game.getPlayerType() === dataObj.player) {
+        game.increaseSelfScore();
+        shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
+        shipsRenderer.updateHitsSelf(game.amountHits);
+        addDisabledToTile(coordinates.x, coordinates.y);
+        showNotificationMsg(Status.currentPlayerShipHit);
+    } else {
+        game.increaseOpponentScore();
+        shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
+        shipsRenderer.updateHitsOpponent(game.opponentHits);
+        showNotificationMsg(Status.opponentShipHit);
+    }
+}
+
+/**
+ * @description Disable/enable opponent grid tile based on who missed and show notification.
+ * @param {Game} game - Game object to check what type current player has.
+ * @param {ShipsRenderer} shipsRenderer - ShipsRenderer object to render missed tile.
+ * @param {Object} dataObj - The data object that should contain coordinates of the missed tile.
+ */
+function handlePlayerMiss(game, shipsRenderer, dataObj) {
+    var coordinates = dataObj.coordinates;
+    if (game.getPlayerType() === dataObj.player) {
+        shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, true);
+        addDisabledToTile(coordinates.x, coordinates.y);
+        disableTilesOpponent();
+        showNotificationMsg(Status.currentPlayerMiss);
+    } else {
+        shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, false);
+        enableTilesOpponent(game);
+        showNotificationMsg(Status.opponentMiss);
+    }
+}
+
+/**
+ * @description Disable hit tile, render hit tile and show notification.
+ * @param {Game} game - Game object to increase score and check player type.
+ * @param {ShipsRenderer} shipsRenderer - ShipsRenderer object to render hit tile.
+ * @param {Object} dataObj - The data object that should contain coordinates of the hit tile.
+ */
+function handlePlayerSunkShip(game, shipsRenderer, dataObj) {
+    var coordinates = dataObj.coordinates;
+    if (game.getPlayerType() === dataObj.player) {
+        game.increaseSelfScore();
+        shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
+        shipsRenderer.updateHitsSelf(game.amountHits);
+        addDisabledToTile(coordinates.x, coordinates.y);
+        showNotificationMsg(Status.currentPlayerShipSink);
+    } else {
+        game.increaseOpponentScore();
+        shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
+        shipsRenderer.updateHitsOpponent(game.opponentHits);
+        showNotificationMsg(Status.opponentShipSink);
+    }
+}
 
 //////////////////////////////////// START SOCKET AND GAME ////////////////////////////////////////////////
 (function setup() {    
@@ -66,33 +166,14 @@ function addDisabledToTile(x, y) {
         // 1- Assign the player to either "A" or "B"
         // 2- Setup expected message to send current player grid to server
         if (incomingMsg.type === Messages.T_PLAYER_TYPE) {
-            game.setPlayerType(incomingMsg.data);
-            
-            // Show that this player is assigned as player A
-            // And send grid of this player afterwards
-            if (game.getPlayerType() === "A") {
-                showNotificationMsg(Status.playerAWait);
-                var msgSendGridPlayerA = Messages.GRID_PLAYER_A;
-                msgSendGridPlayerA.data = game.grid;
-                game.sendMessage(msgSendGridPlayerA);
-            } else if (game.getPlayerType() === "B") {
-                var msgSendGridPlayerB = Messages.GRID_PLAYER_B;
-                msgSendGridPlayerB.data = game.grid;
-                game.sendMessage(msgSendGridPlayerB);
-            }
+            handlePlayerAssignment(game, incomingMsg.data);
         }
 
         // Notify whether current player or opponent can start shooting and enable tiles event listeners of player the can start shooting.
         // NOTE: this happens only at the start of the game!
         // when second player joins, the game starts so add event listeners on opponent grid
         if (incomingMsg.type === Messages.T_PLAYER_TURN) {
-            var playerTurn = incomingMsg.data;
-            if (game.getPlayerType() === playerTurn) {
-                enableTilesOpponent(game);
-                showNotificationMsg(Status.currentPlayerTurn);
-            } else {
-                showNotificationMsg(Status.opponentTurn);
-            }
+            handlePlayerTurn(game, incomingMsg.data);
         }
 
         // If current player hit a ship:
@@ -107,20 +188,7 @@ function addDisabledToTile(x, y) {
         //      3- Show the updated hits of opponent player
         //      4- Show notification that opponent has hit a ship.
         if (incomingMsg.type === Messages.T_TILE_HIT) {
-            var dataObj = incomingMsg.data;
-            var coordinates = dataObj.coordinates;
-            if (game.getPlayerType() === dataObj.player) {
-                game.increaseSelfScore();
-                shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
-                shipsRenderer.updateHitsSelf(game.amountHits);
-                addDisabledToTile(coordinates.x, coordinates.y);
-                showNotificationMsg(Status.currentPlayerShipHit);
-            } else {
-                game.increaseOpponentScore();
-                shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
-                shipsRenderer.updateHitsOpponent(game.opponentHits);
-                showNotificationMsg(Status.opponentShipHit);
-            }
+            handlePlayerHit(game, shipsRenderer, incomingMsg.data);
         }
 
         // If current player missed:
@@ -133,18 +201,7 @@ function addDisabledToTile(x, y) {
         //      2- enable opponent tile selection, as it is current player turn.
         //      3- Show notification that opponent has missed.
         if (incomingMsg.type === Messages.T_TILE_MISS) {
-            var dataObj = incomingMsg.data;
-            var coordinates = dataObj.coordinates;
-            if (game.getPlayerType() === dataObj.player) {
-                shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, true);
-                addDisabledToTile(coordinates.x, coordinates.y);
-                disableTilesOpponent();
-                showNotificationMsg(Status.currentPlayerMiss);
-            } else {
-                shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, false);
-                enableTilesOpponent(game);
-                showNotificationMsg(Status.opponentMiss);
-            }
+            handlePlayerMiss(game, shipsRenderer, incomingMsg.data);
         }
 
         // If current player hit and sank a ship:
@@ -159,20 +216,7 @@ function addDisabledToTile(x, y) {
         //      3- Show the updated hits of opponent player
         //      4- Show notification that opponent has missed.
         if (incomingMsg.type === Messages.T_TILE_HIT_SINK) {
-            var dataObj = incomingMsg.data;
-            var coordinates = dataObj.coordinates;
-            if (game.getPlayerType() === dataObj.player) {
-                game.increaseSelfScore();
-                shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
-                shipsRenderer.updateHitsSelf(game.amountHits);
-                addDisabledToTile(coordinates.x, coordinates.y);
-                showNotificationMsg(Status.currentPlayerShipSink);
-            } else {
-                game.increaseOpponentScore();
-                shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
-                shipsRenderer.updateHitsOpponent(game.opponentHits);
-                showNotificationMsg(Status.opponentShipSink);
-            }
+            handlePlayerSunkShip(game, shipsRenderer, incomingMsg.data);
         }
 
         // 1- Set who won the game 

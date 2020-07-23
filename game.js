@@ -306,18 +306,17 @@ game.prototype.resetGame = function() {
 game.prototype.setStatus = function (w) {
     
     if (game.prototype.isValidState(w) && game.prototype.isValidTransition(this.gameState, w)) {
-        const isResetGame = (this.gameState === "1 JOINED" && w === "0 JOINED");
         
-        this.gameState = w;
+        // if first player left game and that player is only one in that game
+        // reset the game so that new players get connect to this game and start over again
+        if (this.gameState === "1 JOINED" && w === "0 JOINED") {
+            this.resetGame();
+        }
 
         // if game is transitioning to winning state, assign the winner of the game
         (w === "A") ? this.gameWonBy = "A" : ((w === "B") ? this.gameWonBy = "B" : {});
-
-        // if first player left game and that player is only one in that game
-        // reset the game so that new players get connect to this game and start over again
-        if (isResetGame) {
-            this.resetGame();
-        }
+        
+        this.gameState = w;
 
         console.log("[STATUS] %s", this.gameState);
     }
@@ -379,12 +378,10 @@ game.prototype.addPlayer = function (player) {
 
     if (this.playerA == null) {
         this.playerA = player;
-        console.log("You are assigned as Player A");
         return "A";
     }
     else {
         this.playerB = player;
-        console.log("You are assigned as Player B");
         return "B";
     }
 };

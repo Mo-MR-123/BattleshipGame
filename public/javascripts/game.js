@@ -25,10 +25,6 @@ function Game(socket) {
     this.whoWon = null
 }
 
-/**
- * @description Set the socket of current player in this game to be able to send messages to server.
- * @param {WebSocket} socket - The socket of current player
- */
 Game.prototype.setSocket = function (socket) {
     this.socket = socket;
 }

@@ -133,12 +133,12 @@ function handlePlayerSunkShip(game, shipsRenderer, dataObj) {
         shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
         shipsRenderer.updateHitsSelf(game.amountHits);
         addDisabledToTile(coordinates.x, coordinates.y);
-        showNotificationMsg(Status.currentPlayerShipSink);
+        showNotificationMsg(Status.currentPlayerShipSink.replace("%s", dataObj.ship));
     } else {
         game.increaseOpponentScore();
         shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
         shipsRenderer.updateHitsOpponent(game.opponentHits);
-        showNotificationMsg(Status.opponentShipSink);
+        showNotificationMsg(Status.opponentShipSink.replace("%s", dataObj.ship));
     }
 }
 

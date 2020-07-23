@@ -1,88 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <link rel="shortcut icon" type="image/png" href="images/logo.png"/>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
         <title>Battleship V: Battle Royale Edition</title>
+        <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
         <link rel = "stylesheet"type = "text/css" href = "stylesheets/splash.css" />   
-        <link rel="shortcut icon" type="image/png" href="images/favi.png"/>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="javascripts/jquery.js"></script>
     </head>
 
     <body>
         <main class="main">
             <div class="body">
-                <nav id="nav">
-                    <h2>
-                        <image src="images/logo.png" id="splash_logo">Battleship V</image>
-                        <a href="instructions" id="how-to-button">How-To-Play Guide</a>
-                    </h2>
-                </nav>
-
-                <div id="content">
-                <div id="left">
-                    <div id="top">
-                        <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Exited Games: </h4>
-                        <h4 id="peopleonline">
-                            <%= exitedGames %>
-                            Exited
-                            <%if (gamesInitialized != 1) { %>
-                                Games
-                            <% } else { %>
-                                Game
-                            <% } %>
-                        </h4>
-                        <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Ongoing games: </h4>
-                        <h4 id="peopleplaying">
-                          <%= gamesInitialized %> 
-                          <%if (gamesInitialized != 1) { %>
-                            Games
-                          <% } else { %>
-                            Game
-                          <% } %>
-                          initialized 
-                          
-                        </h4>
-                        <h4 style="text-decoration:underline; font-weight: bold; color: rgb(83, 0, 0);">Games completed: </h4>
-                        <h4 id="completedgames">
-                          <%= gamesCompleted %>
-                          Completed
-                        </h4>
-
-                    </div>
-                    <div id="bottom">
-                            <p>BEST GAME of the year!</p>
-                            <i> -according to us...</i>
-                            <p>FREE to play!</p>
-                            <i> - for the first 2 battles only...</i>
-                            <p>Made by experts!</p>
-                            <i> - self proclaimed experts with only a few months of experience...</i>
+                <div class="header" class="container-fluid">
+                    <div class="row justify-content-between">
+                        <div class="col-4">
+                            <image src="images/logo.png" id="splash_logo">
+                                <a href="/" id="homepage">Battleship V</a>
+                            </image> 
+                        </div>
+                        <div class="col-2"> 
+                            <a href="contact.html" id="guidelink">How-To-Play Guide</a> 
+                        </div>
                     </div>
                 </div>
-                <div id="middle">
+
+                <!-- =================================================================-->
+
+                <div id="content" class="container-fluid">
+                    <div class="row h-100">
+                        <div class="col-2">
+                            <div id="stats-top" class="row">
+                                <h4 id="counter-text">
+                                    Exited Games: <span id="counter"><%= exitedGames %></span> 
+                                </h4>
+                                <h4 id="counter-text">
+                                    Ongoing games: <span id="counter"><%= gamesInitialized %></span>
+                                </h4>
+                                <h4 id="counter-text">
+                                    Games completed: <span id="counter"><%= gamesCompleted %>
+                                </h4>
+                            </div>
+
+                            <div id="stats-bottom" class="row">
+                                <div class="row w-100"><b>BEST GAME OF THE YEAR!</b></div>
+                                <div class="row w-100"><i> - According to us...</i></div>
+                                <div class="row w-100"><b>FREE TO PLAY!</b></div>
+                                <div class="row w-100"><i> - For the first 2 battles only...</i></div>
+                                <div class="row w-100"><b>DEVELOPED BY EXPERTS!</b></div>
+                                <div class="row w-100"><i> - Self proclaimed experts with only a few months of experience...</i></div>
+                            </div>
+                        </div>
+
+                        <!-- =================================================================-->
                         
-                            <h1>BATTLESHIP V: BATTLE ROYALE EDITION </h1>
-                            <h3>supports 1-v-1 only</h3></br>
-                            <form action="/place-ships" method="get">
-                                <button type="submit">PLAY</button>
-                            </form>
+                        <div id="gamestart" class="col-10">
+                            <div class="row justify-content-center">
+                                <div id="gamestart-title" class="row w-100"> 
+                                    <div class="col">
+                                        <h1>BATTLESHIP V: BATTLE ROYALE EDITION </h1>
+                                    </div>
+                                </div>
+                                <div id="g-m" class="row"> 
+                                    <div class="col">
+                                        <h2> ~ supports 1-v-1 only ~ </h2>
+                                    </div>
+                                </div>
+                                <div id="gamestart-button" class="row w-100">
+                                    <div class="col">
+                                        <form action="/place-ships" method="get"><button type="submit">Play</button></form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
                 </div>
-
-                 
-                <div id="right">   
-                    <div id="bottom">
-                             <p>right</p>
-                    </div>
-                </div>
-                </div>         
             </div>
         </main>
+
+         <!-- =================================================================-->
+
         <footer id="footer">
-                <div id="footer-l">&copy&nbspCopyright 2018  | All rights reserved. </div>
-                <div id="footer-m">Support us on patreon!</div>
-                <div id="footer-r">... we need the money...</div>
+            <div class="container-fluid">
+                <div class="row justify-content-around">
+                  <div class="col-3"> &copy&nbspCopyright 2018-2020  | All rights reserved. </div>
+                  <div class="col-3"><a href="https://www.paypal.me/kef1n" id="supportlink">Support us on patreon!</a> </div>
+                  <div class="col-3"> ... we need the money... </div>
+                </div>
+              </div>
         </footer>
     </body>
 </html>

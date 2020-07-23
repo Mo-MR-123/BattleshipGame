@@ -59,7 +59,7 @@ function handlePlayerAssignment(game, data) {
     } else if (game.getPlayerType() === "B") {
         var msgSendGridPlayerB = Messages.GRID_PLAYER_B;
         msgSendGridPlayerB.data = game.grid;
-        game.sendMessage(msgSendGridPlayerB);
+        game.sendMessage(msgSendGridPlayerB, 3);
     }
 }
 
@@ -74,7 +74,7 @@ function handlePlayerTurn(game, data) {
         enableTilesOpponent(game);
         showNotificationMsg(Status.currentPlayerTurn);
     } else {
-        showNotificationMsg(Status.opponentTurn);
+        showNotificationMsg(Status.opponentTurn, 3);
     }
 }
 
@@ -96,7 +96,7 @@ function handlePlayerHit(game, shipsRenderer, dataObj) {
         game.increaseOpponentScore();
         shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
         shipsRenderer.updateHitsOpponent(game.opponentHits);
-        showNotificationMsg(Status.opponentShipHit);
+        showNotificationMsg(Status.opponentShipHit, 3);
     }
 }
 
@@ -112,7 +112,7 @@ function handlePlayerMiss(game, shipsRenderer, dataObj) {
         shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, true);
         addDisabledToTile(coordinates.x, coordinates.y);
         disableTilesOpponent();
-        showNotificationMsg(Status.currentPlayerMiss);
+        showNotificationMsg(Status.currentPlayerMiss, 3);
     } else {
         shipsRenderer.renderTileMiss(coordinates.x, coordinates.y, false);
         enableTilesOpponent(game);
@@ -138,7 +138,7 @@ function handlePlayerSunkShip(game, shipsRenderer, dataObj) {
         game.increaseOpponentScore();
         shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
         shipsRenderer.updateHitsOpponent(game.opponentHits);
-        showNotificationMsg(Status.opponentShipSink.replace("%s", dataObj.ship));
+        showNotificationMsg(Status.opponentShipSink.replace("%s", dataObj.ship), 3);
     }
 }
 

@@ -2,6 +2,7 @@
 var redAlertBarClass = 'alert alert-danger';
 var successGreenAlertBarClass = 'alert alert-success';
 var warningYellowAlertBarClass = 'alert alert-warning';
+var greyAlertBarClass = 'alert alert-secondary';
 var defaultAlertBarClass = 'alert alert-primary';
 var notificationDivId = '#notification';
 
@@ -13,6 +14,7 @@ var notificationDivId = '#notification';
  *                              0: RED (alert)
  *                              1: GREEN (success)
  *                              2: YELLOW (warning)
+ *                              3: GREY
  *                              default color: BLUE
  *                             }
  */
@@ -28,11 +30,12 @@ function showNotificationMsg(msg, typeAlert=null) {
         case 2:
             $(notificationDivId).addClass(warningYellowAlertBarClass);
             break;
+        case 3:
+            $(notificationDivId).addClass(greyAlertBarClass);
+            break;
         default:
             $(notificationDivId).addClass(defaultAlertBarClass);
             break;
     }
-    msgPrefix = "<b>Notification: </b>"
-    $(notificationDivId).html(msgPrefix + msg)
-    
+    $(notificationDivId).html("<b>Notification: </b>" + msg);
 }

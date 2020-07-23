@@ -35,9 +35,9 @@ describe('Pages Tests', () => {
         });
     });
 
-    it('contact page', (done) => {
+    it('instructions page', (done) => {
         chai.request(server)
-        .get('/contact.html')
+        .get('/instructions')
         .end((err, res) => {
             expect(res.statusCode).to.equal(200);
             done();

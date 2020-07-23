@@ -37,6 +37,9 @@ app.get("/place-ships", indexRouter);
 // transporting the user to the game page when the "play" button has been clicked
 app.get("/play", indexRouter);
 
+// instruction page
+app.get("/instructions", indexRouter);
+
 // creating the server to be able to run/use express
 const server = http.createServer(app);
 

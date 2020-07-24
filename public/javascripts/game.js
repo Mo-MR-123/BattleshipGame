@@ -61,7 +61,7 @@ Game.prototype.increaseOpponentScore = function () {
 /**
  * @description 
  * Get the grid from localstorage if grid exists and render the ships on the grid of current player.
- * IF grid is not valid, call force exit function to force end the game.
+ * IF grid is not valid, the server would eventually send an error that calls the forceEnd method which causes the game to end.
  */
 Game.prototype.initAndRenderGrid = function() {
     try {
@@ -70,12 +70,9 @@ Game.prototype.initAndRenderGrid = function() {
         // only render grid if grid is valid grid.
         if (this.isValidGrid()) {
             this.shipsRenderer.renderSelfGrid(this.grid);
-        } else {
-            throw 'invalid grid';
         }
     } catch(e) {
-        this.forceExit();
-        // {};
+        {};
     }
 };
 
@@ -275,20 +272,9 @@ Game.prototype.handleWhoWon= function(data) {
 
 /**
  * Force end game if error occured or if error has been send by server.
- * Only if websocket is OPEN (connection is established), the socket can be closed.
- * Otherwise errors occur if we tried to close the socket while it is busy establishing connection.
+ * NOTE: This function must only be called when server sends an error message.
  */
 Game.prototype.forceExit = function() {
     this.forceExited = true;
-    var currSocket = this.socket;
-
-    // Check after every interval if socket can be closed. If yes, then close it and end the interval loop.
-    var closingSocketInterval = setInterval(function() {
-        if (currSocket.readyState === 1) {
-            currSocket.close();
-            clearInterval(closingSocketInterval);
-        } else if (currSocket.readyState === 2 || currSocket.readyState === 3) {
-            clearInterval(closingSocketInterval);
-        }
-    }, 1000);
+    this.socket.close();
 }

@@ -9,7 +9,7 @@ var Status = {
                 "<a href='/place-ships'>here</a> to choose another grid.",
     "aborted": "The opponent is no longer available, game aborted. Click <a href='/play'>here</a> to play again with the same grid. Click " + 
                "<a href='/place-ships'>here</a> to choose another grid.",
-    "generalErrorMsg": "Unexpected error occured! If this error keeps popping up then please contact us about this issue. " +
+    "generalErrorMsg": "Unexpected error occured! If this error keeps showing up then please contact us about this issue. " +
                "Start a new game by clicking <a href='/place-ships'>here</a>. We are sorry for the inconvenience.",
     "currentPlayerShipHit": "You hit a ship! It is still your turn to fire.",
     "opponentShipHit": "The opponent has hit one of your ships! It is the opponents' turn to fire.",

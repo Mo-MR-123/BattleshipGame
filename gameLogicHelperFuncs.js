@@ -33,6 +33,22 @@ function handleEndGame(gameObj) {
 }
 
 module.exports = {
+
+    /**
+     * Sends ERROR message to client, so that client is able to force game exit and close sockets.
+     * @param {game} gameObj - game object to get playerA and playerB socket references.
+     */
+    forceEndGame: function(gameObj) {
+        // grid is invalid, force exit game both players.
+        forceEndGameMsg = Object.assign({}, messages.ERROR);
+        if (gameObj.playerA) {
+            gameObj.playerA.send(JSON.stringify(forceEndGameMsg));
+        }
+        if (gameObj.playerB) {
+            gameObj.playerB.send(JSON.stringify(forceEndGameMsg));
+        }
+    },
+
     /**
      * @description Handle what message needs to be returned to both players depending on what message player A sent.
      * @param {game} gameObj - The game object to handle game state and message to return to client

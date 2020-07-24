@@ -24,7 +24,7 @@ function ShipsRenderer() {
     // the color to render when no ship is hit (when current player misses)
     this.colorMiss = Setup.COLOR_MISS;
 
-    // mapping object from ship_id to their respective color
+    // mapping ship_id of all ships to their respective color
     this.ships = {
         1: Setup.DESTROYER.color,
         2: Setup.SUBMARINE.color,
@@ -68,13 +68,16 @@ ShipsRenderer.prototype.resetSelfTilesRendering = function () {
  * @param {Boolean} isOpponent - Indicates whether to render the hit color on opponent grid or on current player grid 
  */
 ShipsRenderer.prototype.renderTileHit = function (x, y, isOpponent) {
+    var tileHit;
+    var borderStyle = "2px solid black";
+
     if (isOpponent) {
-        var tileHitOpponent = $(this.opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']");
-        tileHitOpponent.css({ "background-color": this.colorHit, "border": "2px solid black" });
+        tileHit = $(this.opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']");
     } else {
-        var tileHitSelf = $(this.selfTileClass + "[data-x='" + y + "'][data-y='" + x + "']"); 
-        tileHitSelf.css({ "background-color": this.colorHit, "border": "2px solid black" });
+        tileHit = $(this.selfTileClass + "[data-x='" + y + "'][data-y='" + x + "']"); 
     }
+
+    tileHit.css({ "background-color": this.colorHit, "border": borderStyle });
 }
 
 /**
@@ -84,13 +87,16 @@ ShipsRenderer.prototype.renderTileHit = function (x, y, isOpponent) {
  * @param {Boolean} isOpponent - Indicates whether to render the "miss" color on opponent grid or on current player grid 
  */
 ShipsRenderer.prototype.renderTileMiss = function (x, y, isOpponent) {
+    var tileMiss;
+    var borderStyle = "2px solid black";
+
     if (isOpponent) {
-        var tileHitOpponent = $(this.opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']");
-        tileHitOpponent.css({ "background-color": this.colorMiss , "border": "2px solid black" });
+        tileMiss = $(this.opponentTileClass + "[data-x='" + y + "'][data-y='" + x + "']");
     } else {
-        var tileHitSelf = $(this.selfTileClass + "[data-x='" + y + "'][data-y='" + x + "']"); 
-        tileHitSelf.css({ "background-color": this.colorMiss, "border": "2px solid black" });
+        tileMiss = $(this.selfTileClass + "[data-x='" + y + "'][data-y='" + x + "']"); 
     }
+
+    tileMiss.css({ "background-color": this.colorMiss , "border": borderStyle });
 }
 
 /**

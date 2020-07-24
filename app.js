@@ -5,7 +5,8 @@ const session = require('express-session');
 const gameStatus = require("./games_tracker")
 const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
-const { 
+const {
+    forceEndGame,
     handleLogicPlayerA,
     handleLogicPlayerB,
     handleGameWon,
@@ -124,8 +125,9 @@ wss.on("connection", function connection(ws) {
                 && oMsg.type === messages.T_GRID_PLAYER_A 
                 && !gameObj.playerAGrid)
             {
-                if (hasData) {
-                    gameObj.setPlayerAGrid(oMsg.data);
+                const isValidGrid = gameObj.setPlayerAGrid(oMsg.data);
+                
+                if (hasData && isValidGrid) {
                     
                     // game can be started when both grids are present in the game obj.
                     if (gameObj.isGameStarted()) {
@@ -136,8 +138,13 @@ wss.on("connection", function connection(ws) {
                         gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
                         gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
                     }
+                    
                 } else {
-                    console.log(`Player A client did not send a grid in data of message. Data: ${oMsg.data}`);
+                    console.log(`
+                        Player B either did not send valid data (invalid data: null or undefined). Data: ${oMsg.data}
+                        Or grid of player B is invalid. Grid valid: ${isValidGrid}  ----> force end game ...
+                    `);
+                    forceEndGame(gameObj);
                 }
             }
 
@@ -147,9 +154,9 @@ wss.on("connection", function connection(ws) {
                 && oMsg.type === messages.T_GRID_PLAYER_B 
                 && !gameObj.playerBGrid) 
             {
-                    
-                if (hasData) {
-                    gameObj.setPlayerBGrid(oMsg.data);
+                const isValidGrid = gameObj.setPlayerBGrid(oMsg.data);
+                
+                if (hasData && isValidGrid) {
 
                     // game can be started when both grids are present in the game obj.
                     if (gameObj.isGameStarted()) {
@@ -160,8 +167,13 @@ wss.on("connection", function connection(ws) {
                         gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
                         gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
                     }
+                    
                 } else {
-                    console.log(`Player B client did not send a grid in data of message. Data: ${oMsg.data}`);
+                    console.log(`
+                        Player B either did not send valid data (invalid data: null or undefined). Data: ${oMsg.data}
+                        Or grid of player B is invalid. Grid valid: ${isValidGrid}  ----> force end game ...
+                    `);
+                    forceEndGame(gameObj);
                 }
             }
 

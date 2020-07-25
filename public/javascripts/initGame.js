@@ -1,6 +1,9 @@
 "use strict";
 
-(function setup() {    
+(function setup() {
+    var splashSoundUrl = '../sounds/splash.mp3';
+    var audioVolume = 0.2;
+
     // init client socket
     var socket = new WebSocket(Setup.WEB_SOCKET_URL);
 
@@ -70,7 +73,11 @@
             //      3- Show the updated hits of opponent player
             //      4- Show notification that opponent has missed.
             if (incomingMsg.type === Messages.T_TILE_HIT_SINK) {
+                // the Audio object to play when ship has been sunk 
                 game.handlePlayerSunkShip(incomingMsg.data);
+                var splashAudio = new Audio(splashSoundUrl);
+                splashAudio.volume = audioVolume;
+                splashAudio.play();
             }
 
             // 1- Set who won the game 

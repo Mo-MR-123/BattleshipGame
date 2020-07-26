@@ -129,6 +129,17 @@
         data: null
     };
 
+    ////////////////////////////// ERROR MESSAGE ///////////////////////
+
+    /**
+     * Server to client: when server sends an error message, immediately force exit the game and close socket
+     */
+    exports.T_ERROR = "ERROR";              
+    exports.ERROR = {
+        type: exports.T_ERROR,
+        // (Optional) indicate what went wrong. Currently nothing is done with this 'error' property in client or server, thus commented.
+        // error: null
+    };
 
 }
 

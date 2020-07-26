@@ -1,33 +1,85 @@
 /* NOTE: this css file is imported BY ALL OTHER CSS files!! */
 
-html {
-  background: #000000;
-}
+body, html {
+	height: 100%;
+	width: 100%;
+	background-color: #000000;
+ }
 
 .main {
-  border: 1px solid #000;
-  background: url("../images/background.jpg");
-  background-repeat: no-repeat;
-  background-size: auto;
-}
-
-.body {
-  position: relative;
-  width: 90%;
-  margin-right: auto;
-  margin-bottom: 0px;
-  margin-left: auto;
-  height: 900px;
-  z-index: 1;
+	background: url("../images/background.jpg");
+	height: 97%; 
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
 .header {
-  position: relative;
-  font-weight: 600;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 100%;
-  color: rgb(151, 2, 2);
-  background-color: rgba(149, 133, 192, 0.5);
+	background: rgba(122, 102, 179, 0.9);
+	font-size: x-large;
+	font-weight:600;
+	color: rgb(151, 2, 2);
+	text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+}
+
+#splash_logo{ 
+	height: 70px; 
+	width: auto;
+	vertical-align: middle;
+}
+
+#middle{
+	width:80%;
+	margin: auto;
+	text-align: center;
+	height: 100%;
+	background: url("../images/world.png");
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	
+}
+
+#right{
+	width: 5%;
+	float: right;
+}
+
+#footer{
+	width: 100%;
+	height: 3%;
+	background: rgb(122, 102, 179);
+	color:white;
+	font-weight:bold;
+	font-size:12px;
+	transition:.33s linear;
+}
+
+#footer:hover{
+	background:black;
+}
+
+h1 {
+	font-weight:600;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 300%;
+	color: rgb(151, 2, 2);
+	text-align: center;
+}
+
+button {
+	background-color: rgb(49, 31, 207);
+	margin-top: 0.3em;
+	padding: 0.2em;
+	border-radius: 8px;
+	text-decoration: none;
+	display: inline-block;
+	color: white;
+	height: 44px;
+}
+
+button:hover{
+	background-color: rgba(150, 0, 0, 0.7);
 }
 
 .notifications-container {
@@ -39,69 +91,26 @@ html {
   margin-bottom: 9px;
 }
 
-#footer {
-  width: 100%;
-  background: rgb(122, 102, 179);
-  color: white;
-  font-weight: bold;
-  font-size: 12px;
-  text-align: center;
-  position: fixed; /*Here's what sticks it*/
-  bottom: 0; /*to the bottom of the body*/
-  left: 0; /*and to the left of the body.*/
-  z-index: 1;
-
-  /*EFFECTS*/
-  transition: 0.33s linear;
-}
-
-#footer:hover {
-  background: black;
-}
-
-#footer-l {
-  float: left;
-  width: 20%;
-  vertical-align: middle;
-}
-
-#footer-m {
-  float: middle;
-  width: 70%;
-  vertical-align: middle;
-}
-
-#footer-r {
-  float: right;
-  width: 30%;
-  vertical-align: middle;
-}
-
-h1 {
-  font-weight: 600;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 300%;
-  color: rgb(151, 2, 2);
-  text-align: center;
-}
-
-h3 {
-  font-size: 250%;
-  color: rgb(255, 255, 255);
-  display: inline-block;
-}
-
 #fullscreen {
-  width: 4%;
+  width: 8%;
   height: auto;
   float: right;
-  margin-top: 1%;
-  margin-right: 5%;
+  margin-top: 3%;
+  margin-right: 10%;
 }
 
 #fullscreen:hover {
-  width: 6%;
-  height: auto;
-  margin-top: 0;
-  margin-right: 4%;
+  opacity: 50%;
+}
+
+#homepage, #supportlink {
+	color: rgb(151, 2, 2);
+}
+
+#homepage:hover {
+	color: black;
+}
+
+#supportlink:hover {
+	color: white;
 }

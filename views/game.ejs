@@ -14,20 +14,21 @@
 
     </head>
     
-    <body> 
+    <body>
         <main class="main">
             <div class="body"> 
-                <header class="header container-fluid">
-                    
+                <div class="header container-fluid">
                     <div class="d-flex justify-content-between">
-                        <h2>
-                            <image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">
-                            BATTLESHIP V
-                        </h2>
-                        <input id="fullscreen" src="images/expand.png" type="image">
+                        <div class="col-4">
+                            <image src="images/logo.png" id="splash_logo">
+                                <a href="/" id="homepage">Battleship V</a>
+                            </image> 
+                        </div>
+                        <div class="col-4">
+                            <input id="fullscreen" src="images/expand.png" type="image">
+                        </div>
                     </div>
-                        
-                </header>
+                </div>
                 
                 <div class="notifications-container mt-2">
                     <div id="notification" class="alert alert-primary" role="alert">
@@ -155,9 +156,13 @@
         </main>     
         
         <footer id="footer">
-                <div id="footer-l">&copy&nbspCopyright 2018  | All rights reserved. </div>
-                <div id="footer-m">Support us on patreon!</div>
-                <div id="footer-r">... we need the money...</div>
+            <div class="container-fluid">
+                <div class="row justify-content-around">
+                  <div class="col-3"> &copy&nbspCopyright 2018-2020  | All rights reserved. </div>
+                  <div class="col-3"><a href="https://www.paypal.me/kef1n" id="supportlink">Support us on patreon!</a> </div>
+                  <div class="col-3"> ... we need the money... </div>
+                </div>
+              </div>
         </footer>
 
         <script type="text/javascript" src="javascripts/fullScreen.js"></script>

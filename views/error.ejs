@@ -4,13 +4,22 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="stylesheets/error.css" />
+
+        <script type="text/javascript" src="javascripts/jquery.js"> </script>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
     </head>
         
-    <body>
+    <body class="container-fluid">
         <div class="error">
             <h1><%= error %></h1>
-            <h2>Please notify the support team about this. We are sorry for the inconvenience. </h2>
+            <hr>
+            <div class="container-fluid text-center mx-auto">
+                <h2 class="row">You are seeing this page because you tried to visit a non-existent page or you are unauthorized to visit this page.</h2>
+                <a href="/" class="btn btn-primary">Go to homepage</a>
+            </div>
         </div>
     </body>
 </html>

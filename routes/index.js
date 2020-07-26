@@ -41,4 +41,8 @@ router.get('/play', function(req, res) {
   });
 });
 
+router.get('/instructions', function(req, res) {
+  res.render('instructions', {});
+});
+
 module.exports = router;

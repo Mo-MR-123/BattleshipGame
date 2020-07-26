@@ -5,6 +5,13 @@ const session = require('express-session');
 const gameStatus = require("./games_tracker")
 const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
+const {
+    forceEndGame,
+    handleLogicPlayerA,
+    handleLogicPlayerB,
+    handleGameWon,
+    handleSocketClosed
+} = require('./gameLogicHelperFuncs'); 
 const Game = require("./game");
 const WebSocket = require("ws");
 
@@ -37,6 +44,9 @@ app.get("/place-ships", indexRouter);
 // transporting the user to the game page when the "play" button has been clicked
 app.get("/play", indexRouter);
 
+// instruction page
+app.get("/instructions", indexRouter);
+
 // creating the server to be able to run/use express
 const server = http.createServer(app);
 
@@ -59,36 +69,6 @@ setInterval(function() {
         }
     }
 }, 50000);
-
-/**
- * @description Close sockets of players in a game that has been won by a player OR when game is aborted.
- * 
- *              NOTE: THIS ALSO SETS THE finalStatus FIELD OF THE GAME OBJECT TO true 
- *                    SO THAT THE PLAYERS CLIENT SOCKETS OF THE GAME OBJECT ARE GARBAGE COLLECTED
- * @param {Game} gameObj - game object to close the sockets of
- */
-const endGame = function (gameObj) {
-    //determine whose connection remains open and close it
-    try {
-        gameObj.playerA.close();
-        gameObj.playerA = null;
-    }
-    catch(e) {
-        console.log(`Error closing socket of Player A in game with ID ${gameObj.id}:`, e);
-    }
-
-    try {
-        gameObj.playerB.close(); 
-        gameObj.playerB = null;
-    }
-    catch(e) {
-        console.log(`Error closing socket of Player B in game with ID ${gameObj.id}:`, e);
-    }
-
-    // set finalStatus to true as client sockets are aborted to make sure 
-    // that the client sockets are are garbage collected
-    gameObj.finalStatus = true;
-}
 
 // init a game object used to handle connection and logic of the first game
 var currentGame = new Game(0);
@@ -145,8 +125,9 @@ wss.on("connection", function connection(ws) {
                 && oMsg.type === messages.T_GRID_PLAYER_A 
                 && !gameObj.playerAGrid)
             {
-                if (hasData) {
-                    gameObj.setPlayerAGrid(oMsg.data);
+                const isValidGrid = gameObj.setPlayerAGrid(oMsg.data);
+                
+                if (hasData && isValidGrid) {
                     
                     // game can be started when both grids are present in the game obj.
                     if (gameObj.isGameStarted()) {
@@ -157,8 +138,13 @@ wss.on("connection", function connection(ws) {
                         gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
                         gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
                     }
+                    
                 } else {
-                    console.log(`Player A client did not send a grid in data of message. Data: ${oMsg.data}`);
+                    console.log(`
+                        Player B either did not send valid data (invalid data: null or undefined). Data: ${oMsg.data}
+                        Or grid of player B is invalid. Grid valid: ${isValidGrid}  ----> force end game ...
+                    `);
+                    forceEndGame(gameObj);
                 }
             }
 
@@ -168,9 +154,9 @@ wss.on("connection", function connection(ws) {
                 && oMsg.type === messages.T_GRID_PLAYER_B 
                 && !gameObj.playerBGrid) 
             {
-                    
-                if (hasData) {
-                    gameObj.setPlayerBGrid(oMsg.data);
+                const isValidGrid = gameObj.setPlayerBGrid(oMsg.data);
+                
+                if (hasData && isValidGrid) {
 
                     // game can be started when both grids are present in the game obj.
                     if (gameObj.isGameStarted()) {
@@ -181,8 +167,13 @@ wss.on("connection", function connection(ws) {
                         gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
                         gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
                     }
+                    
                 } else {
-                    console.log(`Player B client did not send a grid in data of message. Data: ${oMsg.data}`);
+                    console.log(`
+                        Player B either did not send valid data (invalid data: null or undefined). Data: ${oMsg.data}
+                        Or grid of player B is invalid. Grid valid: ${isValidGrid}  ----> force end game ...
+                    `);
+                    forceEndGame(gameObj);
                 }
             }
 
@@ -194,52 +185,20 @@ wss.on("connection", function connection(ws) {
                 && !gameObj.gameWonBy)
             {
                 if (isPlayerA) {
-                    // handle all logic of player A
-
-                    // get opponent of player A
-                    const opponent = gameObj.playerB;
-                    const currPlayer = gameObj.playerA;
-                    
                     // handle case where player A shoots tile on player B grid when it is player A turn
                     if (oMsg.type === messages.T_TILE_SHOT && gameObj.getTurn() === "A") {
                         if (hasData) {
-                            const tileShotMsg = gameObj.tileFired(oMsg.data, true);
-                            
-                            // check if tileShotMsg is not null (means that coordinates are handled correctly without any errors)
-                            if (tileShotMsg) {
-                                // if player A missed, change turn to player B
-                                if (tileShotMsg.type === messages.T_TILE_MISS) {
-                                    gameObj.changeTurn();
-                                }
-                                opponent.send(JSON.stringify(tileShotMsg));
-                                currPlayer.send(JSON.stringify(tileShotMsg));
-                            }
+                            handleLogicPlayerA(gameObj, oMsg);
                         } else {
                             console.log(`Player A shot a tile but did not pass any data. Data: ${oMsg.data}`);
                         }
                     }
                 }
                 else {
-                    // handle all logic of player B
-
-                    // get opponent of player B
-                    const opponent = gameObj.playerA;
-                    const currPlayer = gameObj.playerB;
-
                     // handle case where player B shoots tile on player A grid when it is player B turn to shoot
                     if (oMsg.type === messages.T_TILE_SHOT && gameObj.getTurn() === "B") {
                         if (hasData) {
-                            const tileShotMsg = gameObj.tileFired(oMsg.data, false);
-
-                            // check if tileShotMsg is not null (means that coordinates are handled correctly without any errors)
-                            if (tileShotMsg) {
-                                // if player B missed, change turn to player A
-                                if (tileShotMsg.type === messages.T_TILE_MISS) {
-                                    gameObj.changeTurn();
-                                }
-                                opponent.send(JSON.stringify(tileShotMsg));
-                                currPlayer.send(JSON.stringify(tileShotMsg));
-                            }
+                            handleLogicPlayerB(gameObj, oMsg);
                         } else {
                             console.log(`Player B shot a tile but did not pass any data. Data: ${oMsg.data}`);
                         }
@@ -259,39 +218,7 @@ wss.on("connection", function connection(ws) {
             //    then force both sockets to close by calling endGame() function.
             // 3. Increment games complete by 1.
             if (gameObj.gameWonBy && !gameObj.finalStatus) {
-                // setup the message of the player that won the game
-                let whoWonMessage = Object.assign({}, messages.GAME_WON_BY);
-                whoWonMessage.data = gameObj.gameWonBy;
-                
-                // step 1:
-                gameObj.playerA.send(JSON.stringify(whoWonMessage));
-                gameObj.playerB.send(JSON.stringify(whoWonMessage));
-
-                // step 2:
-                setTimeout(() => {
-                    // check if both players are either closing or closed
-                    // if one of the players sockets is not doing that then force closing of both sockets
-                    if (
-                        gameObj.playerA.readyState !== WebSocket.CLOSED
-                         || gameObj.playerB.readyState !== WebSocket.CLOSED
-                    ) {
-                        console.log(`
-                            FORCE CLOSING SOCKETS OF GAME ${gameObj.id}.
-                            STATE SOCKET PLAYER A: ${gameObj.playerA.readyState}
-                            STATE SOCKET PLAYER B: ${gameObj.playerB.readyState}
-                        `);
-
-                        endGame(gameObj);
-                    } else {
-                        // if both sockets are closed then just de-reference sockets and set finalSatus to true
-                        gameObj.playerA = null;
-                        gameObj.playerB = null;
-                        gameObj.finalStatus = true;
-                    }
-                }, 1500);
-
-                // step 3:
-                gameStatus.gamesComplete++;
+                handleGameWon(gameObj);
             }
         } catch (e) {
             console.log(`
@@ -321,23 +248,7 @@ wss.on("connection", function connection(ws) {
         // only try to abort the game if the game object still exists in websockets object
         // this check is done in case the game object got removed.
         if (gameObj) {
-            // socket closes with code 1001 only when both players leave the game.
-            // Thus if 1 player is in the game and that player leaves, that player socket will not close with 1001 
-            if (code == "1001") {
-                //if possible, abort the game; if not, the game is already completed
-                if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
-                    gameObj.setStatus("ABORTED"); 
-                    gameStatus.gamesExited++;
-    
-                    endGame(gameObj);
-                }
-            }
-
-            // if first player is only one in the game and left, the set status to "0 JOINED"
-            // which resets the game so that new game can start on this game object
-            if (gameObj.gameState === "1 JOINED") {
-                gameObj.setStatus("0 JOINED");
-            }
+            handleSocketClosed(gameObj, code);
         }
     });
 });
@@ -355,6 +266,12 @@ app.use((error, req, res, next) => {
     res.render('error', { error: error.message })
 })
 
-server.listen(port, hostName, () => {
-    console.log(`Server running at ${hostName}:${port}`);
-});
+// making sure only 1 instance of the server is listening
+if (!module.parent) {
+    server.listen(port, hostName, () => {
+        console.log(`Server running at ${hostName}:${port}`);
+    });
+}
+
+// exporting server to be able to test it
+module.exports = server;

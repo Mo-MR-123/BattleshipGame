@@ -17,29 +17,31 @@
     <body> 
         <main class="main">
             <div class="body"> 
-                <header class="header">
-
-                    <input id="fullscreen" src="images/expand.png" type="image">
-                    <h2><image style="vertical-align:middle" src="images/logo.png" width="109px"; height="121px">BATTLESHIP V</h2>
-                        
+                <header class="header container-fluid">
+                    <div class="row justify-content-between">
+                        <div class="col-4">
+                            <image src="images/logo.png" id="splash_logo">
+                                <a href="/" id="homepage">Battleship V</a>
+                            </image> 
+                        </div>
+                        <div class="col-4"> 
+                            <input id="fullscreen" src="images/expand.png" type="image">
+                        </div>
+                    </div>                        
                 </header>
                 
-                <div class="battlefield">
-                    <div class="container">
-                        <div class="row mb-3">
-                            <div class="card text-center shadow mx-auto">
-                                <div class="card-body">
-                                    <div class="col">
-                                        <button class="btn btn-primary" id="randomize-button">Randomize Ships</button>
-                                    </div>
-                                    <hr>
-                                    <div class="col">
-                                        <button class="btn btn-success btn-lg" id="startgamebutton">Start Game</button>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="row">
+                    <div class="card text-center shadow mx-auto">
+                        <div class="card-body">
+                            <button class="btn btn-primary m-1" id="randomize-button">Randomize Ships</button>
+                            <button class="btn btn-primary m-1" id="rotate-button">Rotate Selected</button>
+                            <button class="btn btn-success btn-lg m-1" id="startgamebutton">Start Game</button>
                         </div>
-                        
+                    </div>
+                </div>
+
+                <div class="battlefield">
+                    <div class="container">                        
                         <div class="row align-items-center justify-content-center">
                             <div class="battlefield_self">
                                 <table class="battlefield_self_table">
@@ -92,14 +94,17 @@
                         </div>
                     </div>
                 </div>
-                
             </div>	
         </main>     
     
         <footer id="footer">
-            <div id="footer-l">&copy&nbspCopyright 2018  | All rights reserved. </div>
-            <div id="footer-m">Support us on patreon!</div>
-            <div id="footer-r">... we need the money...</div>
+            <div class="container-fluid">
+                <div class="row justify-content-around">
+                  <div class="col-3"> &copy&nbspCopyright 2018-2020  | All rights reserved. </div>
+                  <div class="col-3"><a href="https://www.paypal.me/kef1n" id="supportlink">Support us on patreon!</a> </div>
+                  <div class="col-3"> ... we need the money... </div>
+                </div>
+              </div>
         </footer>
 
         <script type="text/javascript" src="javascripts/fullScreen.js"></script>

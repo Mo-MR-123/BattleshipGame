@@ -53,7 +53,7 @@ var game = function (gameID) {
 
 /* Game can be started when both players grid is set */
 game.prototype.isGameStarted = function() {
-    return (this.playerAGrid && this.playerBGrid);
+    return (!!this.playerAGrid && !!this.playerBGrid);
 }
 
 /**

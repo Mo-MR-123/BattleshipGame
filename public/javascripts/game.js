@@ -4,6 +4,7 @@
  * Game constructor.
  * 
  * @constructor
+ * @param {WebSocket} socket - the socket of the client of the current player
  */
 function Game(socket) {
     // socket to send messages to server
@@ -138,7 +139,11 @@ Game.prototype.addDisabledToTile = function(x, y) {
 };
 
 /**
- * @description Assign a player type to current player and send grid of current player to server.   
+ * @description Assign a player type to current player and send grid of current player to server.
+ * 
+ * 1- Assign the player to either "A" or "B"  
+ * 2- Setup expected message to send current player grid to server
+ *    
  * @param {String} data - The player type to assign to the game (must be either "A" or "B"). 
  */
 Game.prototype.handlePlayerAssignment = function(data) {
@@ -159,7 +164,13 @@ Game.prototype.handlePlayerAssignment = function(data) {
 };
 
 /**
- * @description Shows which player is allowed to shoot first when the game starts.
+ * @description 
+ * Shows which player is allowed to shoot first when the game starts.
+ * and enable tiles event listeners of player the can start shooting.
+ *
+ * when second player joins, the game starts so add event listeners on opponent grid
+ * 
+ *  NOTE: this happens only at the start of the game!
  * @param {String} data - The player to assign the turn to.
  */
 Game.prototype.handlePlayerTurn = function(data) {
@@ -173,8 +184,21 @@ Game.prototype.handlePlayerTurn = function(data) {
 };
 
 /**
- * @description Increase score, disable the hit tile so that no unnecessary tile coordinates are sent and show notification.
- *              ShipsRenderer object to render updated score and hit tile.
+ * @description #
+ * 
+ * If current player hit a ship:  
+ *      1- increase amount of hits of current player  
+ *      2- Color the ship tile that is hit on opponents grid.  
+ *      3- Show the updated hits of current player  
+ *      4- disable the hit tile  
+ *      5- Show notification that current player has hit a ship.  
+ * If opponent has hit a ship of current player:  
+ *      1- increase amount of hits of opponent player  
+ *      2- Color the ship tile that is hit on current player grid.  
+ *      3- Show the updated hits of opponent player  
+ *      4- Show notification that opponent has hit a ship.  
+ *  
+ * ShipsRenderer object to render updated score and hit tile.
  * @param {Object} dataObj - The data object that should contain coordinates of the hit tile.
  */
 Game.prototype.handlePlayerHit = function(dataObj) {
@@ -196,8 +220,19 @@ Game.prototype.handlePlayerHit = function(dataObj) {
 };
 
 /**
- * @description Disable/enable opponent grid tile based on who missed and show notification.
- *              ShipsRenderer object to render missed tile.
+ * @description #
+ * 
+ * If current player missed:  
+ *      1- Color the tile that is missed on opponents grid.  
+ *      2- disable missed tile  
+ *      3- disable tiles of opponent  
+ *      4- Show notification that current player has missed.  
+ * If opponent has missed:  
+ *      1- Color the tile that is missed on current player grid.   
+ *      2- enable opponent tile selection, as it is current player turn.  
+ *      3- Show notification that opponent has missed.  
+ * 
+ * ShipsRenderer object to render missed tile.
  * @param {Object} dataObj - The data object that should contain coordinates of the missed tile.
  */
 Game.prototype.handlePlayerMiss = function(dataObj) {
@@ -215,8 +250,22 @@ Game.prototype.handlePlayerMiss = function(dataObj) {
 };
 
 /**
- * @description Disable hit tile, render hit tile and show notification.
- *              ShipsRenderer object to render hit tile.
+ * @description #
+ * 
+ * If current player hit and sank a ship:  
+ *     1- increase amount of hits of current player  
+ *     2- Color the tile that is hit on opponents grid.  
+ *     3- Show the updated hits of current player  
+ *     4- disable the hit tile  
+ *     5- Show notification that current player has hit and sank a ship.  
+ * If opponent has hit and sank a ship:  
+ *     1- increase amount of hits of opponent player  
+ *     2- Color the tile that is hit on current player grid.   
+ *     3- Show the updated hits of opponent player  
+ *     4- Show notification that opponent has hit and sank a ship.  
+ * 
+ * ShipsRenderer object to render hit tile.
+ * 
  * @param {Object} dataObj - The data object that should contain coordinates of the hit tile.
  */
 Game.prototype.handlePlayerSunkShip = function(dataObj) {

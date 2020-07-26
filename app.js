@@ -6,11 +6,11 @@ const gameStatus = require("./games_tracker")
 const indexRouter = require("./routes/index")
 const messages = require("./public/javascripts/messages");
 const {
-    forceEndGame,
     handleLogicPlayerA,
     handleLogicPlayerB,
     handleGameWon,
-    handleSocketClosed
+    handleSocketClose,
+    handleSetupPlayerGrid
 } = require('./gameLogicHelperFuncs'); 
 const Game = require("./game");
 const WebSocket = require("ws");
@@ -125,27 +125,7 @@ wss.on("connection", function connection(ws) {
                 && oMsg.type === messages.T_GRID_PLAYER_A 
                 && !gameObj.playerAGrid)
             {
-                const isValidGrid = gameObj.setPlayerAGrid(oMsg.data);
-                
-                if (hasData && isValidGrid) {
-                    
-                    // game can be started when both grids are present in the game obj.
-                    if (gameObj.isGameStarted()) {
-                        // send whos turn it is to start shooting
-                        msgWhoCanStart = Object.assign({}, messages.PLAYER_TURN);
-                        msgWhoCanStart.data = gameObj.getTurn();
-
-                        gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
-                        gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
-                    }
-                    
-                } else {
-                    console.log(`
-                        Player B either did not send valid data (invalid data: null or undefined). Data: ${oMsg.data}
-                        Or grid of player B is invalid. Grid valid: ${isValidGrid}  ----> force end game ...
-                    `);
-                    forceEndGame(gameObj);
-                }
+                handleSetupPlayerGrid(gameObj, oMsg.data, isPlayerA);
             }
 
             // handle grid initialization of player B if the game is still not started 
@@ -154,27 +134,7 @@ wss.on("connection", function connection(ws) {
                 && oMsg.type === messages.T_GRID_PLAYER_B 
                 && !gameObj.playerBGrid) 
             {
-                const isValidGrid = gameObj.setPlayerBGrid(oMsg.data);
-                
-                if (hasData && isValidGrid) {
-
-                    // game can be started when both grids are present in the game obj.
-                    if (gameObj.isGameStarted()) {
-                        // send whos turn it is to start shooting
-                        msgWhoCanStart = Object.assign({}, messages.PLAYER_TURN);
-                        msgWhoCanStart.data = gameObj.getTurn();
-
-                        gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
-                        gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
-                    }
-                    
-                } else {
-                    console.log(`
-                        Player B either did not send valid data (invalid data: null or undefined). Data: ${oMsg.data}
-                        Or grid of player B is invalid. Grid valid: ${isValidGrid}  ----> force end game ...
-                    `);
-                    forceEndGame(gameObj);
-                }
+                handleSetupPlayerGrid(gameObj, oMsg.data, isPlayerA);
             }
 
             // Here game state and game logic is handled: 
@@ -209,7 +169,7 @@ wss.on("connection", function connection(ws) {
             else {
                 console.log(`Player A connected to the game with id ${gameObj.id}? ${gameObj.playerA ? true : false}`);
                 console.log(`Player B connected to the game with id ${gameObj.id}? ${gameObj.playerB ? true : false}`);
-                console.log(`Game with id ${gameObj.id} does not have 2 players connected OR is not started yet.`);
+                console.log(`Game with id ${gameObj.id} started: ${!!gameObj.playerB && !!gameObj.playerA}`);
             }
 
             // Check if a winner has been announced, if so then do following:
@@ -248,7 +208,7 @@ wss.on("connection", function connection(ws) {
         // only try to abort the game if the game object still exists in websockets object
         // this check is done in case the game object got removed.
         if (gameObj) {
-            handleSocketClosed(gameObj, code);
+            handleSocketClose(gameObj, code);
         }
     });
 });

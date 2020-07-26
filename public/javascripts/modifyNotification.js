@@ -9,14 +9,14 @@ var notificationDivId = '#notification';
 /**
  * Notify the user about game state by showing the notification message in the notification bar
  * @param {String} msg - Message to show on the notification bar
- * @param {Number} typeAlert - Indicating what color should be displayed on the notification bar
- *                             {
- *                              0: RED (alert)
- *                              1: GREEN (success)
- *                              2: YELLOW (warning)
- *                              3: GREY
- *                              default color: BLUE
- *                             }
+ * @param {Number} typeAlert - Indicating what color should be displayed on the notification bar  
+ *                             {  
+ *                                0: RED (alert)  
+ *                                1: GREEN (success)  
+ *                                2: YELLOW (warning)  
+ *                                3: GREY  
+ *                                default color: BLUE  
+ *                             }  
  */
 function showNotificationMsg(msg, typeAlert=null) {
     $(notificationDivId).removeClass();

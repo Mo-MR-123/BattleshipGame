@@ -15,7 +15,7 @@ router.get("/", (req, res, next) => {
 router.get("/", (req, res) => {
   res.render("splash.ejs", { 
       exitedGames: gameStatus.gamesExited,
-      gamesInitialized: gameStatus.gamesInit,
+      gamesInit: gameStatus.gamesInit,
       gamesCompleted: gameStatus.gamesComplete
   });
 });

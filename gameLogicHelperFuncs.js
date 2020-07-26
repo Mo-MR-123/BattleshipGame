@@ -3,6 +3,38 @@ const gameStatus = require('./games_tracker');
 const WebSocket = require("ws");
 
 /**
+ * game can be started when both grids are present in the game object
+ * @param {game} gameObj - game object to set player grid
+ * @param {Object} data - message data object sent from client
+ * @param {Boolean} isPlayerA - indicates whether to set player A or player B grid depending on which client socket sent the grid.
+ */
+const handleSetupPlayerGrid = (gameObj, data, isPlayerA) => {
+    let isValidGrid;
+    if (isPlayerA) {
+        isValidGrid = gameObj.setPlayerAGrid(data);
+    } else {
+        isValidGrid = gameObj.setPlayerBGrid(data);
+    }
+    
+    if (data && isValidGrid) {
+        if (gameObj.isGameStarted()) {
+            // send whos turn it is to start shooting
+            msgWhoCanStart = Object.assign({}, messages.PLAYER_TURN);
+            msgWhoCanStart.data = gameObj.getTurn();
+    
+            gameObj.playerA.send(JSON.stringify(msgWhoCanStart));
+            gameObj.playerB.send(JSON.stringify(msgWhoCanStart));
+        }
+    } else {
+        console.log(`
+            ${"Player B" ? !isPlayerA : "Player A"} either did not send valid data (invalid data: null or undefined). Data: ${true ? data : false}
+            Or grid of ${"Player B" ? !isPlayerA : "Player A"} is invalid. Grid valid: ${isValidGrid}  ----> force end game ...
+        `);
+        forceEndGame(gameObj);
+    }
+}
+
+/**
 * @description Close sockets of players in a game that has been won by a player OR when game is aborted.
 * 
 *              NOTE: THIS ALSO SETS THE finalStatus FIELD OF THE GAME OBJECT TO true 
@@ -136,7 +168,7 @@ const handleGameWon = (gameObj) => {
  * @param {game} gameObj - game object to handle closing of sockets
  * @param {String} code - the returned number as string that socket sent when closing
  */
- const handleSocketClosed = (gameObj, code) => {
+ const handleSocketClose = (gameObj, code) => {
      // socket closes with code 1001 only when both players leave the game.
      // Thus if 1 player is in the game and that player leaves, that player socket will not close with 1001 
      if (code == "1001") {
@@ -144,8 +176,11 @@ const handleGameWon = (gameObj) => {
          if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
              gameObj.setStatus("ABORTED"); 
              gameStatus.gamesExited++;
-
+             
              handleEndGame(gameObj);
+             
+             // ongoing games decremented as a player left a game
+             gameStatus.gamesInit--;
          }
      }
 
@@ -154,6 +189,7 @@ const handleGameWon = (gameObj) => {
      if (gameObj.gameState === "1 JOINED") {
          gameObj.setStatus("0 JOINED");
      }
+     
 };
 
 module.exports = {
@@ -161,5 +197,6 @@ module.exports = {
     handleLogicPlayerA,
     handleLogicPlayerB,
     handleGameWon,
-    handleSocketClosed
+    handleSocketClose,
+    handleSetupPlayerGrid
 }

@@ -11,10 +11,10 @@ var Status = {
                "<a href='/place-ships'>here</a> to choose another grid.",
     "generalErrorMsg": "Unexpected error occured! If this error keeps showing up then please contact us about this issue. " +
                "Start a new game by clicking <a href='/place-ships'>here</a>. We are sorry for the inconvenience.",
-    "currentPlayerShipHit": "You hit a ship! It is still your turn to fire.",
-    "opponentShipHit": "The opponent has hit one of your ships! It is the opponents' turn to fire.",
+    "currentPlayerShipHit": "You hit a ship! It is now the turn of the opponent to fire.",
+    "opponentShipHit": "The opponent has hit one of your ships! It is your turn to fire.",
     "currentPlayerMiss": "You missed! It is the opponents' turn to fire.",
     "opponentMiss": "The opponent has missed! It is your turn to fire.",
-    "currentPlayerShipSink": "You have sunk the %s! It is still your turn to fire.",
-    "opponentShipSink": "The opponent has sunk your %s! It is the opponents' turn to fire.",
+    "currentPlayerShipSink": "You have sunk the %s! It is the turn of the opponent to fire.",
+    "opponentShipSink": "The opponent has sunk your %s! It is now your turn to fire.",
 }

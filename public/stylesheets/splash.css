@@ -64,9 +64,18 @@
 	font-weight: bold; 
 }
 
+
+h1 {
+	font-weight:600 !important;
+    font-family: 'Times New Roman', Times, serif !important;
+    font-size: 300% !important;
+	color: rgb(151, 2, 2) !important;
+	text-align: center !important;
+}
+
 h2 {
-	color: white;
-	font-weight: bold; 
+	color: white !important;
+	font-weight: bold !important; 
 }
 
 #gamestart-button {

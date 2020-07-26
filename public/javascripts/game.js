@@ -154,7 +154,7 @@ Game.prototype.handlePlayerAssignment = function(data) {
     } else if (this.getPlayerType() === "B") {
         var msgSendGridPlayerB = Messages.GRID_PLAYER_B;
         msgSendGridPlayerB.data = this.grid;
-        this.sendMessage(msgSendGridPlayerB, 3);
+        this.sendMessage(msgSendGridPlayerB);
     }
 };
 
@@ -184,12 +184,14 @@ Game.prototype.handlePlayerHit = function(dataObj) {
         this.shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
         this.shipsRenderer.updateHitsSelf(this.amountHits);
         this.addDisabledToTile(coordinates.x, coordinates.y);
-        showNotificationMsg(Status.currentPlayerShipHit);
+        this.disableTilesOpponent();
+        showNotificationMsg(Status.currentPlayerShipHit, 3);
     } else {
         this.increaseOpponentScore();
         this.shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
         this.shipsRenderer.updateHitsOpponent(this.opponentHits);
-        showNotificationMsg(Status.opponentShipHit, 3);
+        this.enableTilesOpponent();
+        showNotificationMsg(Status.opponentShipHit);
     }
 };
 
@@ -224,12 +226,14 @@ Game.prototype.handlePlayerSunkShip = function(dataObj) {
         this.shipsRenderer.renderTileHit(coordinates.x, coordinates.y, true);
         this.shipsRenderer.updateHitsSelf(this.amountHits);
         this.addDisabledToTile(coordinates.x, coordinates.y);
-        showNotificationMsg(Status.currentPlayerShipSink.replace("%s", dataObj.ship));
+        this.disableTilesOpponent();
+        showNotificationMsg(Status.currentPlayerShipSink.replace("%s", dataObj.ship), 3);
     } else {
         this.increaseOpponentScore();
         this.shipsRenderer.renderTileHit(coordinates.x, coordinates.y, false);
         this.shipsRenderer.updateHitsOpponent(this.opponentHits);
-        showNotificationMsg(Status.opponentShipSink.replace("%s", dataObj.ship), 3);
+        this.enableTilesOpponent();
+        showNotificationMsg(Status.opponentShipSink.replace("%s", dataObj.ship));
     }
 };
 

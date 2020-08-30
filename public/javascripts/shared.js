@@ -20,7 +20,7 @@
     exports.GRID_DIM = { /* Dimensions of each grid (rows must always be equal to columns) */
       rows: 10,
       cols: 10
-    }; 
+    };
     exports.AMOUNT_HITS_WIN = 17; /* Amount of hits needed to win the game. NOTE: this is equivalent to  */
     exports.DESTROYER = { id: 1, name: 'Destroyer',  size: 2, hits: 0, color: '#8d8d8d', x: null, y: null, horizontal: null }; /* Destoryer ship properties (ID is used when placed on the board) */
     exports.SUBMARINE = { id: 2, name: 'Submarine', size: 3, hits: 0, color: '#009d00', x: null, y: null, horizontal: null }; /* Submarine ship properties (ID is used when placed on the board) */

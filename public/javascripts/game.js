@@ -78,17 +78,44 @@ Game.prototype.initAndRenderGrid = function() {
 };
 
 /**
+ * Checks whether the given value is an integer.
+ * @param {*} value - The value to check
+ * @returns True if value is int, False otherwise.
+ */
+Game.prototype.isInt = function(value) {
+    try {
+        var x;
+        if (isNaN(value)) {
+            return false;
+        }
+        x = parseFloat(value);
+        return (x | 0) === x;
+    } catch (e) {
+        return false;
+    }
+}
+
+/**
  * @description Send coordinates of clicked tile to server.
  * @param {Number} x - row number in the grid of tile clicked
  * @param {Number} y - column number in the grid  of tile clicked
  */
 Game.prototype.tileClick = function(x, y) {
-    var coodinatesMsg = Messages.TILE_SHOT;
-    coodinatesMsg.data = {
-            x: x,
-            y: y
-    };
-    this.sendMessage(coodinatesMsg);
+    if (this.isInt(x) 
+        && this.isInt(y) 
+        && x >= 0 
+        && x < window.Setup.GRID_DIM.rows 
+        && y >= 0 
+        && y < window.Setup.GRID_DIM.cols
+    ) {
+        console.log(x + ' ' + y)
+        var coodinatesMsg = Messages.TILE_SHOT;
+        coodinatesMsg.data = {
+                x: x,
+                y: y
+        };
+        this.sendMessage(coodinatesMsg);
+    }
 };
 
 /**

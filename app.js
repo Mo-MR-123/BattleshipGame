@@ -19,6 +19,14 @@ const port = process.argv[2] || 3000;
 const hostName = 'localhost';
 const app = express();
 
+
+//app.use((req, res, next) => {
+//    console.log(req.ip !== "::1" ? req.ip : "No IP")
+//    console.log(req.headers['x-forwarded-for'] !== "::1" ? req.headers['x-forwarded-for'] : "No x-forwarded-for")
+//    console.log(req.connection.remoteAddress !== "::1" ? req.connection.remoteAddress : "No remoteAddress")
+//    next()
+//})
+
 // init session middleware using specified config
 app.use(session(sessionConfig));
 

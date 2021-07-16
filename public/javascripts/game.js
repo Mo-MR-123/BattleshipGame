@@ -108,7 +108,6 @@ Game.prototype.tileClick = function(x, y) {
         && y >= 0 
         && y < window.Setup.GRID_DIM.cols
     ) {
-        console.log(x + ' ' + y)
         var coodinatesMsg = Messages.TILE_SHOT;
         coodinatesMsg.data = {
                 x: x,

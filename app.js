@@ -16,7 +16,7 @@ const Game = require("./game");
 const WebSocket = require("ws");
 
 const port = process.argv[2] || 3000;
-const hostName = 'localhost';
+const hostName = '0.0.0.0';
 const app = express();
 
 
